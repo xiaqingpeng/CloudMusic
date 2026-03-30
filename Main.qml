@@ -8,57 +8,25 @@ Window {
     visible: true
     title: qsTr("NetEase CloudMusic")
 
-    Rectangle{
-
-      id:leftRect
-
-      width:255
-
-      anchors.top: parent.top
-
-      anchors.bottom: parent.bottom
-
-      color: "#1a1a21"
-
-
+    MyLeftRect {
+          id: leftRect
+          anchors.bottom: parent.bottom
+          anchors.top: parent.top
     }
 
-    Rectangle{
-
-      id: rightRect
-
-
-
-      anchors.left: leftRect.right
-
-      anchors.right: parent.right
-
-      anchors.top: parent.top
-
-      anchors.bottom: bottomRect.top
-
-      color: "#13131a"
-
-
+    MyRightRect {
+          id: rightRect
+          anchors.bottom: bottomRect.top
+          anchors.left: leftRect.right
+          anchors.right: parent.right
+          anchors.top: parent.top
     }
 
-    Rectangle{
-
-      id: bottomRect
-
-      height:100
-
-      anchors.left: parent.left
-
-      anchors.right: parent.right
-
-
-
-      anchors.bottom: parent.bottom
-
-      color: "#2d2d37"
-
-
+    MyBottomRect {
+        id: bottomRect
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
     }
 
 }
