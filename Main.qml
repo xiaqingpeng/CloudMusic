@@ -6,22 +6,8 @@ Window {
     width: 640
     height: 480
     visible: true
-    flags: Qt.Window | Qt.FramelessWindowHint // 必须开启无边框
-
-    // 1. 顶部拖动区 (仅右侧区域，避免覆盖左侧边栏的按钮)
-    Item {
-        id: topDragArea
-        height: 40
-        anchors.top: parent.top
-        anchors.left: leftRect.right
-        anchors.right: parent.right
-        z: 99 // 确保在最顶层
-
-        TapHandler {
-            onPressedChanged: if (pressed)
-                                  window.startSystemMove()
-        }
-    }
+    flags: Qt.Window | Qt.FramelessWindowHint | Qt.WindowSystemMenuHint
+           | Qt.WindowMaximizeButtonHint | Qt.WindowMinimizeButtonHint // 必须开启无边框
 
     MyLeftRect {
         id: leftRect
@@ -42,5 +28,24 @@ Window {
         anchors.bottom: parent.bottom
         anchors.left: parent.left
         anchors.right: parent.right
+    }
+
+    MouseArea {
+        // 只覆盖右侧区域，避开左侧边栏的按钮
+        anchors.top: parent.top
+        anchors.left: leftRect.right
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+
+        property point clickPos: "0,0"
+
+        onPressed: function (mouse) {
+            clickPos = Qt.point(mouse.x, mouse.y)
+        }
+        onPositionChanged: function (mouse) {
+            let delta = Qt.point(mouse.x - clickPos.x, mouse.y - clickPos.y)
+            window.x += delta.x
+            window.y += delta.y
+        }
     }
 }
