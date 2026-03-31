@@ -47,10 +47,14 @@ Rectangle {
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
-                        if (window.visibility === Window.Maximized) {
-                            window.showNormal()
+                        // 使用 Window.window 附加属性获取当前窗口实例
+                        if (Window.window.visibility === Window.Maximized) {
+                            // 恢复到默认高度480
+                            Window.window.showNormal() // 先恢复到正常状态
+                            Window.window.height = 1317 // 再设置为默认宽度
+                            Window.window.height = 933 // 再设置为默认高度
                         } else {
-                            window.showMaximized()
+                            Window.window.showMaximized()
                         }
                     }
                 }

@@ -3,8 +3,8 @@ import QtQuick.Window
 
 Window {
     id: window
-    width: 640
-    height: 480
+    width: 1317
+    height: 933
     visible: true
     flags: Qt.Window | Qt.FramelessWindowHint | Qt.WindowSystemMenuHint
            | Qt.WindowMaximizeButtonHint | Qt.WindowMinimizeButtonHint // 必须开启无边框
