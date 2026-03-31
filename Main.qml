@@ -6,20 +6,35 @@ Window {
     width: 640
     height: 480
     visible: true
-    title: qsTr("网易云音乐")
+    flags: Qt.Window | Qt.FramelessWindowHint // 必须开启无边框
+
+    // 1. 顶部拖动区 (仅限顶部一行)
+    Item {
+        id: topDragArea
+        height: 40
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+        z: 99 // 确保在最顶层
+
+        TapHandler {
+            onPressedChanged: if (pressed)
+                                  window.startSystemMove()
+        }
+    }
 
     MyLeftRect {
-          id: leftRect
-          anchors.bottom: parent.bottom
-          anchors.top: parent.top
+        id: leftRect
+        anchors.bottom: parent.bottom
+        anchors.top: parent.top
     }
 
     MyRightRect {
-          id: rightRect
-          anchors.bottom: bottomRect.top
-          anchors.left: leftRect.right
-          anchors.right: parent.right
-          anchors.top: parent.top
+        id: rightRect
+        anchors.bottom: bottomRect.top
+        anchors.left: leftRect.right
+        anchors.right: parent.right
+        anchors.top: parent.top
     }
 
     MyBottomRect {
@@ -28,5 +43,4 @@ Window {
         anchors.left: parent.left
         anchors.right: parent.right
     }
-
 }

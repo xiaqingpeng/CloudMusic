@@ -9,12 +9,15 @@ Rectangle {
 
     color: "#1a1a21"
 
-    MouseArea {
-        id: mouseLeftRect
-        anchors.fill: parent
-
-        onClicked: {
-            console.log("打印mouseLeftRect区域")
+    // 在左侧栏内部添加拖动逻辑
+    TapHandler {
+        // 关键：由于这个组件在 Window 内，可以直接通过 id 访问 window
+        // 或者使用 Window.window 附加属性
+        onPressedChanged: {
+            if (pressed) {
+                // 这里的 'window' 对应 Main.qml 里的 Window id
+                window.startSystemMove()
+            }
         }
     }
 
