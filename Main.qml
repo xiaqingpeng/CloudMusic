@@ -8,12 +8,12 @@ Window {
     visible: true
     flags: Qt.Window | Qt.FramelessWindowHint // 必须开启无边框
 
-    // 1. 顶部拖动区 (仅限顶部一行)
+    // 1. 顶部拖动区 (仅右侧区域，避免覆盖左侧边栏的按钮)
     Item {
         id: topDragArea
         height: 40
         anchors.top: parent.top
-        anchors.left: parent.left
+        anchors.left: leftRect.right
         anchors.right: parent.right
         z: 99 // 确保在最顶层
 
