@@ -14,6 +14,21 @@ Rectangle {
         spacing: 16
         anchors.margins: 16
 
+
+        Image {
+            Layout.preferredWidth: 24
+            Layout.preferredHeight: 24
+            Layout.alignment: Qt.AlignVCenter
+            source: "qrc:/CloudMusic/resources/qrc/icon/left.svg"
+            // fillMode: Image.PreserveAspectFit
+
+            onStatusChanged: {
+                if (status === Image.Error) {
+                    console.log("Failed to load image:", source)
+                }
+            }
+        }
+
         // 自定义搜索框，避免TextField的背景样式问题
         Rectangle {
             Layout.fillWidth: true
@@ -31,6 +46,20 @@ Rectangle {
             }
         }
 
+        Image {
+            Layout.preferredWidth: 24
+            Layout.preferredHeight: 24
+            Layout.alignment: Qt.AlignVCenter
+            source: "qrc:/CloudMusic/resources/qrc/icon/mic.svg"
+
+
+            onStatusChanged: {
+                if (status === Image.Error) {
+                    console.log("Failed to load image:", source)
+                }
+            }
+        }
+
         Text {
             text: "未登录"
             color: "#f0f0f0"
@@ -40,9 +69,50 @@ Rectangle {
             color: "#f0f0f0"
         }
 
+        Image {
+            Layout.preferredWidth: 24
+            Layout.preferredHeight: 24
+            Layout.alignment: Qt.AlignVCenter
+            source: "qrc:/CloudMusic/resources/qrc/icon/down.svg"
+
+
+            onStatusChanged: {
+                if (status === Image.Error) {
+                    console.log("Failed to load image:", source)
+                }
+            }
+        }
+
+        Image {
+            Layout.preferredWidth: 24
+            Layout.preferredHeight: 24
+            Layout.alignment: Qt.AlignVCenter
+            source: "qrc:/CloudMusic/resources/qrc/icon/down_s.svg"
+
+
+            onStatusChanged: {
+                if (status === Image.Error) {
+                    console.log("Failed to load image:", source)
+                }
+            }
+        }
+
+        Image {
+            Layout.preferredWidth: 24
+            Layout.preferredHeight: 24
+            Layout.alignment: Qt.AlignVCenter
+            source: "qrc:/CloudMusic/resources/qrc/icon/setting.svg"
+
+
+            onStatusChanged: {
+                if (status === Image.Error) {
+                    console.log("Failed to load image:", source)
+                }
+            }
+        }
         // 系统控制图标
         MyControl {
-            Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
+            Layout.alignment: Qt.AlignVCenter
         }
 
     }

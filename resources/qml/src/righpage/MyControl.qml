@@ -2,6 +2,8 @@ import QtQuick
 import QtQuick.Window
 
 Row {
+    width: childrenRect.width
+    height: childrenRect.height
     spacing: 8
     // 关闭按钮
     Rectangle {

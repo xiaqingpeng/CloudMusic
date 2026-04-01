@@ -25,7 +25,22 @@ qt_add_qml_module(appCloudMusic
         resources/qml/src/righpage/MyRightTopRect.qml
         resources/qml/src/righpage/MyRightBottomRect.qml
         resources/qml/src/commonui/MyWindowRect.qml
-        QML_FILES resources/qml/src/righpage/MyControl.qml
+        resources/qml/src/commonui/MyImageRect.qml
+        resources/qml/src/righpage/MyControl.qml
+        resources/qml/src/righpage/BannerSwiper.qml
+        resources/qml/src/righpage/SongListCard.qml
+        resources/qml/src/righpage/AudioBookCard.qml
+        resources/qml/src/theme/Theme.qml
+    RESOURCES
+        resources/qml/src/theme/qmldir
+        resources/qrc/icon/left.svg
+        resources/qrc/icon/down.svg
+        resources/qrc/icon/down_s.svg
+        resources/qrc/icon/people.svg
+        resources/qrc/icon/mic.svg
+        resources/qrc/icon/down_s.svg
+        resources/qrc/icon/setting.svg
+        resources/qrc/icon/music.svg
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

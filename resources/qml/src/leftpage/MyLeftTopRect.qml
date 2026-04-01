@@ -1,5 +1,8 @@
 import QtQuick
 import QtQuick.Window
+import QtQuick.Layouts
+
+import QtQuick.Controls
 
 Rectangle {
     id: leftTopRect
@@ -11,23 +14,27 @@ Rectangle {
 
         anchors.centerIn: parent
 
-        Rectangle {
-            width: 18
-            height: 18
-            radius: 9
-            color: "red"
-            Text {
-                anchors.centerIn: parent
-                text: "♪"
-                color: "white"
-                font.bold: true
+        Image {
+            Layout.preferredWidth: 24
+            Layout.preferredHeight: 24
+            Layout.alignment: Qt.AlignVCenter
+
+            anchors.verticalCenter: parent.verticalCenter
+
+            source: "qrc:/CloudMusic/resources/qrc/icon/music.svg"
+
+
+            onStatusChanged: {
+                if (status === Image.Error) {
+                    console.log("Failed to load image:", source)
+                }
             }
         }
 
         Text {
             color: "#ffffff"
             text: "网易云音乐"
-            font.pointSize: 12
+            font.pointSize: 18
             font.bold: true
             // 确保文字和左侧图标垂直对齐
             anchors.verticalCenter: parent.verticalCenter
