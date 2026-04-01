@@ -25,6 +25,7 @@ qt_add_qml_module(appCloudMusic
         resources/qml/src/righpage/MyRightTopRect.qml
         resources/qml/src/righpage/MyRightBottomRect.qml
         resources/qml/src/commonui/MyWindowRect.qml
+        QML_FILES resources/qml/src/righpage/MyControl.qml
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
