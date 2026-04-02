@@ -2,42 +2,33 @@ import QtQuick
 import QtQuick.Window
 
 Row {
-    width: childrenRect.width
-    height: childrenRect.height
     spacing: 8
+    
     // 关闭按钮
     Rectangle {
         id: closeBtn
         width: 18
         height: 18
         radius: 9
-        color: "#ff5f56"
+        color: closeMouseArea.containsMouse ? "#ff3b30" : "#ff5f56"
         
-        
-        
-        
-        // 悬停效果
-        property bool isHovered: false
+        Text {
+            text: "×"
+            font.pixelSize: 14
+            font.bold: true
+            color: closeMouseArea.containsMouse ? "#ffffff" : "transparent"
+            anchors.centerIn: parent
+        }
         
         Behavior on color {
-            ColorAnimation {
-                duration: 150
-            }
+            ColorAnimation { duration: 150 }
         }
         
         MouseArea {
             id: closeMouseArea
             anchors.fill: parent
             hoverEnabled: true
-            
-            onEntered: {
-                closeBtn.color = "#ffffff" // 悬停时变白色
-                closeBtn.isHovered = true
-            }
-            onExited: {
-                closeBtn.color = "#ff5f56" // 离开时恢复原色
-                closeBtn.isHovered = false
-            }
+            cursorShape: Qt.PointingHandCursor
             onClicked: Qt.quit()
         }
     }
@@ -48,24 +39,26 @@ Row {
         width: 18
         height: 18
         radius: 9
-        color: "#ffbd2e"
+        color: minMouseArea.containsMouse ? "#f5a623" : "#ffbd2e"
+        
+        Text {
+            text: "−"
+            font.pixelSize: 14
+            font.bold: true
+            color: minMouseArea.containsMouse ? "#ffffff" : "transparent"
+            anchors.centerIn: parent
+            anchors.verticalCenterOffset: -2
+        }
         
         Behavior on color {
-            ColorAnimation {
-                duration: 150
-            }
+            ColorAnimation { duration: 150 }
         }
         
         MouseArea {
+            id: minMouseArea
             anchors.fill: parent
             hoverEnabled: true
-            
-            onEntered: {
-                minBtn.color = "#ffffff" // 悬停时变白色
-            }
-            onExited: {
-                minBtn.color = "#ffbd2e" // 离开时恢复原色
-            }
+            cursorShape: Qt.PointingHandCursor
             onClicked: window.showMinimized()
         }
     }
@@ -76,24 +69,25 @@ Row {
         width: 18
         height: 18
         radius: 9
-        color: "#27c93f"
+        color: maxMouseArea.containsMouse ? "#1fb834" : "#27c93f"
+        
+        Text {
+            text: window.visibility === Window.Maximized ? "□" : "□"
+            font.pixelSize: 10
+            font.bold: true
+            color: maxMouseArea.containsMouse ? "#ffffff" : "transparent"
+            anchors.centerIn: parent
+        }
         
         Behavior on color {
-            ColorAnimation {
-                duration: 150
-            }
+            ColorAnimation { duration: 150 }
         }
         
         MouseArea {
+            id: maxMouseArea
             anchors.fill: parent
             hoverEnabled: true
-            
-            onEntered: {
-                maxBtn.color = "#ffffff" // 悬停时变白色
-            }
-            onExited: {
-                maxBtn.color = "#27c93f" // 离开时恢复原色
-            }
+            cursorShape: Qt.PointingHandCursor
             onClicked: {
                 if (window.visibility === Window.Maximized) {
                     window.showNormal()
