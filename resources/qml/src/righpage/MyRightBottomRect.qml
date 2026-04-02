@@ -12,20 +12,28 @@ Rectangle {
     id: rightBottomRect
     color: "#1a1a21"
     
-    // 使用ColumnLayout来管理垂直布局
-    ColumnLayout {
+    // 使用 Flickable 包裹整个内容区，实现竖向滚动
+    Flickable {
         anchors.fill: parent
-        spacing: 16
-        anchors.margins: 16
+        contentHeight: contentColumn.height
+        clip: true
+        boundsBehavior: Flickable.StopAtBounds
+        
+        // 使用 Column 来管理垂直布局
+        Column {
+            id: contentColumn
+            width: parent.width
+            spacing: 16
+            padding: 16
 
         BannerSwiper {
-            Layout.fillWidth: true
+            width: parent.width - 32
             height: 180
         }
 
         // 官方歌单标题栏
         Row {
-            Layout.fillWidth: true
+            width: parent.width - 32
             height: 30
             spacing: 8
             
@@ -53,7 +61,7 @@ Rectangle {
 
         // 横向滚动歌单区域
         Item {
-            Layout.fillWidth: true
+            width: parent.width - 32
             height: 240
             
             // 左箭头按钮
@@ -170,7 +178,7 @@ Rectangle {
 
         // 精选有声书标题栏
         Row {
-            Layout.fillWidth: true
+            width: parent.width - 32
             height: 30
             spacing: 12
             
@@ -218,11 +226,12 @@ Rectangle {
         // 双列网格列表
         GridView {
             id: audioBookGrid
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            cellWidth: (parent.width - 16) / 2
+            width: parent.width - 32
+            height: Math.ceil(audioBookGrid.count / 2) * 130
+            cellWidth: (width - 16) / 2
             cellHeight: 130
             clip: true
+            interactive: false  // 禁用 GridView 自己的滚动，使用外层 Flickable 滚动
             
             model: ListModel {
                 ListElement {
@@ -285,6 +294,7 @@ Rectangle {
                 playCountText: model.playCount
                 tagText: model.tags
             }
+        }
         }
     }
 }
