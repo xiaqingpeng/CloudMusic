@@ -1,13 +1,12 @@
 import QtQuick
 import QtQuick.Controls
-import "../theme"
 
 Rectangle {
     id: root
     width: 180
     height: 220
-    color: theme.cardBg
-    radius: theme.radius
+    color: "#2d2d37"
+    radius: 8
     clip: true
     
     property string playCountText: "100万"
@@ -22,7 +21,7 @@ Rectangle {
             width: parent.width
             height: 140
             color: "#c9cdd1"
-            radius: theme.radius
+            radius: 8
             
             // 渐变效果
             gradient: Gradient {
@@ -61,7 +60,7 @@ Rectangle {
             
             Text {
                 text: root.nameText
-                font.family: theme.font
+                font.family: "PingFang SC"
                 color: "#ffffff"
                 font.pixelSize: 13
                 wrapMode: Text.WordWrap

@@ -27,9 +27,9 @@ qt_add_qml_module(appCloudMusic
         resources/qml/src/commonui/MyWindowRect.qml
         resources/qml/src/commonui/MyImageRect.qml
         resources/qml/src/righpage/MyControl.qml
-        resources/qml/src/righpage/BannerSwiper.qml
-        resources/qml/src/righpage/SongListCard.qml
-        resources/qml/src/righpage/AudioBookCard.qml
+        resources/qml/src/righpage/components/bannerswiper/BannerSwiper.qml
+        resources/qml/src/righpage/components/songlist/SongListCard.qml
+        resources/qml/src/righpage/components/audiobook/AudioBookCard.qml
         resources/qml/src/theme/Theme.qml
     RESOURCES
         resources/qml/src/theme/qmldir

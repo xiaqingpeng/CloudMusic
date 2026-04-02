@@ -2,6 +2,12 @@ import QtQuick
 import QtQuick.Window
 import QtQuick.Layouts
 
+import "./components/audiobook"
+
+import "./components/bannerswiper"
+
+import "./components/songlist"
+
 Rectangle {
     id: rightBottomRect
     color: "#1a1a21"
