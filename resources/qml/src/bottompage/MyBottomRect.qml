@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+import "./components"
 
 Rectangle {
     id: bottomRect
@@ -27,25 +28,11 @@ Rectangle {
     }
     
     // 顶部进度条
-    Rectangle {
-        id: progressBarBg
-        width: parent.width
-        height: 3
-        color: "#1a1a1a"
+    ProgressBar {
         anchors.top: parent.top
-        
-        Rectangle {
-            id: progressBarFill
-            width: parent.width * bottomRect.progress
-            height: parent.height
-            color: "#ec4141"
-        }
-        
-        MouseArea {
-            anchors.fill: parent
-            onClicked: (mouse) => {
-                bottomRect.progress = mouse.x / parent.width
-            }
+        progress: bottomRect.progress
+        onSeekRequested: (position) => {
+            bottomRect.progress = position
         }
     }
     
@@ -62,76 +49,15 @@ Rectangle {
             anchors.verticalCenter: parent.verticalCenter
             spacing: 15
             
-            // 圆形专辑封面
-            Rectangle {
-                id: coverContainer
-                width: 70
-                height: 70
-                radius: 35
-                color: "#3d3d47"
-                clip: true
-                
-                Rectangle {
-                    anchors.centerIn: parent
-                    width: 60
-                    height: 60
-                    radius: 30
-                    color: "#ec4141"
-                    
-                    Text {
-                        anchors.centerIn: parent
-                        text: "♪"
-                        font.pixelSize: 30
-                        color: "white"
-                    }
-                    
-                    // 旋转动画
-                    RotationAnimation on rotation {
-                        from: 0
-                        to: 360
-                        duration: 20000
-                        loops: Animation.Infinite
-                        running: bottomRect.isPlaying
-                    }
-                }
-                
-                // 音质标签
-                Rectangle {
-                    width: 35
-                    height: 18
-                    color: "white"
-                    radius: 3
-                    anchors.top: parent.top
-                    anchors.left: parent.left
-                    anchors.margins: 3
-                    
-                    Text {
-                        text: "极高"
-                        font.pixelSize: 10
-                        font.bold: true
-                        color: "#333333"
-                        anchors.centerIn: parent
-                    }
-                }
+            AlbumCover {
+                isPlaying: bottomRect.isPlaying
+                anchors.verticalCenter: parent.verticalCenter
             }
             
-            // 歌曲信息
-            Column {
-                spacing: 8
+            SongInfo {
                 anchors.verticalCenter: parent.verticalCenter
-                
-                Text {
-                    text: "栖息地"
-                    font.pixelSize: 16
-                    font.bold: true
-                    color: "#ffffff"
-                }
-                
-                Text {
-                    text: "Mikey-18 / 暴躁的兔子"
-                    font.pixelSize: 12
-                    color: "#999999"
-                }
+                songName: "栖息地"
+                artistName: "Mikey-18 / 暴躁的兔子"
             }
         }
         
@@ -143,166 +69,60 @@ Rectangle {
             spacing: 25
             
             // 点赞按钮
-            Column {
-                spacing: 4
+            ActionButton {
                 anchors.verticalCenter: parent.verticalCenter
-                
-                Text {
-                    text: bottomRect.isLiked ? "❤" : "♡"
-                    font.pixelSize: 24
-                    color: bottomRect.isLiked ? "#ec4141" : "#999999"
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    
-                    MouseArea {
-                        anchors.fill: parent
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: {
-                            bottomRect.isLiked = !bottomRect.isLiked
-                        }
-                    }
-                }
-                
-                Text {
-                    text: bottomRect.isLiked ? "1000+" : "999+"
-                    font.pixelSize: 11
-                    color: "#999999"
-                    anchors.horizontalCenter: parent.horizontalCenter
+                icon: bottomRect.isLiked ? "❤" : "♡"
+                count: bottomRect.isLiked ? "1000+" : "999+"
+                iconColor: bottomRect.isLiked ? "#ec4141" : "#999999"
+                onClicked: {
+                    bottomRect.isLiked = !bottomRect.isLiked
                 }
             }
             
             // 评论按钮
-            Column {
-                spacing: 4
+            ActionButton {
                 anchors.verticalCenter: parent.verticalCenter
-                
-                Text {
-                    text: "💬"
-                    font.pixelSize: 24
-                    color: "#999999"
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    
-                    MouseArea {
-                        anchors.fill: parent
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: console.log("打开评论")
-                    }
-                }
-                
-                Text {
-                    text: "549"
-                    font.pixelSize: 11
-                    color: "#999999"
-                    anchors.horizontalCenter: parent.horizontalCenter
-                }
+                icon: "💬"
+                count: "549"
+                onClicked: console.log("打开评论")
             }
             
             // 转发按钮
-            Column {
-                spacing: 4
+            ActionButton {
                 anchors.verticalCenter: parent.verticalCenter
-                
-                Text {
-                    text: "↻"
-                    font.pixelSize: 26
-                    color: "#999999"
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    
-                    MouseArea {
-                        anchors.fill: parent
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: console.log("转发")
-                    }
-                }
+                icon: "↻"
+                iconSize: 26
+                onClicked: console.log("转发")
             }
             
             // 收藏按钮
-            Column {
-                spacing: 4
+            ActionButton {
                 anchors.verticalCenter: parent.verticalCenter
-                
-                Text {
-                    text: "←"
-                    font.pixelSize: 24
-                    color: "#999999"
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    
-                    MouseArea {
-                        anchors.fill: parent
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: console.log("收藏")
-                    }
-                }
+                icon: "←"
+                onClicked: console.log("收藏")
             }
             
             // 播放/暂停按钮
-            Rectangle {
-                width: 70
-                height: 70
-                radius: 35
-                color: "#ec4141"
+            PlayButton {
                 anchors.verticalCenter: parent.verticalCenter
-                
-                Text {
-                    text: bottomRect.isPlaying ? "❚❚" : "▶"
-                    font.pixelSize: bottomRect.isPlaying ? 20 : 24
-                    color: "white"
-                    anchors.centerIn: parent
-                    anchors.horizontalCenterOffset: bottomRect.isPlaying ? 0 : 2
-                }
-                
-                // 悬停效果
-                scale: playMouseArea.containsMouse ? 1.05 : 1.0
-                Behavior on scale {
-                    NumberAnimation { duration: 150 }
-                }
-                
-                MouseArea {
-                    id: playMouseArea
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: {
-                        bottomRect.isPlaying = !bottomRect.isPlaying
-                    }
+                isPlaying: bottomRect.isPlaying
+                onClicked: {
+                    bottomRect.isPlaying = !bottomRect.isPlaying
                 }
             }
             
             // 下一首按钮
-            Column {
-                spacing: 4
+            ActionButton {
                 anchors.verticalCenter: parent.verticalCenter
-                
-                Text {
-                    text: "→"
-                    font.pixelSize: 24
-                    color: "#999999"
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    
-                    MouseArea {
-                        anchors.fill: parent
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: console.log("下一首")
-                    }
-                }
+                icon: "→"
+                onClicked: console.log("下一首")
             }
             
             // 播放列表按钮
-            Column {
-                spacing: 4
+            ActionButton {
                 anchors.verticalCenter: parent.verticalCenter
-                
-                Text {
-                    text: "☰"
-                    font.pixelSize: 24
-                    color: "#999999"
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    
-                    MouseArea {
-                        anchors.fill: parent
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: console.log("播放列表")
-                    }
-                }
+                icon: "☰"
+                onClicked: console.log("播放列表")
             }
         }
         
@@ -314,61 +134,21 @@ Rectangle {
             anchors.verticalCenter: parent.verticalCenter
             spacing: 20
             
-            // // 分隔线
-            // Rectangle {
-            //     width: 1
-            //     height: 40
-            //     color: "#4d4d57"
-            //     anchors.verticalCenter: parent.verticalCenter
-            // }
-            
             // 「极高」音质按钮
-            Rectangle {
-                width: 50
-                height: 28
-                radius: 6
-                color: "transparent"
-                border.color: "#999999"
-                border.width: 1.5
+            ControlButton {
                 anchors.verticalCenter: parent.verticalCenter
-                
-                Text {
-                    text: "极高"
-                    font.pixelSize: 12
-                    font.bold: true
-                    color: "#999999"
-                    anchors.centerIn: parent
-                }
-                
-                MouseArea {
-                    anchors.fill: parent
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: console.log("切换音质")
-                }
+                text: "极高"
+                bold: true
+                onClicked: console.log("切换音质")
             }
             
             // 「+」加号按钮
-            Rectangle {
-                width: 28
-                height: 28
-                radius: 6
-                color: "transparent"
-                border.color: "#999999"
-                border.width: 1.5
+            ControlButton {
                 anchors.verticalCenter: parent.verticalCenter
-                
-                Text {
-                    text: "+"
-                    font.pixelSize: 20
-                    color: "#999999"
-                    anchors.centerIn: parent
-                }
-                
-                MouseArea {
-                    anchors.fill: parent
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: console.log("添加到歌单")
-                }
+                text: "+"
+                fontSize: 20
+                implicitWidth: 28
+                onClicked: console.log("添加到歌单")
             }
             
             // 「词」歌词按钮

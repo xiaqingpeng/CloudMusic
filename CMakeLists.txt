@@ -33,6 +33,12 @@ qt_add_qml_module(appCloudMusic
         resources/qml/src/righpage/components/bannerswiper/BannerSwiper.qml
         resources/qml/src/righpage/components/songlist/SongListCard.qml
         resources/qml/src/righpage/components/audiobook/AudioBookCard.qml
+        resources/qml/src/bottompage/components/AlbumCover.qml
+        resources/qml/src/bottompage/components/SongInfo.qml
+        resources/qml/src/bottompage/components/ActionButton.qml
+        resources/qml/src/bottompage/components/PlayButton.qml
+        resources/qml/src/bottompage/components/ControlButton.qml
+        resources/qml/src/bottompage/components/ProgressBar.qml
         resources/qml/src/theme/Theme.qml
     RESOURCES
         resources/qml/src/theme/qmldir
