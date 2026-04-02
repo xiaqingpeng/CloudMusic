@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+import "./components/topbar"
 
 Rectangle {
     id: rightTopRect
@@ -13,68 +14,19 @@ Rectangle {
         spacing: 12
         
         // 返回按钮
-        Rectangle {
-            width: 32
-            height: 32
-            radius: 16
-            color: "#3d3d47"
+        IconButton {
             anchors.verticalCenter: parent.verticalCenter
-            
-            Image {
-                width: 16
-                height: 16
-                anchors.centerIn: parent
-                source: "qrc:/CloudMusic/resources/qrc/icon/left.svg"
-                fillMode: Image.PreserveAspectFit
-            }
-            
-            MouseArea {
-                anchors.fill: parent
-                cursorShape: Qt.PointingHandCursor
-                onClicked: console.log("返回")
-            }
+            iconSource: "qrc:/CloudMusic/resources/qrc/icon/left.svg"
+            color: "#3d3d47"
+            onClicked: console.log("返回")
         }
 
         // 搜索框
-        Rectangle {
+        SearchBar {
             width: parent.width - 450
-            height: 36
-            radius: 18
-            color: "#f0f0f0"
             anchors.verticalCenter: parent.verticalCenter
-            
-            Row {
-                anchors.fill: parent
-                anchors.leftMargin: 16
-                anchors.rightMargin: 16
-                spacing: 8
-                
-                TextField {
-                    width: parent.width - 40
-                    height: parent.height
-                    placeholderText: "搜索歌曲、歌手、专辑"
-                    font.pixelSize: 13
-                    color: "#333333"
-                    background: null
-                    verticalAlignment: TextInput.AlignVCenter
-                    
-                    placeholderTextColor: "#999999"
-                }
-                
-                Image {
-                    width: 20
-                    height: 20
-                    anchors.verticalCenter: parent.verticalCenter
-                    source: "qrc:/CloudMusic/resources/qrc/icon/mic.svg"
-                    fillMode: Image.PreserveAspectFit
-                    
-                    MouseArea {
-                        anchors.fill: parent
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: console.log("语音搜索")
-                    }
-                }
-            }
+            onSearchRequested: (text) => console.log("搜索:", text)
+            onVoiceSearchRequested: console.log("语音搜索")
         }
         
         // 弹簧占位
@@ -84,48 +36,20 @@ Rectangle {
         }
 
         // 未登录按钮
-        Rectangle {
-            width: 70
-            height: 32
-            radius: 16
-            color: "#3d3d47"
+        TextButton {
             anchors.verticalCenter: parent.verticalCenter
-            
-            Text {
-                text: "未登录"
-                color: "#ffffff"
-                font.pixelSize: 13
-                anchors.centerIn: parent
-            }
-            
-            MouseArea {
-                anchors.fill: parent
-                cursorShape: Qt.PointingHandCursor
-                onClicked: console.log("登录")
-            }
+            text: "未登录"
+            onClicked: console.log("登录")
         }
         
         // VIP按钮
-        Rectangle {
-            width: 50
-            height: 32
-            radius: 16
-            color: "#ec4141"
+        TextButton {
             anchors.verticalCenter: parent.verticalCenter
-            
-            Text {
-                text: "VIP"
-                color: "#ffffff"
-                font.pixelSize: 13
-                font.bold: true
-                anchors.centerIn: parent
-            }
-            
-            MouseArea {
-                anchors.fill: parent
-                cursorShape: Qt.PointingHandCursor
-                onClicked: console.log("开通VIP")
-            }
+            text: "VIP"
+            backgroundColor: "#ec4141"
+            hoverColor: "#dc3030"
+            bold: true
+            onClicked: console.log("开通VIP")
         }
 
         // 图标按钮组
@@ -133,75 +57,27 @@ Rectangle {
             spacing: 8
             anchors.verticalCenter: parent.verticalCenter
             
-            // 下载按钮
-            Rectangle {
-                width: 32
-                height: 32
-                radius: 16
-                color: "transparent"
-                
-                Image {
-                    width: 20
-                    height: 20
-                    anchors.centerIn: parent
-                    source: "qrc:/CloudMusic/resources/qrc/icon/down.svg"
-                    fillMode: Image.PreserveAspectFit
-                }
-                
-                MouseArea {
-                    anchors.fill: parent
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: console.log("下载")
-                }
+            IconButton {
+                iconSource: "qrc:/CloudMusic/resources/qrc/icon/down.svg"
+                tooltip: "下载"
+                onClicked: console.log("下载")
             }
             
-            // 皮肤按钮
-            Rectangle {
-                width: 32
-                height: 32
-                radius: 16
-                color: "transparent"
-                
-                Image {
-                    width: 20
-                    height: 20
-                    anchors.centerIn: parent
-                    source: "qrc:/CloudMusic/resources/qrc/icon/down_s.svg"
-                    fillMode: Image.PreserveAspectFit
-                }
-                
-                MouseArea {
-                    anchors.fill: parent
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: console.log("换肤")
-                }
+            IconButton {
+                iconSource: "qrc:/CloudMusic/resources/qrc/icon/down_s.svg"
+                tooltip: "换肤"
+                onClicked: console.log("换肤")
             }
             
-            // 设置按钮
-            Rectangle {
-                width: 32
-                height: 32
-                radius: 16
-                color: "transparent"
-                
-                Image {
-                    width: 20
-                    height: 20
-                    anchors.centerIn: parent
-                    source: "qrc:/CloudMusic/resources/qrc/icon/setting.svg"
-                    fillMode: Image.PreserveAspectFit
-                }
-                
-                MouseArea {
-                    anchors.fill: parent
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: console.log("设置")
-                }
+            IconButton {
+                iconSource: "qrc:/CloudMusic/resources/qrc/icon/setting.svg"
+                tooltip: "设置"
+                onClicked: console.log("设置")
             }
         }
         
         // 系统控制按钮
-        MyControl {
+        WindowControl {
             anchors.verticalCenter: parent.verticalCenter
         }
     }
