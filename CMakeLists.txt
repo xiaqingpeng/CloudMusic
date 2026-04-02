@@ -26,6 +26,9 @@ qt_add_qml_module(appCloudMusic
         resources/qml/src/righpage/MyRightBottomRect.qml
         resources/qml/src/commonui/MyWindowRect.qml
         resources/qml/src/commonui/MyImageRect.qml
+        resources/qml/src/leftpage/components/MenuItem.qml
+        resources/qml/src/leftpage/components/SectionHeader.qml
+        resources/qml/src/leftpage/components/Divider.qml
         resources/qml/src/righpage/components/topbar/WindowControl.qml
         resources/qml/src/righpage/components/topbar/SearchBar.qml
         resources/qml/src/righpage/components/topbar/IconButton.qml
