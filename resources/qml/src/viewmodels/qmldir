@@ -1,2 +1,4 @@
 module viewmodels
 singleton SearchViewModel 1.0 SearchViewModel.qml
+singleton MusicPlayerViewModel 1.0 MusicPlayerViewModel.qml
+singleton ContentViewModel 1.0 ContentViewModel.qml

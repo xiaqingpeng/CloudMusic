@@ -39,6 +39,8 @@ qt_add_qml_module(appCloudMusic
         resources/qml/src/righpage/components/topbar/HotSearchPopup.qml
         resources/qml/src/righpage/components/topbar/LoginPopup.qml
         resources/qml/src/viewmodels/SearchViewModel.qml
+        resources/qml/src/viewmodels/MusicPlayerViewModel.qml
+        resources/qml/src/viewmodels/ContentViewModel.qml
         resources/qml/src/righpage/components/bannerswiper/BannerSwiper.qml
         resources/qml/src/righpage/components/songlist/SongListCard.qml
         resources/qml/src/righpage/components/audiobook/AudioBookCard.qml
