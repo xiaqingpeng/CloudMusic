@@ -85,6 +85,49 @@ Rectangle {
     
     // 标志：是否正在从弹窗选择项（避免触发搜索建议）
     property bool isSelectingFromPopup: false
+    
+    // 添加搜索历史
+    function addSearchHistory(text) {
+        if (text === "") return
+        
+        // 检查是否已存在
+        for (var i = 0; i < searchHistoryModel.count; i++) {
+            if (searchHistoryModel.get(i).text === text) {
+                // 如果已存在，移到最前面
+                searchHistoryModel.move(i, 0, 1)
+                return
+            }
+        }
+        
+        // 添加到最前面
+        searchHistoryModel.insert(0, { text: text })
+        
+        // 限制历史记录数量（最多10条）
+        if (searchHistoryModel.count > 10) {
+            searchHistoryModel.remove(10, searchHistoryModel.count - 10)
+        }
+    }
+    
+    // 删除单条搜索历史
+    function removeSearchHistory(index) {
+        searchHistoryModel.remove(index)
+    }
+    
+    // 清空搜索历史
+    function clearSearchHistory() {
+        searchHistoryModel.clear()
+    }
+    
+    // 执行搜索
+    function performSearch(text) {
+        if (text === "") return
+        
+        console.log("执行搜索:", text)
+        addSearchHistory(text)
+        
+        // 这里可以添加实际的搜索逻辑
+        // 例如：跳转到搜索结果页面、发送搜索请求等
+    }
 
     Row {
         id: topRow
@@ -109,7 +152,9 @@ Rectangle {
             
             onSearchRequested: (text) => {
                 console.log("搜索:", text)
+                rightTopRect.performSearch(text)
                 searchPopup.close()
+                hotSearchPopup.close()
             }
             
             onVoiceSearchRequested: console.log("语音搜索")
@@ -248,6 +293,7 @@ Rectangle {
                             width: 24
                             height: 24
                             color: "transparent"
+                            visible: searchHistoryModel.count > 0
                             
                             Text {
                                 text: "🗑️"
@@ -260,7 +306,7 @@ Rectangle {
                                 cursorShape: Qt.PointingHandCursor
                                 onClicked: {
                                     console.log("清空搜索历史")
-                                    searchHistoryModel.clear()
+                                    rightTopRect.clearSearchHistory()
                                 }
                             }
                         }
@@ -272,6 +318,7 @@ Rectangle {
                     Flow {
                         Layout.fillWidth: true
                         spacing: 8
+                        visible: searchHistoryModel.count > 0
                         
                         Repeater {
                             model: ListModel {
@@ -303,15 +350,36 @@ Rectangle {
                                     id: tagMouseArea
                                     anchors.fill: parent
                                     cursorShape: Qt.PointingHandCursor
-                                    onClicked: {
-                                        console.log("点击搜索历史：", model.text)
-                                        rightTopRect.isSelectingFromPopup = true
-                                        searchBar.text = model.text
-                                        hotSearchPopup.close()
+                                    acceptedButtons: Qt.LeftButton | Qt.RightButton
+                                    
+                                    onClicked: (mouse) => {
+                                        if (mouse.button === Qt.LeftButton) {
+                                            console.log("点击搜索历史：", model.text)
+                                            rightTopRect.isSelectingFromPopup = true
+                                            searchBar.text = model.text
+                                            rightTopRect.performSearch(model.text)
+                                            hotSearchPopup.close()
+                                        }
+                                    }
+                                    
+                                    onPressAndHold: {
+                                        console.log("长按删除搜索历史：", model.text)
+                                        rightTopRect.removeSearchHistory(index)
                                     }
                                 }
                             }
                         }
+                    }
+                    
+                    // 空状态提示
+                    Text {
+                        text: "暂无搜索历史"
+                        font.pixelSize: 13
+                        color: "#999999"
+                        visible: searchHistoryModel.count === 0
+                        Layout.alignment: Qt.AlignHCenter
+                        Layout.topMargin: 20
+                        Layout.bottomMargin: 20
                     }
                 }
                 
@@ -379,6 +447,7 @@ Rectangle {
                                         console.log("点击猜你喜欢：", model.text)
                                         rightTopRect.isSelectingFromPopup = true
                                         searchBar.text = model.text
+                                        rightTopRect.performSearch(model.text)
                                         hotSearchPopup.close()
                                     }
                                 }
@@ -485,6 +554,7 @@ Rectangle {
                                             rightTopRect.isSelectingFromPopup = true
                                             searchBar.text = modelData.title
                                             console.log("选择榜单歌曲:", modelData.title)
+                                            rightTopRect.performSearch(modelData.title)
                                             hotSearchPopup.close()
                                         }
                                     }
@@ -591,6 +661,7 @@ Rectangle {
                                             rightTopRect.isSelectingFromPopup = true
                                             searchBar.text = modelData.title
                                             console.log("选择榜单歌曲:", modelData.title)
+                                            rightTopRect.performSearch(modelData.title)
                                             hotSearchPopup.close()
                                         }
                                     }
@@ -697,6 +768,7 @@ Rectangle {
                                             rightTopRect.isSelectingFromPopup = true
                                             searchBar.text = modelData.title
                                             console.log("选择榜单歌曲:", modelData.title)
+                                            rightTopRect.performSearch(modelData.title)
                                             hotSearchPopup.close()
                                         }
                                     }
@@ -804,6 +876,7 @@ Rectangle {
                                             rightTopRect.isSelectingFromPopup = true
                                             searchBar.text = modelData.title
                                             console.log("选择榜单歌曲:", modelData.title)
+                                            rightTopRect.performSearch(modelData.title)
                                             hotSearchPopup.close()
                                         }
                                     }
@@ -917,6 +990,7 @@ Rectangle {
                         rightTopRect.isSelectingFromPopup = true
                         searchBar.text = model.keyword
                         console.log("选择建议:", model.keyword, "类型:", model.type)
+                        rightTopRect.performSearch(model.keyword)
                         searchPopup.close()
                     }
                 }
