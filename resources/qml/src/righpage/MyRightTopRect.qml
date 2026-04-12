@@ -197,11 +197,10 @@ Rectangle {
         }
     }
     
-    // 热门搜索弹窗（焦点聚焦时显示）- 多标签榜单
+    // 热门搜索弹窗（焦点聚焦时显示）- 竖直滚动榜单
     Popup {
         id: hotSearchPopup
         parent: rightTopRect
-        // x: topRow.anchors.leftMargin + 32 + topRow.spacing
         x:  topRow.spacing
         y: rightTopRect.height
         width: rightTopRect.width-(topRow.spacing)-16
@@ -216,183 +215,438 @@ Rectangle {
             border.width: 1
         }
         
-        Column {
+        ScrollView {
             anchors.fill: parent
-            spacing: 0
+            clip: true
             
-            // 标签栏
-            TabBar {
-                id: tabBar
-                width: parent.width
-                height: 44
-                background: Rectangle { 
-                    color: "#f8f8f8"
-                    radius: 12
-                }
+            ColumnLayout {
+                width: hotSearchPopup.width - 32
+                spacing: 16
                 
-                TabButton {
-                    text: "热搜榜"
-                    font.pixelSize: 13
-                    width: implicitWidth
-                }
-                TabButton {
-                    text: "说唱榜"
-                    font.pixelSize: 13
-                    width: implicitWidth
-                }
-                TabButton {
-                    text: "古风榜"
-                    font.pixelSize: 13
-                    width: implicitWidth
-                }
-                TabButton {
-                    text: "摇滚榜"
-                    font.pixelSize: 13
-                    width: implicitWidth
-                }
-            }
-            
-            // 内容切换区域
-            StackLayout {
-                width: parent.width
-                height: parent.height - 44
-                currentIndex: tabBar.currentIndex
-                
-                // 1. 热搜榜
-                ListView {
-                    clip: true
-                    model: ListModel {
-                        ListElement { rank: "1"; title: "海屿你"; tag: "爆" }
-                        ListElement { rank: "2"; title: "雨爱"; tag: "" }
-                        ListElement { rank: "3"; title: "眼泪的汛期"; tag: "" }
-                        ListElement { rank: "4"; title: "一半一半"; tag: "" }
-                        ListElement { rank: "5"; title: "幻痛药"; tag: "" }
-                        ListElement { rank: "6"; title: "巴拉莱卡"; tag: "" }
-                        ListElement { rank: "7"; title: "fadinglight"; tag: "↑" }
-                        ListElement { rank: "8"; title: "春"; tag: "" }
-                        ListElement { rank: "9"; title: "该怎么办"; tag: "↑" }
-                    }
-                    delegate: rankDelegate
-                }
-                
-                // 2. 说唱榜
-                ListView {
-                    clip: true
-                    model: ListModel {
-                        ListElement { rank: "1"; title: "DD backseat"; tag: "" }
-                        ListElement { rank: "2"; title: "故意没接"; tag: "" }
-                        ListElement { rank: "3"; title: "十里"; tag: "" }
-                        ListElement { rank: "4"; title: "山歌王"; tag: "" }
-                        ListElement { rank: "5"; title: "1 On 1"; tag: "" }
-                        ListElement { rank: "6"; title: "21爱"; tag: "" }
-                        ListElement { rank: "7"; title: "隐藏相册"; tag: "" }
-                        ListElement { rank: "8"; title: "仙人模式"; tag: "" }
-                        ListElement { rank: "9"; title: "烟圈"; tag: "" }
-                    }
-                    delegate: rankDelegate
-                }
-                
-                // 3. 古风榜
-                ListView {
-                    clip: true
-                    model: ListModel {
-                        ListElement { rank: "1"; title: "我本将心向明月"; tag: "" }
-                        ListElement { rank: "2"; title: "咏春"; tag: "" }
-                        ListElement { rank: "3"; title: "知我"; tag: "" }
-                        ListElement { rank: "4"; title: "一程山路"; tag: "" }
-                        ListElement { rank: "5"; title: "诀别书"; tag: "" }
-                        ListElement { rank: "6"; title: "武家坡2021"; tag: "" }
-                        ListElement { rank: "7"; title: "牵丝戏"; tag: "" }
-                        ListElement { rank: "8"; title: "我恨明月不照我"; tag: "" }
-                        ListElement { rank: "9"; title: "江南雪"; tag: "" }
-                    }
-                    delegate: rankDelegate
-                }
-                
-                // 4. 摇滚榜
-                ListView {
-                    clip: true
-                    model: ListModel {
-                        ListElement { rank: "1"; title: "夜空中最亮的星"; tag: "" }
-                        ListElement { rank: "2"; title: "无法逃脱"; tag: "" }
-                        ListElement { rank: "3"; title: "向阳花"; tag: "" }
-                        ListElement { rank: "4"; title: "公路之歌"; tag: "" }
-                        ListElement { rank: "5"; title: "再见杰克"; tag: "" }
-                        ListElement { rank: "6"; title: "山海"; tag: "" }
-                        ListElement { rank: "7"; title: "西湖"; tag: "" }
-                        ListElement { rank: "8"; title: "杀死那个石家庄人"; tag: "" }
-                        ListElement { rank: "9"; title: "蓝莲花"; tag: "" }
-                    }
-                    delegate: rankDelegate
-                }
-            }
-        }
-    }
-    
-    // 榜单列表项组件
-    Component {
-        id: rankDelegate
-        Rectangle {
-            width: ListView.view ? ListView.view.width : 0
-            height: 44
-            color: rankMouseArea.containsMouse ? "#f5f5f5" : (index % 2 === 0 ? "#fafafa" : "#ffffff")
-            
-            Row {
-                anchors.fill: parent
-                anchors.leftMargin: 16
-                anchors.rightMargin: 16
-                spacing: 12
-                
-                // 排名
-                Text {
-                    text: model.rank
-                    font.pixelSize: 14
-                    font.bold: model.rank <= 3
-                    color: model.rank <= 3 ? "#ec4141" : "#999999"
-                    width: 24
-                    anchors.verticalCenter: parent.verticalCenter
-                    horizontalAlignment: Text.AlignHCenter
-                }
-                
-                // 标题
-                Text {
-                    text: model.title
-                    font.pixelSize: 13
-                    color: "#333333"
-                    width: parent.width - 80
-                    elide: Text.ElideRight
-                    anchors.verticalCenter: parent.verticalCenter
-                }
-                
-                // 标签
+                // 热搜榜
                 Rectangle {
-                    width: 28
-                    height: 18
-                    radius: 4
-                    color: model.tag === "爆" ? "#ec4141" : (model.tag === "↑" ? "#00b42a" : "transparent")
-                    visible: model.tag !== ""
-                    anchors.verticalCenter: parent.verticalCenter
+                    Layout.fillWidth: true
+                    Layout.leftMargin: 16
+                    Layout.rightMargin: 16
+                    Layout.topMargin: 16
+                    implicitHeight: hotColumn.height + 32
+                    color: "#fafafa"
+                    radius: 8
                     
-                    Text {
-                        text: model.tag
-                        font.pixelSize: 10
-                        font.bold: true
-                        color: "#ffffff"
-                        anchors.centerIn: parent
+                    ColumnLayout {
+                        id: hotColumn
+                        width: parent.width
+                        spacing: 12
+                        anchors.top: parent.top
+                        anchors.topMargin: 16
+                        
+                        Text {
+                            text: "热搜榜"
+                            font.pixelSize: 16
+                            font.bold: true
+                            color: "#333333"
+                            Layout.leftMargin: 16
+                        }
+                        
+                        GridLayout {
+                            Layout.fillWidth: true
+                            Layout.leftMargin: 16
+                            Layout.rightMargin: 16
+                            Layout.bottomMargin: 16
+                            columns: 3
+                            rowSpacing: 12
+                            columnSpacing: 12
+                            
+                            Repeater {
+                                model: [
+                                    { rank: "1", title: "海屿你", tag: "爆" },
+                                    { rank: "2", title: "雨爱", tag: "" },
+                                    { rank: "3", title: "眼泪的汛期", tag: "" },
+                                    { rank: "4", title: "一半一半", tag: "" },
+                                    { rank: "5", title: "幻痛药", tag: "" },
+                                    { rank: "6", title: "巴拉莱卡", tag: "" }
+                                ]
+                                
+                                Rectangle {
+                                    Layout.fillWidth: true
+                                    implicitHeight: 40
+                                    color: rankMouseArea.containsMouse ? "#ffffff" : "transparent"
+                                    radius: 6
+                                    
+                                    RowLayout {
+                                        anchors.fill: parent
+                                        anchors.leftMargin: 8
+                                        anchors.rightMargin: 8
+                                        spacing: 6
+                                        
+                                        Text {
+                                            text: modelData.rank
+                                            font.pixelSize: 14
+                                            font.bold: modelData.rank <= "3"
+                                            color: modelData.rank <= "3" ? "#ec4141" : "#999999"
+                                            Layout.preferredWidth: 20
+                                        }
+                                        
+                                        Text {
+                                            text: modelData.title
+                                            font.pixelSize: 13
+                                            color: "#333333"
+                                            elide: Text.ElideRight
+                                            Layout.fillWidth: true
+                                        }
+                                        
+                                        Rectangle {
+                                            visible: modelData.tag !== ""
+                                            implicitWidth: 20
+                                            implicitHeight: 16
+                                            radius: 3
+                                            color: modelData.tag === "爆" ? "#ec4141" : "#00b42a"
+                                            
+                                            Text {
+                                                text: modelData.tag
+                                                font.pixelSize: 10
+                                                font.bold: true
+                                                color: "#ffffff"
+                                                anchors.centerIn: parent
+                                            }
+                                        }
+                                    }
+                                    
+                                    MouseArea {
+                                        id: rankMouseArea
+                                        anchors.fill: parent
+                                        hoverEnabled: true
+                                        cursorShape: Qt.PointingHandCursor
+                                        onClicked: {
+                                            rightTopRect.isSelectingFromPopup = true
+                                            searchBar.text = modelData.title
+                                            console.log("选择榜单歌曲:", modelData.title)
+                                            hotSearchPopup.close()
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
-            }
-            
-            MouseArea {
-                id: rankMouseArea
-                anchors.fill: parent
-                hoverEnabled: true
-                cursorShape: Qt.PointingHandCursor
-                onClicked: {
-                    rightTopRect.isSelectingFromPopup = true
-                    searchBar.text = model.title
-                    console.log("选择榜单歌曲:", model.title)
-                    hotSearchPopup.close()
+                
+                // 说唱榜
+                Rectangle {
+                    Layout.fillWidth: true
+                    Layout.leftMargin: 16
+                    Layout.rightMargin: 16
+                    implicitHeight: rapColumn.height + 32
+                    color: "#fafafa"
+                    radius: 8
+                    
+                    ColumnLayout {
+                        id: rapColumn
+                        width: parent.width
+                        spacing: 12
+                        anchors.top: parent.top
+                        anchors.topMargin: 16
+                        
+                        Text {
+                            text: "说唱榜"
+                            font.pixelSize: 16
+                            font.bold: true
+                            color: "#333333"
+                            Layout.leftMargin: 16
+                        }
+                        
+                        GridLayout {
+                            Layout.fillWidth: true
+                            Layout.leftMargin: 16
+                            Layout.rightMargin: 16
+                            Layout.bottomMargin: 16
+                            columns: 3
+                            rowSpacing: 12
+                            columnSpacing: 12
+                            
+                            Repeater {
+                                model: [
+                                    { rank: "1", title: "DD backseat", tag: "" },
+                                    { rank: "2", title: "故意没接", tag: "" },
+                                    { rank: "3", title: "十里", tag: "" },
+                                    { rank: "4", title: "山歌王", tag: "" },
+                                    { rank: "5", title: "1 On 1", tag: "" },
+                                    { rank: "6", title: "21爱", tag: "" }
+                                ]
+                                
+                                Rectangle {
+                                    Layout.fillWidth: true
+                                    implicitHeight: 40
+                                    color: rankMouseArea.containsMouse ? "#ffffff" : "transparent"
+                                    radius: 6
+                                    
+                                    RowLayout {
+                                        anchors.fill: parent
+                                        anchors.leftMargin: 8
+                                        anchors.rightMargin: 8
+                                        spacing: 6
+                                        
+                                        Text {
+                                            text: modelData.rank
+                                            font.pixelSize: 14
+                                            font.bold: modelData.rank <= "3"
+                                            color: modelData.rank <= "3" ? "#ec4141" : "#999999"
+                                            Layout.preferredWidth: 20
+                                        }
+                                        
+                                        Text {
+                                            text: modelData.title
+                                            font.pixelSize: 13
+                                            color: "#333333"
+                                            elide: Text.ElideRight
+                                            Layout.fillWidth: true
+                                        }
+                                        
+                                        Rectangle {
+                                            visible: modelData.tag !== ""
+                                            implicitWidth: 20
+                                            implicitHeight: 16
+                                            radius: 3
+                                            color: modelData.tag === "爆" ? "#ec4141" : "#00b42a"
+                                            
+                                            Text {
+                                                text: modelData.tag
+                                                font.pixelSize: 10
+                                                font.bold: true
+                                                color: "#ffffff"
+                                                anchors.centerIn: parent
+                                            }
+                                        }
+                                    }
+                                    
+                                    MouseArea {
+                                        id: rankMouseArea
+                                        anchors.fill: parent
+                                        hoverEnabled: true
+                                        cursorShape: Qt.PointingHandCursor
+                                        onClicked: {
+                                            rightTopRect.isSelectingFromPopup = true
+                                            searchBar.text = modelData.title
+                                            console.log("选择榜单歌曲:", modelData.title)
+                                            hotSearchPopup.close()
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                // 古风榜
+                Rectangle {
+                    Layout.fillWidth: true
+                    Layout.leftMargin: 16
+                    Layout.rightMargin: 16
+                    implicitHeight: classicalColumn.height + 32
+                    color: "#fafafa"
+                    radius: 8
+                    
+                    ColumnLayout {
+                        id: classicalColumn
+                        width: parent.width
+                        spacing: 12
+                        anchors.top: parent.top
+                        anchors.topMargin: 16
+                        
+                        Text {
+                            text: "古风榜"
+                            font.pixelSize: 16
+                            font.bold: true
+                            color: "#333333"
+                            Layout.leftMargin: 16
+                        }
+                        
+                        GridLayout {
+                            Layout.fillWidth: true
+                            Layout.leftMargin: 16
+                            Layout.rightMargin: 16
+                            Layout.bottomMargin: 16
+                            columns: 3
+                            rowSpacing: 12
+                            columnSpacing: 12
+                            
+                            Repeater {
+                                model: [
+                                    { rank: "1", title: "我本将心向明月", tag: "" },
+                                    { rank: "2", title: "咏春", tag: "" },
+                                    { rank: "3", title: "知我", tag: "" },
+                                    { rank: "4", title: "一程山路", tag: "" },
+                                    { rank: "5", title: "诀别书", tag: "" },
+                                    { rank: "6", title: "武家坡2021", tag: "" }
+                                ]
+                                
+                                Rectangle {
+                                    Layout.fillWidth: true
+                                    implicitHeight: 40
+                                    color: rankMouseArea.containsMouse ? "#ffffff" : "transparent"
+                                    radius: 6
+                                    
+                                    RowLayout {
+                                        anchors.fill: parent
+                                        anchors.leftMargin: 8
+                                        anchors.rightMargin: 8
+                                        spacing: 6
+                                        
+                                        Text {
+                                            text: modelData.rank
+                                            font.pixelSize: 14
+                                            font.bold: modelData.rank <= "3"
+                                            color: modelData.rank <= "3" ? "#ec4141" : "#999999"
+                                            Layout.preferredWidth: 20
+                                        }
+                                        
+                                        Text {
+                                            text: modelData.title
+                                            font.pixelSize: 13
+                                            color: "#333333"
+                                            elide: Text.ElideRight
+                                            Layout.fillWidth: true
+                                        }
+                                        
+                                        Rectangle {
+                                            visible: modelData.tag !== ""
+                                            implicitWidth: 20
+                                            implicitHeight: 16
+                                            radius: 3
+                                            color: modelData.tag === "爆" ? "#ec4141" : "#00b42a"
+                                            
+                                            Text {
+                                                text: modelData.tag
+                                                font.pixelSize: 10
+                                                font.bold: true
+                                                color: "#ffffff"
+                                                anchors.centerIn: parent
+                                            }
+                                        }
+                                    }
+                                    
+                                    MouseArea {
+                                        id: rankMouseArea
+                                        anchors.fill: parent
+                                        hoverEnabled: true
+                                        cursorShape: Qt.PointingHandCursor
+                                        onClicked: {
+                                            rightTopRect.isSelectingFromPopup = true
+                                            searchBar.text = modelData.title
+                                            console.log("选择榜单歌曲:", modelData.title)
+                                            hotSearchPopup.close()
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                // 摇滚榜
+                Rectangle {
+                    Layout.fillWidth: true
+                    Layout.leftMargin: 16
+                    Layout.rightMargin: 16
+                    Layout.bottomMargin: 16
+                    implicitHeight: rockColumn.height + 32
+                    color: "#fafafa"
+                    radius: 8
+                    
+                    ColumnLayout {
+                        id: rockColumn
+                        width: parent.width
+                        spacing: 12
+                        anchors.top: parent.top
+                        anchors.topMargin: 16
+                        
+                        Text {
+                            text: "摇滚榜"
+                            font.pixelSize: 16
+                            font.bold: true
+                            color: "#333333"
+                            Layout.leftMargin: 16
+                        }
+                        
+                        GridLayout {
+                            Layout.fillWidth: true
+                            Layout.leftMargin: 16
+                            Layout.rightMargin: 16
+                            Layout.bottomMargin: 16
+                            columns: 3
+                            rowSpacing: 12
+                            columnSpacing: 12
+                            
+                            Repeater {
+                                model: [
+                                    { rank: "1", title: "夜空中最亮的星", tag: "" },
+                                    { rank: "2", title: "无法逃脱", tag: "" },
+                                    { rank: "3", title: "向阳花", tag: "" },
+                                    { rank: "4", title: "公路之歌", tag: "" },
+                                    { rank: "5", title: "再见杰克", tag: "" },
+                                    { rank: "6", title: "山海", tag: "" }
+                                ]
+                                
+                                Rectangle {
+                                    Layout.fillWidth: true
+                                    implicitHeight: 40
+                                    color: rankMouseArea.containsMouse ? "#ffffff" : "transparent"
+                                    radius: 6
+                                    
+                                    RowLayout {
+                                        anchors.fill: parent
+                                        anchors.leftMargin: 8
+                                        anchors.rightMargin: 8
+                                        spacing: 6
+                                        
+                                        Text {
+                                            text: modelData.rank
+                                            font.pixelSize: 14
+                                            font.bold: modelData.rank <= "3"
+                                            color: modelData.rank <= "3" ? "#ec4141" : "#999999"
+                                            Layout.preferredWidth: 20
+                                        }
+                                        
+                                        Text {
+                                            text: modelData.title
+                                            font.pixelSize: 13
+                                            color: "#333333"
+                                            elide: Text.ElideRight
+                                            Layout.fillWidth: true
+                                        }
+                                        
+                                        Rectangle {
+                                            visible: modelData.tag !== ""
+                                            implicitWidth: 20
+                                            implicitHeight: 16
+                                            radius: 3
+                                            color: modelData.tag === "爆" ? "#ec4141" : "#00b42a"
+                                            
+                                            Text {
+                                                text: modelData.tag
+                                                font.pixelSize: 10
+                                                font.bold: true
+                                                color: "#ffffff"
+                                                anchors.centerIn: parent
+                                            }
+                                        }
+                                    }
+                                    
+                                    MouseArea {
+                                        id: rankMouseArea
+                                        anchors.fill: parent
+                                        hoverEnabled: true
+                                        cursorShape: Qt.PointingHandCursor
+                                        onClicked: {
+                                            rightTopRect.isSelectingFromPopup = true
+                                            searchBar.text = modelData.title
+                                            console.log("选择榜单歌曲:", modelData.title)
+                                            hotSearchPopup.close()
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
