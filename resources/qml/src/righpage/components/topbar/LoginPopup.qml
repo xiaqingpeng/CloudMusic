@@ -13,6 +13,14 @@ Popup {
     focus: true
     closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
     
+    // 二维码数据（可以从外部设置）
+    property string qrCodeData: "https://example.com/login?token=" + Date.now()
+    
+    signal refreshQrCode()
+    signal phoneLoginClicked()
+    signal emailLoginClicked()
+    signal wechatLoginClicked()
+    
     background: Rectangle {
         color: "#ffffff"
         radius: 16
@@ -44,32 +52,38 @@ Popup {
             border.color: "#e0e0e0"
             border.width: 1
             
-            // 模拟二维码（使用网格图案）
-            Grid {
+            // 二维码占位符
+            // TODO: 集成 QZXing 库后可以生成真实二维码
+            // 参考: https://github.com/ftylitak/qzxing
+            Column {
                 anchors.centerIn: parent
-                columns: 8
-                rows: 8
-                spacing: 2
+                spacing: 12
                 
-                Repeater {
-                    model: 64
-                    Rectangle {
-                        width: 24
-                        height: 24
-                        color: {
-                            var pattern = [
-                                1,1,1,1,1,1,1,0,
-                                1,0,0,0,0,0,1,0,
-                                1,0,1,1,1,0,1,1,
-                                1,0,1,0,1,0,1,0,
-                                1,0,1,1,1,0,1,1,
-                                1,0,0,0,0,0,1,0,
-                                1,1,1,1,1,1,1,0,
-                                0,0,1,0,1,0,0,1
-                            ]
-                            return pattern[index] === 1 ? "#333333" : "#ffffff"
-                        }
-                        radius: 2
+                Text {
+                    text: "📱"
+                    font.pixelSize: 80
+                    anchors.horizontalCenter: parent.horizontalCenter
+                }
+                
+                Text {
+                    text: "二维码占位符"
+                    font.pixelSize: 14
+                    color: "#666666"
+                    anchors.horizontalCenter: parent.horizontalCenter
+                }
+                
+                Rectangle {
+                    width: 160
+                    height: 32
+                    radius: 4
+                    color: "#f0f0f0"
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    
+                    Text {
+                        text: "需要集成 QZXing 库"
+                        font.pixelSize: 11
+                        color: "#999999"
+                        anchors.centerIn: parent
                     }
                 }
             }
@@ -79,7 +93,7 @@ Popup {
                 width: 32
                 height: 32
                 radius: 16
-                color: "#ffffff"
+                color: refreshMouseArea.containsMouse ? "#f5f5f5" : "#ffffff"
                 border.color: "#e0e0e0"
                 border.width: 1
                 anchors.top: parent.top
@@ -93,9 +107,16 @@ Popup {
                 }
                 
                 MouseArea {
+                    id: refreshMouseArea
                     anchors.fill: parent
+                    hoverEnabled: true
                     cursorShape: Qt.PointingHandCursor
-                    onClicked: console.log("刷新二维码")
+                    onClicked: {
+                        console.log("刷新二维码")
+                        // 更新二维码数据（添加时间戳使其变化）
+                        root.qrCodeData = "https://example.com/login?token=" + Date.now()
+                        root.refreshQrCode()
+                    }
                 }
             }
         }
@@ -153,9 +174,9 @@ Popup {
             
             Repeater {
                 model: [
-                    { icon: "📱", name: "手机号登录" },
-                    { icon: "📧", name: "邮箱登录" },
-                    { icon: "💬", name: "微信登录" }
+                    { icon: "📱", name: "手机号登录", signal: "phone" },
+                    { icon: "📧", name: "邮箱登录", signal: "email" },
+                    { icon: "💬", name: "微信登录", signal: "wechat" }
                 ]
                 
                 Rectangle {
@@ -177,7 +198,16 @@ Popup {
                         anchors.fill: parent
                         hoverEnabled: true
                         cursorShape: Qt.PointingHandCursor
-                        onClicked: console.log(modelData.name)
+                        onClicked: {
+                            console.log(modelData.name)
+                            if (modelData.signal === "phone") {
+                                root.phoneLoginClicked()
+                            } else if (modelData.signal === "email") {
+                                root.emailLoginClicked()
+                            } else if (modelData.signal === "wechat") {
+                                root.wechatLoginClicked()
+                            }
+                        }
                     }
                 }
             }
