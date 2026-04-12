@@ -820,7 +820,6 @@ Rectangle {
     Popup {
         id: searchPopup
         parent: rightTopRect
-        // x: topRow.anchors.leftMargin + 32 + topRow.spacing
         x:  topRow.spacing
         y: rightTopRect.height
         width: rightTopRect.width-(topRow.spacing)-16
@@ -839,39 +838,50 @@ Rectangle {
             id: suggestionList
             anchors.fill: parent
             clip: true
+            spacing: 0
             model: suggestionsModel
             
             delegate: Rectangle {
                 width: suggestionList.width
-                height: 40
-                color: suggestionMouseArea.containsMouse ? "#f5f5f5" : "transparent"
+                height: 50
+                color: suggestionMouseArea.containsMouse ? "#f3f4f6" : "transparent"
                 
-                Row {
+                RowLayout {
                     anchors.fill: parent
                     anchors.leftMargin: 16
                     anchors.rightMargin: 16
                     spacing: 12
                     
-                    // 类型图标
+                    // 放大镜图标
+                    Rectangle {
+                        width: 20
+                        height: 20
+                        color: "transparent"
+                        Layout.preferredWidth: 20
+                        
+                        Text {
+                            text: "🔍"
+                            font.pixelSize: 16
+                            anchors.centerIn: parent
+                        }
+                    }
+                    
+                    // 搜索建议文本（关键词高亮）
                     Text {
-                        text: model.icon
+                        text: {
+                            var keyword = model.keyword
+                            var searchText = searchBar.text
+                            if (searchText === "" || keyword.indexOf(searchText) === -1) {
+                                return '<font color="#94979e">' + keyword + '</font>'
+                            }
+                            var index = keyword.indexOf(searchText)
+                            return '<font color="#94979e">' + keyword.substring(0, index) +
+                                '</font><font color="#4a5568">' + searchText +
+                                '</font><font color="#94979e">' + keyword.substring(index + searchText.length) + '</font>'
+                        }
                         font.pixelSize: 14
-                        color: "#999999"
-                        anchors.verticalCenter: parent.verticalCenter
-                    }
-                    
-                    // 关键词
-                    Text {
-                        text: model.keyword
-                        font.pixelSize: 13
-                        color: "#333333"
-                        anchors.verticalCenter: parent.verticalCenter
-                    }
-                    
-                    // 弹簧
-                    Item {
-                        width: Math.max(0, suggestionList.width - 150)
-                        height: 1
+                        textFormat: Text.RichText
+                        Layout.fillWidth: true
                     }
                     
                     // 类型标签
@@ -882,8 +892,8 @@ Rectangle {
                         color: model.type === "hot" ? "#fff5f5" : 
                                model.type === "artist" ? "#f0f9ff" : 
                                model.type === "song" ? "#f0fdf4" : "#fef3f2"
-                        anchors.verticalCenter: parent.verticalCenter
                         visible: model.type !== "song"
+                        Layout.preferredWidth: typeLabel.width + 12
                         
                         Text {
                             id: typeLabel
