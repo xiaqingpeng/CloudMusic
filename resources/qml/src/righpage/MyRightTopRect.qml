@@ -223,6 +223,170 @@ Rectangle {
                 width: hotSearchPopup.width - 32
                 spacing: 16
                 
+                // ================== 搜索历史区域 ==================
+                ColumnLayout {
+                    Layout.fillWidth: true
+                    Layout.leftMargin: 16
+                    Layout.rightMargin: 16
+                    Layout.topMargin: 16
+                    spacing: 12
+                    
+                    // 标题栏 + 删除图标
+                    RowLayout {
+                        Layout.fillWidth: true
+                        spacing: 12
+                        
+                        Text {
+                            text: "搜索历史"
+                            font.pixelSize: 16
+                            font.bold: true
+                            color: "#333333"
+                        }
+                        
+                        // 删除图标
+                        Rectangle {
+                            width: 24
+                            height: 24
+                            color: "transparent"
+                            
+                            Text {
+                                text: "🗑️"
+                                font.pixelSize: 16
+                                anchors.centerIn: parent
+                            }
+                            
+                            MouseArea {
+                                anchors.fill: parent
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: {
+                                    console.log("清空搜索历史")
+                                    searchHistoryModel.clear()
+                                }
+                            }
+                        }
+                        
+                        Item { Layout.fillWidth: true }
+                    }
+                    
+                    // 搜索历史标签流
+                    Flow {
+                        Layout.fillWidth: true
+                        spacing: 8
+                        
+                        Repeater {
+                            model: ListModel {
+                                id: searchHistoryModel
+                                ListElement { text: "傻女" }
+                                ListElement { text: "深圳838" }
+                                ListElement { text: "DJ阿智" }
+                                ListElement { text: "刘德华" }
+                                ListElement { text: "李荣浩" }
+                                ListElement { text: "张杰" }
+                                ListElement { text: "深圳" }
+                            }
+                            
+                            delegate: Rectangle {
+                                width: tagText.width + 16
+                                height: tagText.height + 16
+                                radius: 16
+                                color: tagMouseArea.pressed ? "#e2e8f0" : "#f3f4f6"
+                                
+                                Text {
+                                    id: tagText
+                                    text: model.text
+                                    font.pixelSize: 13
+                                    color: "#4a5568"
+                                    anchors.centerIn: parent
+                                }
+                                
+                                MouseArea {
+                                    id: tagMouseArea
+                                    anchors.fill: parent
+                                    cursorShape: Qt.PointingHandCursor
+                                    onClicked: {
+                                        console.log("点击搜索历史：", model.text)
+                                        rightTopRect.isSelectingFromPopup = true
+                                        searchBar.text = model.text
+                                        hotSearchPopup.close()
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                // ================== 猜你喜欢区域 ==================
+                ColumnLayout {
+                    Layout.fillWidth: true
+                    Layout.leftMargin: 16
+                    Layout.rightMargin: 16
+                    spacing: 12
+                    
+                    Text {
+                        text: "猜你喜欢"
+                        font.pixelSize: 16
+                        font.bold: true
+                        color: "#333333"
+                    }
+                    
+                    // 猜你喜欢标签流
+                    Flow {
+                        Layout.fillWidth: true
+                        spacing: 8
+                        
+                        Repeater {
+                            model: ListModel {
+                                id: guessLikeModel
+                                ListElement { text: "海屿你" }
+                                ListElement { text: "小半" }
+                                ListElement { text: "DJ阿智" }
+                                ListElement { text: "郑润泽" }
+                                ListElement { text: "精卫" }
+                                ListElement { text: "雨过后的风景" }
+                                ListElement { text: "颜人中" }
+                                ListElement { text: "陈奕迅" }
+                                ListElement { text: "林俊杰" }
+                                ListElement { text: "毛不易" }
+                                ListElement { text: "知我" }
+                                ListElement { text: "陶喆" }
+                                ListElement { text: "孙燕姿" }
+                                ListElement { text: "苦茶子" }
+                                ListElement { text: "薛之谦" }
+                                ListElement { text: "张杰" }
+                                ListElement { text: "赵雷" }
+                                ListElement { text: "红色高跟鞋" }
+                            }
+                            
+                            delegate: Rectangle {
+                                width: guessText.width + 16
+                                height: guessText.height + 16
+                                radius: 16
+                                color: guessMouseArea.pressed ? "#e2e8f0" : "#f3f4f6"
+                                
+                                Text {
+                                    id: guessText
+                                    text: model.text
+                                    font.pixelSize: 13
+                                    color: "#4a5568"
+                                    anchors.centerIn: parent
+                                }
+                                
+                                MouseArea {
+                                    id: guessMouseArea
+                                    anchors.fill: parent
+                                    cursorShape: Qt.PointingHandCursor
+                                    onClicked: {
+                                        console.log("点击猜你喜欢：", model.text)
+                                        rightTopRect.isSelectingFromPopup = true
+                                        searchBar.text = model.text
+                                        hotSearchPopup.close()
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                
                 // 热搜榜
                 Rectangle {
                     Layout.fillWidth: true
