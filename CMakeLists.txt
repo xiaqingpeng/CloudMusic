@@ -33,6 +33,10 @@ qt_add_qml_module(appCloudMusic
         resources/qml/src/righpage/components/topbar/SearchBar.qml
         resources/qml/src/righpage/components/topbar/IconButton.qml
         resources/qml/src/righpage/components/topbar/TextButton.qml
+        resources/qml/src/righpage/components/topbar/RankingCard.qml
+        resources/qml/src/righpage/components/topbar/SearchSuggestionPopup.qml
+        resources/qml/src/righpage/components/topbar/HotSearchPopup.qml
+        resources/qml/src/righpage/components/topbar/LoginPopup.qml
         resources/qml/src/righpage/components/bannerswiper/BannerSwiper.qml
         resources/qml/src/righpage/components/songlist/SongListCard.qml
         resources/qml/src/righpage/components/audiobook/AudioBookCard.qml
@@ -45,6 +49,7 @@ qt_add_qml_module(appCloudMusic
         resources/qml/src/theme/Theme.qml
     RESOURCES
         resources/qml/src/theme/qmldir
+        resources/qml/src/righpage/components/topbar/qmldir
         resources/qrc/icon/left.svg
         resources/qrc/icon/down.svg
         resources/qrc/icon/down_s.svg

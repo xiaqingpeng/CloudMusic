@@ -1,132 +1,96 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import "./components/topbar"
+import "./components/topbar" as TopBar
 
 Rectangle {
     id: rightTopRect
     height: 60
     color: "#2d2d37"
     
-    // 搜索建议数据模型 - 模拟 API 返回的 JSON 结构
+    // 搜索建议数据模型
     ListModel {
         id: suggestionsModel
-        ListElement {
-            type: "hot"
-            keyword: "热门歌曲"
-            icon: "🔥"
-        }
-        ListElement {
-            type: "artist"
-            keyword: "周杰伦"
-            icon: "👤"
-        }
-        ListElement {
-            type: "song"
-            keyword: "告白气球"
-            icon: "🎵"
-        }
-        ListElement {
-            type: "song"
-            keyword: "晴天"
-            icon: "🎵"
-        }
-        ListElement {
-            type: "song"
-            keyword: "稻香"
-            icon: "🎵"
-        }
-        ListElement {
-            type: "album"
-            keyword: "七里香"
-            icon: "💿"
-        }
+        ListElement { type: "hot"; keyword: "热门歌曲"; icon: "🔥" }
+        ListElement { type: "artist"; keyword: "周杰伦"; icon: "👤" }
+        ListElement { type: "song"; keyword: "告白气球"; icon: "🎵" }
+        ListElement { type: "song"; keyword: "晴天"; icon: "🎵" }
+        ListElement { type: "song"; keyword: "稻香"; icon: "🎵" }
+        ListElement { type: "album"; keyword: "七里香"; icon: "💿" }
     }
     
-    // 热门搜索数据模型
+    // 搜索历史数据模型
     ListModel {
-        id: hotSearchModel
-        ListElement {
-            keyword: "周杰伦新歌"
-            hotIndex: 1
-            isHot: true
-        }
-        ListElement {
-            keyword: "告白气球"
-            hotIndex: 2
-            isHot: true
-        }
-        ListElement {
-            keyword: "晴天"
-            hotIndex: 3
-            isHot: false
-        }
-        ListElement {
-            keyword: "稻香"
-            hotIndex: 4
-            isHot: false
-        }
-        ListElement {
-            keyword: "七里香"
-            hotIndex: 5
-            isHot: false
-        }
+        id: searchHistoryModel
+        ListElement { text: "傻女" }
+        ListElement { text: "深圳838" }
+        ListElement { text: "DJ阿智" }
+        ListElement { text: "刘德华" }
+        ListElement { text: "李荣浩" }
+        ListElement { text: "张杰" }
+        ListElement { text: "深圳" }
     }
     
-    // 模拟 API 请求函数
+    // 猜你喜欢数据模型
+    ListModel {
+        id: guessLikeModel
+        ListElement { text: "海屿你" }
+        ListElement { text: "小半" }
+        ListElement { text: "DJ阿智" }
+        ListElement { text: "郑润泽" }
+        ListElement { text: "精卫" }
+        ListElement { text: "雨过后的风景" }
+        ListElement { text: "颜人中" }
+        ListElement { text: "陈奕迅" }
+        ListElement { text: "林俊杰" }
+        ListElement { text: "毛不易" }
+        ListElement { text: "知我" }
+        ListElement { text: "陶喆" }
+        ListElement { text: "孙燕姿" }
+        ListElement { text: "苦茶子" }
+        ListElement { text: "薛之谦" }
+        ListElement { text: "张杰" }
+        ListElement { text: "赵雷" }
+        ListElement { text: "红色高跟鞋" }
+    }
+    
+    property bool isSelectingFromPopup: false
+    
+    // 搜索相关函数
     function fetchSuggestions(query) {
         console.log("模拟 API 请求:", query)
-        // 这里可以添加实际的网络请求
-        // 例如: xhr.get("https://api.example.com/search?q=" + query)
-        
-        // 模拟延迟
         searchTimer.restart()
     }
     
-    // 标志：是否正在从弹窗选择项（避免触发搜索建议）
-    property bool isSelectingFromPopup: false
-    
-    // 添加搜索历史
     function addSearchHistory(text) {
         if (text === "") return
         
-        // 检查是否已存在
         for (var i = 0; i < searchHistoryModel.count; i++) {
             if (searchHistoryModel.get(i).text === text) {
-                // 如果已存在，移到最前面
                 searchHistoryModel.move(i, 0, 1)
                 return
             }
         }
         
-        // 添加到最前面
         searchHistoryModel.insert(0, { text: text })
         
-        // 限制历史记录数量（最多10条）
         if (searchHistoryModel.count > 10) {
             searchHistoryModel.remove(10, searchHistoryModel.count - 10)
         }
     }
     
-    // 删除单条搜索历史
     function removeSearchHistory(index) {
         searchHistoryModel.remove(index)
     }
     
-    // 清空搜索历史
     function clearSearchHistory() {
         searchHistoryModel.clear()
     }
     
-    // 执行搜索
     function performSearch(text) {
         if (text === "") return
-        
         console.log("执行搜索:", text)
         addSearchHistory(text)
-        
-        // 这里可以添加实际的搜索逻辑
-        // 例如：跳转到搜索结果页面、发送搜索请求等
     }
 
     Row {
@@ -137,7 +101,7 @@ Rectangle {
         spacing: 12
         
         // 返回按钮
-        IconButton {
+        TopBar.IconButton {
             anchors.verticalCenter: parent.verticalCenter
             iconSource: "qrc:/CloudMusic/resources/qrc/icon/left.svg"
             color: "#3d3d47"
@@ -145,7 +109,7 @@ Rectangle {
         }
 
         // 搜索框
-        SearchBar {
+        TopBar.SearchBar {
             id: searchBar
             width: parent.width - 450
             anchors.verticalCenter: parent.verticalCenter
@@ -160,7 +124,6 @@ Rectangle {
             onVoiceSearchRequested: console.log("语音搜索")
             
             onInputTextChanged: (text) => {
-                // 如果是从弹窗选择的，不触发搜索建议
                 if (rightTopRect.isSelectingFromPopup) {
                     rightTopRect.isSelectingFromPopup = false
                     return
@@ -172,7 +135,6 @@ Rectangle {
                     searchPopup.open()
                 } else {
                     searchPopup.close()
-                    // 如果文本被清空且搜索框有焦点，显示热搜弹窗
                     if (searchBar.hasFocus) {
                         hotSearchPopup.open()
                     }
@@ -196,7 +158,7 @@ Rectangle {
         }
 
         // 未登录按钮
-        TextButton {
+        TopBar.TextButton {
             anchors.verticalCenter: parent.verticalCenter
             text: "未登录"
             onClicked: {
@@ -206,7 +168,7 @@ Rectangle {
         }
         
         // VIP按钮
-        TextButton {
+        TopBar.TextButton {
             anchors.verticalCenter: parent.verticalCenter
             text: "VIP"
             backgroundColor: "#ec4141"
@@ -220,19 +182,19 @@ Rectangle {
             spacing: 8
             anchors.verticalCenter: parent.verticalCenter
             
-            IconButton {
+            TopBar.IconButton {
                 iconSource: "qrc:/CloudMusic/resources/qrc/icon/down.svg"
                 tooltip: "下载"
                 onClicked: console.log("下载")
             }
             
-            IconButton {
+            TopBar.IconButton {
                 iconSource: "qrc:/CloudMusic/resources/qrc/icon/down_s.svg"
                 tooltip: "换肤"
                 onClicked: console.log("换肤")
             }
             
-            IconButton {
+            TopBar.IconButton {
                 iconSource: "qrc:/CloudMusic/resources/qrc/icon/setting.svg"
                 tooltip: "设置"
                 onClicked: console.log("设置")
@@ -240,775 +202,82 @@ Rectangle {
         }
         
         // 系统控制按钮
-        WindowControl {
+        TopBar.WindowControl {
             anchors.verticalCenter: parent.verticalCenter
         }
     }
     
-    // 热门搜索弹窗（焦点聚焦时显示）- 竖直滚动榜单
-    Popup {
+    // 热搜弹窗
+    TopBar.HotSearchPopup {
         id: hotSearchPopup
         parent: rightTopRect
-        x:  topRow.spacing
+        x: topRow.spacing
         y: rightTopRect.height
-        width: rightTopRect.width-(topRow.spacing)-16
+        width: rightTopRect.width - topRow.spacing - 16
         height: rightBottomRect.height
-        padding: 0
-        closePolicy: Popup.NoAutoClose
         
-        background: Rectangle {
-            color: "#ffffff"
-            radius: 12
-            border.color: "#e0e0e0"
-            border.width: 1
+        searchHistoryModel: searchHistoryModel
+        guessLikeModel: guessLikeModel
+        
+        onHistoryClicked: (text) => {
+            console.log("点击搜索历史：", text)
+            rightTopRect.isSelectingFromPopup = true
+            searchBar.text = text
+            rightTopRect.performSearch(text)
+            hotSearchPopup.close()
         }
         
-        ScrollView {
-            anchors.fill: parent
-            clip: true
-            
-            ColumnLayout {
-                width: hotSearchPopup.width - 32
-                spacing: 16
-                
-                // ================== 搜索历史区域 ==================
-                ColumnLayout {
-                    Layout.fillWidth: true
-                    Layout.leftMargin: 16
-                    Layout.rightMargin: 16
-                    Layout.topMargin: 16
-                    spacing: 12
-                    
-                    // 标题栏 + 删除图标
-                    RowLayout {
-                        Layout.fillWidth: true
-                        spacing: 12
-                        
-                        Text {
-                            text: "搜索历史"
-                            font.pixelSize: 16
-                            font.bold: true
-                            color: "#333333"
-                        }
-                        
-                        // 删除图标
-                        Rectangle {
-                            width: 24
-                            height: 24
-                            color: "transparent"
-                            visible: searchHistoryModel.count > 0
-                            
-                            Text {
-                                text: "🗑️"
-                                font.pixelSize: 16
-                                anchors.centerIn: parent
-                            }
-                            
-                            MouseArea {
-                                anchors.fill: parent
-                                cursorShape: Qt.PointingHandCursor
-                                onClicked: {
-                                    console.log("清空搜索历史")
-                                    rightTopRect.clearSearchHistory()
-                                }
-                            }
-                        }
-                        
-                        Item { Layout.fillWidth: true }
-                    }
-                    
-                    // 搜索历史标签流
-                    Flow {
-                        Layout.fillWidth: true
-                        spacing: 8
-                        visible: searchHistoryModel.count > 0
-                        
-                        Repeater {
-                            model: ListModel {
-                                id: searchHistoryModel
-                                ListElement { text: "傻女" }
-                                ListElement { text: "深圳838" }
-                                ListElement { text: "DJ阿智" }
-                                ListElement { text: "刘德华" }
-                                ListElement { text: "李荣浩" }
-                                ListElement { text: "张杰" }
-                                ListElement { text: "深圳" }
-                            }
-                            
-                            delegate: Rectangle {
-                                width: tagText.width + 16
-                                height: tagText.height + 16
-                                radius: 16
-                                color: tagMouseArea.pressed ? "#e2e8f0" : "#f3f4f6"
-                                
-                                Text {
-                                    id: tagText
-                                    text: model.text
-                                    font.pixelSize: 13
-                                    color: "#4a5568"
-                                    anchors.centerIn: parent
-                                }
-                                
-                                MouseArea {
-                                    id: tagMouseArea
-                                    anchors.fill: parent
-                                    cursorShape: Qt.PointingHandCursor
-                                    acceptedButtons: Qt.LeftButton | Qt.RightButton
-                                    
-                                    onClicked: (mouse) => {
-                                        if (mouse.button === Qt.LeftButton) {
-                                            console.log("点击搜索历史：", model.text)
-                                            rightTopRect.isSelectingFromPopup = true
-                                            searchBar.text = model.text
-                                            rightTopRect.performSearch(model.text)
-                                            hotSearchPopup.close()
-                                        }
-                                    }
-                                    
-                                    onPressAndHold: {
-                                        console.log("长按删除搜索历史：", model.text)
-                                        rightTopRect.removeSearchHistory(index)
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    
-                    // 空状态提示
-                    Text {
-                        text: "暂无搜索历史"
-                        font.pixelSize: 13
-                        color: "#999999"
-                        visible: searchHistoryModel.count === 0
-                        Layout.alignment: Qt.AlignHCenter
-                        Layout.topMargin: 20
-                        Layout.bottomMargin: 20
-                    }
-                }
-                
-                // ================== 猜你喜欢区域 ==================
-                ColumnLayout {
-                    Layout.fillWidth: true
-                    Layout.leftMargin: 16
-                    Layout.rightMargin: 16
-                    spacing: 12
-                    
-                    Text {
-                        text: "猜你喜欢"
-                        font.pixelSize: 16
-                        font.bold: true
-                        color: "#333333"
-                    }
-                    
-                    // 猜你喜欢标签流
-                    Flow {
-                        Layout.fillWidth: true
-                        spacing: 8
-                        
-                        Repeater {
-                            model: ListModel {
-                                id: guessLikeModel
-                                ListElement { text: "海屿你" }
-                                ListElement { text: "小半" }
-                                ListElement { text: "DJ阿智" }
-                                ListElement { text: "郑润泽" }
-                                ListElement { text: "精卫" }
-                                ListElement { text: "雨过后的风景" }
-                                ListElement { text: "颜人中" }
-                                ListElement { text: "陈奕迅" }
-                                ListElement { text: "林俊杰" }
-                                ListElement { text: "毛不易" }
-                                ListElement { text: "知我" }
-                                ListElement { text: "陶喆" }
-                                ListElement { text: "孙燕姿" }
-                                ListElement { text: "苦茶子" }
-                                ListElement { text: "薛之谦" }
-                                ListElement { text: "张杰" }
-                                ListElement { text: "赵雷" }
-                                ListElement { text: "红色高跟鞋" }
-                            }
-                            
-                            delegate: Rectangle {
-                                width: guessText.width + 16
-                                height: guessText.height + 16
-                                radius: 16
-                                color: guessMouseArea.pressed ? "#e2e8f0" : "#f3f4f6"
-                                
-                                Text {
-                                    id: guessText
-                                    text: model.text
-                                    font.pixelSize: 13
-                                    color: "#4a5568"
-                                    anchors.centerIn: parent
-                                }
-                                
-                                MouseArea {
-                                    id: guessMouseArea
-                                    anchors.fill: parent
-                                    cursorShape: Qt.PointingHandCursor
-                                    onClicked: {
-                                        console.log("点击猜你喜欢：", model.text)
-                                        rightTopRect.isSelectingFromPopup = true
-                                        searchBar.text = model.text
-                                        rightTopRect.performSearch(model.text)
-                                        hotSearchPopup.close()
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                
-                // 热搜榜
-                Rectangle {
-                    Layout.fillWidth: true
-                    Layout.leftMargin: 16
-                    Layout.rightMargin: 16
-                    Layout.topMargin: 16
-                    implicitHeight: hotColumn.height + 32
-                    color: "#fafafa"
-                    radius: 8
-                    
-                    ColumnLayout {
-                        id: hotColumn
-                        width: parent.width
-                        spacing: 12
-                        anchors.top: parent.top
-                        anchors.topMargin: 16
-                        
-                        Text {
-                            text: "热搜榜"
-                            font.pixelSize: 16
-                            font.bold: true
-                            color: "#333333"
-                            Layout.leftMargin: 16
-                        }
-                        
-                        GridLayout {
-                            Layout.fillWidth: true
-                            Layout.leftMargin: 16
-                            Layout.rightMargin: 16
-                            Layout.bottomMargin: 16
-                            columns: 3
-                            rowSpacing: 12
-                            columnSpacing: 12
-                            
-                            Repeater {
-                                model: [
-                                    { rank: "1", title: "海屿你", tag: "爆" },
-                                    { rank: "2", title: "雨爱", tag: "" },
-                                    { rank: "3", title: "眼泪的汛期", tag: "" },
-                                    { rank: "4", title: "一半一半", tag: "" },
-                                    { rank: "5", title: "幻痛药", tag: "" },
-                                    { rank: "6", title: "巴拉莱卡", tag: "" }
-                                ]
-                                
-                                Rectangle {
-                                    Layout.fillWidth: true
-                                    implicitHeight: 40
-                                    color: rankMouseArea.containsMouse ? "#ffffff" : "transparent"
-                                    radius: 6
-                                    
-                                    RowLayout {
-                                        anchors.fill: parent
-                                        anchors.leftMargin: 8
-                                        anchors.rightMargin: 8
-                                        spacing: 6
-                                        
-                                        Text {
-                                            text: modelData.rank
-                                            font.pixelSize: 14
-                                            font.bold: modelData.rank <= "3"
-                                            color: modelData.rank <= "3" ? "#ec4141" : "#999999"
-                                            Layout.preferredWidth: 20
-                                        }
-                                        
-                                        Text {
-                                            text: modelData.title
-                                            font.pixelSize: 13
-                                            color: "#333333"
-                                            elide: Text.ElideRight
-                                            Layout.fillWidth: true
-                                        }
-                                        
-                                        Rectangle {
-                                            visible: modelData.tag !== ""
-                                            implicitWidth: 20
-                                            implicitHeight: 16
-                                            radius: 3
-                                            color: modelData.tag === "爆" ? "#ec4141" : "#00b42a"
-                                            
-                                            Text {
-                                                text: modelData.tag
-                                                font.pixelSize: 10
-                                                font.bold: true
-                                                color: "#ffffff"
-                                                anchors.centerIn: parent
-                                            }
-                                        }
-                                    }
-                                    
-                                    MouseArea {
-                                        id: rankMouseArea
-                                        anchors.fill: parent
-                                        hoverEnabled: true
-                                        cursorShape: Qt.PointingHandCursor
-                                        onClicked: {
-                                            rightTopRect.isSelectingFromPopup = true
-                                            searchBar.text = modelData.title
-                                            console.log("选择榜单歌曲:", modelData.title)
-                                            rightTopRect.performSearch(modelData.title)
-                                            hotSearchPopup.close()
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                
-                // 说唱榜
-                Rectangle {
-                    Layout.fillWidth: true
-                    Layout.leftMargin: 16
-                    Layout.rightMargin: 16
-                    implicitHeight: rapColumn.height + 32
-                    color: "#fafafa"
-                    radius: 8
-                    
-                    ColumnLayout {
-                        id: rapColumn
-                        width: parent.width
-                        spacing: 12
-                        anchors.top: parent.top
-                        anchors.topMargin: 16
-                        
-                        Text {
-                            text: "说唱榜"
-                            font.pixelSize: 16
-                            font.bold: true
-                            color: "#333333"
-                            Layout.leftMargin: 16
-                        }
-                        
-                        GridLayout {
-                            Layout.fillWidth: true
-                            Layout.leftMargin: 16
-                            Layout.rightMargin: 16
-                            Layout.bottomMargin: 16
-                            columns: 3
-                            rowSpacing: 12
-                            columnSpacing: 12
-                            
-                            Repeater {
-                                model: [
-                                    { rank: "1", title: "DD backseat", tag: "" },
-                                    { rank: "2", title: "故意没接", tag: "" },
-                                    { rank: "3", title: "十里", tag: "" },
-                                    { rank: "4", title: "山歌王", tag: "" },
-                                    { rank: "5", title: "1 On 1", tag: "" },
-                                    { rank: "6", title: "21爱", tag: "" }
-                                ]
-                                
-                                Rectangle {
-                                    Layout.fillWidth: true
-                                    implicitHeight: 40
-                                    color: rankMouseArea.containsMouse ? "#ffffff" : "transparent"
-                                    radius: 6
-                                    
-                                    RowLayout {
-                                        anchors.fill: parent
-                                        anchors.leftMargin: 8
-                                        anchors.rightMargin: 8
-                                        spacing: 6
-                                        
-                                        Text {
-                                            text: modelData.rank
-                                            font.pixelSize: 14
-                                            font.bold: modelData.rank <= "3"
-                                            color: modelData.rank <= "3" ? "#ec4141" : "#999999"
-                                            Layout.preferredWidth: 20
-                                        }
-                                        
-                                        Text {
-                                            text: modelData.title
-                                            font.pixelSize: 13
-                                            color: "#333333"
-                                            elide: Text.ElideRight
-                                            Layout.fillWidth: true
-                                        }
-                                        
-                                        Rectangle {
-                                            visible: modelData.tag !== ""
-                                            implicitWidth: 20
-                                            implicitHeight: 16
-                                            radius: 3
-                                            color: modelData.tag === "爆" ? "#ec4141" : "#00b42a"
-                                            
-                                            Text {
-                                                text: modelData.tag
-                                                font.pixelSize: 10
-                                                font.bold: true
-                                                color: "#ffffff"
-                                                anchors.centerIn: parent
-                                            }
-                                        }
-                                    }
-                                    
-                                    MouseArea {
-                                        id: rankMouseArea
-                                        anchors.fill: parent
-                                        hoverEnabled: true
-                                        cursorShape: Qt.PointingHandCursor
-                                        onClicked: {
-                                            rightTopRect.isSelectingFromPopup = true
-                                            searchBar.text = modelData.title
-                                            console.log("选择榜单歌曲:", modelData.title)
-                                            rightTopRect.performSearch(modelData.title)
-                                            hotSearchPopup.close()
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                
-                // 古风榜
-                Rectangle {
-                    Layout.fillWidth: true
-                    Layout.leftMargin: 16
-                    Layout.rightMargin: 16
-                    implicitHeight: classicalColumn.height + 32
-                    color: "#fafafa"
-                    radius: 8
-                    
-                    ColumnLayout {
-                        id: classicalColumn
-                        width: parent.width
-                        spacing: 12
-                        anchors.top: parent.top
-                        anchors.topMargin: 16
-                        
-                        Text {
-                            text: "古风榜"
-                            font.pixelSize: 16
-                            font.bold: true
-                            color: "#333333"
-                            Layout.leftMargin: 16
-                        }
-                        
-                        GridLayout {
-                            Layout.fillWidth: true
-                            Layout.leftMargin: 16
-                            Layout.rightMargin: 16
-                            Layout.bottomMargin: 16
-                            columns: 3
-                            rowSpacing: 12
-                            columnSpacing: 12
-                            
-                            Repeater {
-                                model: [
-                                    { rank: "1", title: "我本将心向明月", tag: "" },
-                                    { rank: "2", title: "咏春", tag: "" },
-                                    { rank: "3", title: "知我", tag: "" },
-                                    { rank: "4", title: "一程山路", tag: "" },
-                                    { rank: "5", title: "诀别书", tag: "" },
-                                    { rank: "6", title: "武家坡2021", tag: "" }
-                                ]
-                                
-                                Rectangle {
-                                    Layout.fillWidth: true
-                                    implicitHeight: 40
-                                    color: rankMouseArea.containsMouse ? "#ffffff" : "transparent"
-                                    radius: 6
-                                    
-                                    RowLayout {
-                                        anchors.fill: parent
-                                        anchors.leftMargin: 8
-                                        anchors.rightMargin: 8
-                                        spacing: 6
-                                        
-                                        Text {
-                                            text: modelData.rank
-                                            font.pixelSize: 14
-                                            font.bold: modelData.rank <= "3"
-                                            color: modelData.rank <= "3" ? "#ec4141" : "#999999"
-                                            Layout.preferredWidth: 20
-                                        }
-                                        
-                                        Text {
-                                            text: modelData.title
-                                            font.pixelSize: 13
-                                            color: "#333333"
-                                            elide: Text.ElideRight
-                                            Layout.fillWidth: true
-                                        }
-                                        
-                                        Rectangle {
-                                            visible: modelData.tag !== ""
-                                            implicitWidth: 20
-                                            implicitHeight: 16
-                                            radius: 3
-                                            color: modelData.tag === "爆" ? "#ec4141" : "#00b42a"
-                                            
-                                            Text {
-                                                text: modelData.tag
-                                                font.pixelSize: 10
-                                                font.bold: true
-                                                color: "#ffffff"
-                                                anchors.centerIn: parent
-                                            }
-                                        }
-                                    }
-                                    
-                                    MouseArea {
-                                        id: rankMouseArea
-                                        anchors.fill: parent
-                                        hoverEnabled: true
-                                        cursorShape: Qt.PointingHandCursor
-                                        onClicked: {
-                                            rightTopRect.isSelectingFromPopup = true
-                                            searchBar.text = modelData.title
-                                            console.log("选择榜单歌曲:", modelData.title)
-                                            rightTopRect.performSearch(modelData.title)
-                                            hotSearchPopup.close()
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                
-                // 摇滚榜
-                Rectangle {
-                    Layout.fillWidth: true
-                    Layout.leftMargin: 16
-                    Layout.rightMargin: 16
-                    Layout.bottomMargin: 16
-                    implicitHeight: rockColumn.height + 32
-                    color: "#fafafa"
-                    radius: 8
-                    
-                    ColumnLayout {
-                        id: rockColumn
-                        width: parent.width
-                        spacing: 12
-                        anchors.top: parent.top
-                        anchors.topMargin: 16
-                        
-                        Text {
-                            text: "摇滚榜"
-                            font.pixelSize: 16
-                            font.bold: true
-                            color: "#333333"
-                            Layout.leftMargin: 16
-                        }
-                        
-                        GridLayout {
-                            Layout.fillWidth: true
-                            Layout.leftMargin: 16
-                            Layout.rightMargin: 16
-                            Layout.bottomMargin: 16
-                            columns: 3
-                            rowSpacing: 12
-                            columnSpacing: 12
-                            
-                            Repeater {
-                                model: [
-                                    { rank: "1", title: "夜空中最亮的星", tag: "" },
-                                    { rank: "2", title: "无法逃脱", tag: "" },
-                                    { rank: "3", title: "向阳花", tag: "" },
-                                    { rank: "4", title: "公路之歌", tag: "" },
-                                    { rank: "5", title: "再见杰克", tag: "" },
-                                    { rank: "6", title: "山海", tag: "" }
-                                ]
-                                
-                                Rectangle {
-                                    Layout.fillWidth: true
-                                    implicitHeight: 40
-                                    color: rankMouseArea.containsMouse ? "#ffffff" : "transparent"
-                                    radius: 6
-                                    
-                                    RowLayout {
-                                        anchors.fill: parent
-                                        anchors.leftMargin: 8
-                                        anchors.rightMargin: 8
-                                        spacing: 6
-                                        
-                                        Text {
-                                            text: modelData.rank
-                                            font.pixelSize: 14
-                                            font.bold: modelData.rank <= "3"
-                                            color: modelData.rank <= "3" ? "#ec4141" : "#999999"
-                                            Layout.preferredWidth: 20
-                                        }
-                                        
-                                        Text {
-                                            text: modelData.title
-                                            font.pixelSize: 13
-                                            color: "#333333"
-                                            elide: Text.ElideRight
-                                            Layout.fillWidth: true
-                                        }
-                                        
-                                        Rectangle {
-                                            visible: modelData.tag !== ""
-                                            implicitWidth: 20
-                                            implicitHeight: 16
-                                            radius: 3
-                                            color: modelData.tag === "爆" ? "#ec4141" : "#00b42a"
-                                            
-                                            Text {
-                                                text: modelData.tag
-                                                font.pixelSize: 10
-                                                font.bold: true
-                                                color: "#ffffff"
-                                                anchors.centerIn: parent
-                                            }
-                                        }
-                                    }
-                                    
-                                    MouseArea {
-                                        id: rankMouseArea
-                                        anchors.fill: parent
-                                        hoverEnabled: true
-                                        cursorShape: Qt.PointingHandCursor
-                                        onClicked: {
-                                            rightTopRect.isSelectingFromPopup = true
-                                            searchBar.text = modelData.title
-                                            console.log("选择榜单歌曲:", modelData.title)
-                                            rightTopRect.performSearch(modelData.title)
-                                            hotSearchPopup.close()
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+        onHistoryLongPressed: (index) => {
+            console.log("长按删除搜索历史")
+            rightTopRect.removeSearchHistory(index)
+        }
+        
+        onClearHistoryClicked: {
+            console.log("清空搜索历史")
+            rightTopRect.clearSearchHistory()
+        }
+        
+        onGuessLikeClicked: (text) => {
+            console.log("点击猜你喜欢：", text)
+            rightTopRect.isSelectingFromPopup = true
+            searchBar.text = text
+            rightTopRect.performSearch(text)
+            hotSearchPopup.close()
+        }
+        
+        onRankingItemClicked: (text) => {
+            rightTopRect.isSelectingFromPopup = true
+            searchBar.text = text
+            console.log("选择榜单歌曲:", text)
+            rightTopRect.performSearch(text)
+            hotSearchPopup.close()
         }
     }
     
-    // 搜索建议弹窗（输入时显示）
-    Popup {
+    // 搜索建议弹窗
+    TopBar.SearchSuggestionPopup {
         id: searchPopup
         parent: rightTopRect
-        x:  topRow.spacing
+        x: topRow.spacing
         y: rightTopRect.height
-        width: rightTopRect.width-(topRow.spacing)-16
+        width: rightTopRect.width - topRow.spacing - 16
         height: rightBottomRect.height
-        padding: 0
-        closePolicy: Popup.NoAutoClose
         
-        background: Rectangle {
-            color: "#ffffff"
-            radius: 12
-            border.color: "#e0e0e0"
-            border.width: 1
-        }
+        model: suggestionsModel
+        searchText: searchBar.text
         
-        ListView {
-            id: suggestionList
-            anchors.fill: parent
-            clip: true
-            spacing: 0
-            model: suggestionsModel
-            
-            delegate: Rectangle {
-                width: suggestionList.width
-                height: 50
-                color: suggestionMouseArea.containsMouse ? "#f3f4f6" : "transparent"
-                
-                RowLayout {
-                    anchors.fill: parent
-                    anchors.leftMargin: 16
-                    anchors.rightMargin: 16
-                    spacing: 12
-                    
-                    // 放大镜图标
-                    Rectangle {
-                        width: 20
-                        height: 20
-                        color: "transparent"
-                        Layout.preferredWidth: 20
-                        
-                        Text {
-                            text: "🔍"
-                            font.pixelSize: 16
-                            anchors.centerIn: parent
-                        }
-                    }
-                    
-                    // 搜索建议文本（关键词高亮）
-                    Text {
-                        text: {
-                            var keyword = model.keyword
-                            var searchText = searchBar.text
-                            if (searchText === "" || keyword.indexOf(searchText) === -1) {
-                                return '<font color="#94979e">' + keyword + '</font>'
-                            }
-                            var index = keyword.indexOf(searchText)
-                            return '<font color="#94979e">' + keyword.substring(0, index) +
-                                '</font><font color="#4a5568">' + searchText +
-                                '</font><font color="#94979e">' + keyword.substring(index + searchText.length) + '</font>'
-                        }
-                        font.pixelSize: 14
-                        textFormat: Text.RichText
-                        Layout.fillWidth: true
-                    }
-                    
-                    // 类型标签
-                    Rectangle {
-                        width: typeLabel.width + 12
-                        height: 20
-                        radius: 4
-                        color: model.type === "hot" ? "#fff5f5" : 
-                               model.type === "artist" ? "#f0f9ff" : 
-                               model.type === "song" ? "#f0fdf4" : "#fef3f2"
-                        visible: model.type !== "song"
-                        Layout.preferredWidth: typeLabel.width + 12
-                        
-                        Text {
-                            id: typeLabel
-                            text: model.type === "hot" ? "热门" : 
-                                  model.type === "artist" ? "歌手" : 
-                                  model.type === "album" ? "专辑" : ""
-                            font.pixelSize: 10
-                            color: model.type === "hot" ? "#ef4444" : 
-                                   model.type === "artist" ? "#3b82f6" : "#f97316"
-                            anchors.centerIn: parent
-                        }
-                    }
-                }
-                
-                MouseArea {
-                    id: suggestionMouseArea
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: {
-                        rightTopRect.isSelectingFromPopup = true
-                        searchBar.text = model.keyword
-                        console.log("选择建议:", model.keyword, "类型:", model.type)
-                        rightTopRect.performSearch(model.keyword)
-                        searchPopup.close()
-                    }
-                }
-                
-                // 分割线
-                Rectangle {
-                    width: parent.width - 32
-                    height: 1
-                    color: "#f0f0f0"
-                    anchors.bottom: parent.bottom
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    visible: index < suggestionList.count - 1
-                }
-            }
+        onSuggestionSelected: (keyword, type) => {
+            rightTopRect.isSelectingFromPopup = true
+            searchBar.text = keyword
+            console.log("选择建议:", keyword, "类型:", type)
+            rightTopRect.performSearch(keyword)
+            searchPopup.close()
         }
+    }
+    
+    // 登录弹窗
+    TopBar.LoginPopup {
+        id: loginPopup
     }
     
     // 延迟关闭定时器
@@ -1027,248 +296,6 @@ Rectangle {
         interval: 300
         onTriggered: {
             console.log("API 请求完成，更新建议列表")
-            // 这里可以更新 suggestionsModel
-            // 例如: suggestionsModel.clear()
-            //       suggestionsModel.append({...})
-        }
-    }
-    
-    // ================== 登录弹窗 ==================
-    Popup {
-        id: loginPopup
-        parent: Overlay.overlay
-        x: (parent.width - width) / 2
-        y: (parent.height - height) / 2
-        width: 400
-        height: 560
-        modal: true
-        focus: true
-        closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
-        
-        background: Rectangle {
-            color: "#ffffff"
-            radius: 16
-            border.color: "#e0e0e0"
-            border.width: 1
-        }
-        
-        ColumnLayout {
-            anchors.fill: parent
-            anchors.margins: 24
-            spacing: 20
-            
-            // 标题
-            Text {
-                text: "扫码登录"
-                font.pixelSize: 24
-                font.bold: true
-                color: "#333333"
-                Layout.alignment: Qt.AlignHCenter
-            }
-            
-            // 二维码区域
-            Rectangle {
-                Layout.preferredWidth: 240
-                Layout.preferredHeight: 240
-                Layout.alignment: Qt.AlignHCenter
-                color: "#f5f5f5"
-                radius: 8
-                border.color: "#e0e0e0"
-                border.width: 1
-                
-                // 模拟二维码（使用网格图案）
-                Grid {
-                    anchors.centerIn: parent
-                    columns: 8
-                    rows: 8
-                    spacing: 2
-                    
-                    Repeater {
-                        model: 64
-                        Rectangle {
-                            width: 24
-                            height: 24
-                            color: {
-                                // 创建一个简单的二维码图案
-                                var pattern = [
-                                    1,1,1,1,1,1,1,0,
-                                    1,0,0,0,0,0,1,0,
-                                    1,0,1,1,1,0,1,1,
-                                    1,0,1,0,1,0,1,0,
-                                    1,0,1,1,1,0,1,1,
-                                    1,0,0,0,0,0,1,0,
-                                    1,1,1,1,1,1,1,0,
-                                    0,0,1,0,1,0,0,1
-                                ]
-                                return pattern[index] === 1 ? "#333333" : "#ffffff"
-                            }
-                            radius: 2
-                        }
-                    }
-                }
-                
-                // 刷新按钮（右上角）
-                Rectangle {
-                    width: 32
-                    height: 32
-                    radius: 16
-                    color: "#ffffff"
-                    border.color: "#e0e0e0"
-                    border.width: 1
-                    anchors.top: parent.top
-                    anchors.right: parent.right
-                    anchors.margins: 8
-                    
-                    Text {
-                        text: "🔄"
-                        font.pixelSize: 16
-                        anchors.centerIn: parent
-                    }
-                    
-                    MouseArea {
-                        anchors.fill: parent
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: {
-                            console.log("刷新二维码")
-                            // 这里可以添加刷新二维码的逻辑
-                        }
-                    }
-                }
-            }
-            
-            // 提示文字
-            Column {
-                Layout.alignment: Qt.AlignHCenter
-                spacing: 8
-                
-                Text {
-                    text: "使用手机扫描二维码登录"
-                    font.pixelSize: 16
-                    color: "#333333"
-                    anchors.horizontalCenter: parent.horizontalCenter
-                }
-                
-                Text {
-                    text: "打开手机 App，扫描上方二维码"
-                    font.pixelSize: 13
-                    color: "#999999"
-                    anchors.horizontalCenter: parent.horizontalCenter
-                }
-            }
-            
-            Item { Layout.fillHeight: true }
-            
-            // 其他登录方式
-            RowLayout {
-                Layout.fillWidth: true
-                spacing: 16
-                
-                Rectangle {
-                    Layout.fillWidth: true
-                    height: 1
-                    color: "#e0e0e0"
-                }
-                
-                Text {
-                    text: "其他登录方式"
-                    font.pixelSize: 12
-                    color: "#999999"
-                }
-                
-                Rectangle {
-                    Layout.fillWidth: true
-                    height: 1
-                    color: "#e0e0e0"
-                }
-            }
-            
-            // 登录方式按钮
-            Row {
-                Layout.alignment: Qt.AlignHCenter
-                Layout.preferredWidth: 156  // 44*3 + 12*2
-                spacing: 12
-                
-                // 手机号登录
-                Rectangle {
-                    width: 44
-                    height: 44
-                    radius: 22
-                    color: phoneMouseArea.containsMouse ? "#f5f5f5" : "#ffffff"
-                    border.color: "#e0e0e0"
-                    border.width: 1
-                    
-                    Text {
-                        text: "📱"
-                        font.pixelSize: 22
-                        anchors.centerIn: parent
-                    }
-                    
-                    MouseArea {
-                        id: phoneMouseArea
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: {
-                            console.log("手机号登录")
-                            // 这里可以切换到手机号登录界面
-                        }
-                    }
-                }
-                
-                // 邮箱登录
-                Rectangle {
-                    width: 44
-                    height: 44
-                    radius: 22
-                    color: emailMouseArea.containsMouse ? "#f5f5f5" : "#ffffff"
-                    border.color: "#e0e0e0"
-                    border.width: 1
-                    
-                    Text {
-                        text: "📧"
-                        font.pixelSize: 22
-                        anchors.centerIn: parent
-                    }
-                    
-                    MouseArea {
-                        id: emailMouseArea
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: {
-                            console.log("邮箱登录")
-                            // 这里可以切换到邮箱登录界面
-                        }
-                    }
-                }
-                
-                // 微信登录
-                Rectangle {
-                    width: 44
-                    height: 44
-                    radius: 22
-                    color: wechatMouseArea.containsMouse ? "#f5f5f5" : "#ffffff"
-                    border.color: "#e0e0e0"
-                    border.width: 1
-                    
-                    Text {
-                        text: "💬"
-                        font.pixelSize: 22
-                        anchors.centerIn: parent
-                    }
-                    
-                    MouseArea {
-                        id: wechatMouseArea
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: {
-                            console.log("微信登录")
-                            // 这里可以切换到微信登录界面
-                        }
-                    }
-                }
-            }
         }
     }
 }
