@@ -1,13 +1,93 @@
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Layouts
 import "./components/topbar"
 
 Rectangle {
     id: rightTopRect
     height: 60
     color: "#2d2d37"
+    
+    // 搜索建议数据模型 - 模拟 API 返回的 JSON 结构
+    ListModel {
+        id: suggestionsModel
+        ListElement {
+            type: "hot"
+            keyword: "热门歌曲"
+            icon: "🔥"
+        }
+        ListElement {
+            type: "artist"
+            keyword: "周杰伦"
+            icon: "👤"
+        }
+        ListElement {
+            type: "song"
+            keyword: "告白气球"
+            icon: "🎵"
+        }
+        ListElement {
+            type: "song"
+            keyword: "晴天"
+            icon: "🎵"
+        }
+        ListElement {
+            type: "song"
+            keyword: "稻香"
+            icon: "🎵"
+        }
+        ListElement {
+            type: "album"
+            keyword: "七里香"
+            icon: "💿"
+        }
+    }
+    
+    // 热门搜索数据模型
+    ListModel {
+        id: hotSearchModel
+        ListElement {
+            keyword: "周杰伦新歌"
+            hotIndex: 1
+            isHot: true
+        }
+        ListElement {
+            keyword: "告白气球"
+            hotIndex: 2
+            isHot: true
+        }
+        ListElement {
+            keyword: "晴天"
+            hotIndex: 3
+            isHot: false
+        }
+        ListElement {
+            keyword: "稻香"
+            hotIndex: 4
+            isHot: false
+        }
+        ListElement {
+            keyword: "七里香"
+            hotIndex: 5
+            isHot: false
+        }
+    }
+    
+    // 模拟 API 请求函数
+    function fetchSuggestions(query) {
+        console.log("模拟 API 请求:", query)
+        // 这里可以添加实际的网络请求
+        // 例如: xhr.get("https://api.example.com/search?q=" + query)
+        
+        // 模拟延迟
+        searchTimer.restart()
+    }
+    
+    // 标志：是否正在从弹窗选择项（避免触发搜索建议）
+    property bool isSelectingFromPopup: false
 
     Row {
+        id: topRow
         anchors.fill: parent
         anchors.leftMargin: 16
         anchors.rightMargin: 16
@@ -23,10 +103,45 @@ Rectangle {
 
         // 搜索框
         SearchBar {
+            id: searchBar
             width: parent.width - 450
             anchors.verticalCenter: parent.verticalCenter
-            onSearchRequested: (text) => console.log("搜索:", text)
+            
+            onSearchRequested: (text) => {
+                console.log("搜索:", text)
+                searchPopup.close()
+            }
+            
             onVoiceSearchRequested: console.log("语音搜索")
+            
+            onInputTextChanged: (text) => {
+                // 如果是从弹窗选择的，不触发搜索建议
+                if (rightTopRect.isSelectingFromPopup) {
+                    rightTopRect.isSelectingFromPopup = false
+                    return
+                }
+                
+                if (text.length > 0) {
+                    rightTopRect.fetchSuggestions(text)
+                    hotSearchPopup.close()
+                    searchPopup.open()
+                } else {
+                    searchPopup.close()
+                    // 如果文本被清空且搜索框有焦点，显示热搜弹窗
+                    if (searchBar.hasFocus) {
+                        hotSearchPopup.open()
+                    }
+                }
+            }
+            
+            onInputFocusChanged: (hasFocus) => {
+                if (hasFocus && searchBar.text.length === 0) {
+                    hotSearchPopup.open()
+                    searchPopup.close()
+                } else if (!hasFocus) {
+                    closeTimer.start()
+                }
+            }
         }
         
         // 弹簧占位
@@ -79,6 +194,337 @@ Rectangle {
         // 系统控制按钮
         WindowControl {
             anchors.verticalCenter: parent.verticalCenter
+        }
+    }
+    
+    // 热门搜索弹窗（焦点聚焦时显示）- 多标签榜单
+    Popup {
+        id: hotSearchPopup
+        parent: rightTopRect
+        // x: topRow.anchors.leftMargin + 32 + topRow.spacing
+        x:  topRow.spacing
+        y: rightTopRect.height
+        width: rightTopRect.width-(topRow.spacing)-16
+        height: rightBottomRect.height
+        padding: 0
+        closePolicy: Popup.NoAutoClose
+        
+        background: Rectangle {
+            color: "#ffffff"
+            radius: 12
+            border.color: "#e0e0e0"
+            border.width: 1
+        }
+        
+        Column {
+            anchors.fill: parent
+            spacing: 0
+            
+            // 标签栏
+            TabBar {
+                id: tabBar
+                width: parent.width
+                height: 44
+                background: Rectangle { 
+                    color: "#f8f8f8"
+                    radius: 12
+                }
+                
+                TabButton {
+                    text: "热搜榜"
+                    font.pixelSize: 13
+                    width: implicitWidth
+                }
+                TabButton {
+                    text: "说唱榜"
+                    font.pixelSize: 13
+                    width: implicitWidth
+                }
+                TabButton {
+                    text: "古风榜"
+                    font.pixelSize: 13
+                    width: implicitWidth
+                }
+                TabButton {
+                    text: "摇滚榜"
+                    font.pixelSize: 13
+                    width: implicitWidth
+                }
+            }
+            
+            // 内容切换区域
+            StackLayout {
+                width: parent.width
+                height: parent.height - 44
+                currentIndex: tabBar.currentIndex
+                
+                // 1. 热搜榜
+                ListView {
+                    clip: true
+                    model: ListModel {
+                        ListElement { rank: "1"; title: "海屿你"; tag: "爆" }
+                        ListElement { rank: "2"; title: "雨爱"; tag: "" }
+                        ListElement { rank: "3"; title: "眼泪的汛期"; tag: "" }
+                        ListElement { rank: "4"; title: "一半一半"; tag: "" }
+                        ListElement { rank: "5"; title: "幻痛药"; tag: "" }
+                        ListElement { rank: "6"; title: "巴拉莱卡"; tag: "" }
+                        ListElement { rank: "7"; title: "fadinglight"; tag: "↑" }
+                        ListElement { rank: "8"; title: "春"; tag: "" }
+                        ListElement { rank: "9"; title: "该怎么办"; tag: "↑" }
+                    }
+                    delegate: rankDelegate
+                }
+                
+                // 2. 说唱榜
+                ListView {
+                    clip: true
+                    model: ListModel {
+                        ListElement { rank: "1"; title: "DD backseat"; tag: "" }
+                        ListElement { rank: "2"; title: "故意没接"; tag: "" }
+                        ListElement { rank: "3"; title: "十里"; tag: "" }
+                        ListElement { rank: "4"; title: "山歌王"; tag: "" }
+                        ListElement { rank: "5"; title: "1 On 1"; tag: "" }
+                        ListElement { rank: "6"; title: "21爱"; tag: "" }
+                        ListElement { rank: "7"; title: "隐藏相册"; tag: "" }
+                        ListElement { rank: "8"; title: "仙人模式"; tag: "" }
+                        ListElement { rank: "9"; title: "烟圈"; tag: "" }
+                    }
+                    delegate: rankDelegate
+                }
+                
+                // 3. 古风榜
+                ListView {
+                    clip: true
+                    model: ListModel {
+                        ListElement { rank: "1"; title: "我本将心向明月"; tag: "" }
+                        ListElement { rank: "2"; title: "咏春"; tag: "" }
+                        ListElement { rank: "3"; title: "知我"; tag: "" }
+                        ListElement { rank: "4"; title: "一程山路"; tag: "" }
+                        ListElement { rank: "5"; title: "诀别书"; tag: "" }
+                        ListElement { rank: "6"; title: "武家坡2021"; tag: "" }
+                        ListElement { rank: "7"; title: "牵丝戏"; tag: "" }
+                        ListElement { rank: "8"; title: "我恨明月不照我"; tag: "" }
+                        ListElement { rank: "9"; title: "江南雪"; tag: "" }
+                    }
+                    delegate: rankDelegate
+                }
+                
+                // 4. 摇滚榜
+                ListView {
+                    clip: true
+                    model: ListModel {
+                        ListElement { rank: "1"; title: "夜空中最亮的星"; tag: "" }
+                        ListElement { rank: "2"; title: "无法逃脱"; tag: "" }
+                        ListElement { rank: "3"; title: "向阳花"; tag: "" }
+                        ListElement { rank: "4"; title: "公路之歌"; tag: "" }
+                        ListElement { rank: "5"; title: "再见杰克"; tag: "" }
+                        ListElement { rank: "6"; title: "山海"; tag: "" }
+                        ListElement { rank: "7"; title: "西湖"; tag: "" }
+                        ListElement { rank: "8"; title: "杀死那个石家庄人"; tag: "" }
+                        ListElement { rank: "9"; title: "蓝莲花"; tag: "" }
+                    }
+                    delegate: rankDelegate
+                }
+            }
+        }
+    }
+    
+    // 榜单列表项组件
+    Component {
+        id: rankDelegate
+        Rectangle {
+            width: ListView.view ? ListView.view.width : 0
+            height: 44
+            color: rankMouseArea.containsMouse ? "#f5f5f5" : (index % 2 === 0 ? "#fafafa" : "#ffffff")
+            
+            Row {
+                anchors.fill: parent
+                anchors.leftMargin: 16
+                anchors.rightMargin: 16
+                spacing: 12
+                
+                // 排名
+                Text {
+                    text: model.rank
+                    font.pixelSize: 14
+                    font.bold: model.rank <= 3
+                    color: model.rank <= 3 ? "#ec4141" : "#999999"
+                    width: 24
+                    anchors.verticalCenter: parent.verticalCenter
+                    horizontalAlignment: Text.AlignHCenter
+                }
+                
+                // 标题
+                Text {
+                    text: model.title
+                    font.pixelSize: 13
+                    color: "#333333"
+                    width: parent.width - 80
+                    elide: Text.ElideRight
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+                
+                // 标签
+                Rectangle {
+                    width: 28
+                    height: 18
+                    radius: 4
+                    color: model.tag === "爆" ? "#ec4141" : (model.tag === "↑" ? "#00b42a" : "transparent")
+                    visible: model.tag !== ""
+                    anchors.verticalCenter: parent.verticalCenter
+                    
+                    Text {
+                        text: model.tag
+                        font.pixelSize: 10
+                        font.bold: true
+                        color: "#ffffff"
+                        anchors.centerIn: parent
+                    }
+                }
+            }
+            
+            MouseArea {
+                id: rankMouseArea
+                anchors.fill: parent
+                hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
+                onClicked: {
+                    rightTopRect.isSelectingFromPopup = true
+                    searchBar.text = model.title
+                    console.log("选择榜单歌曲:", model.title)
+                    hotSearchPopup.close()
+                }
+            }
+        }
+    }
+    
+    // 搜索建议弹窗（输入时显示）
+    Popup {
+        id: searchPopup
+        parent: rightTopRect
+        // x: topRow.anchors.leftMargin + 32 + topRow.spacing
+        x:  topRow.spacing
+        y: rightTopRect.height
+        width: rightTopRect.width-(topRow.spacing)-16
+        height: rightBottomRect.height
+        padding: 0
+        closePolicy: Popup.NoAutoClose
+        
+        background: Rectangle {
+            color: "#ffffff"
+            radius: 12
+            border.color: "#e0e0e0"
+            border.width: 1
+        }
+        
+        ListView {
+            id: suggestionList
+            anchors.fill: parent
+            clip: true
+            model: suggestionsModel
+            
+            delegate: Rectangle {
+                width: suggestionList.width
+                height: 40
+                color: suggestionMouseArea.containsMouse ? "#f5f5f5" : "transparent"
+                
+                Row {
+                    anchors.fill: parent
+                    anchors.leftMargin: 16
+                    anchors.rightMargin: 16
+                    spacing: 12
+                    
+                    // 类型图标
+                    Text {
+                        text: model.icon
+                        font.pixelSize: 14
+                        color: "#999999"
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+                    
+                    // 关键词
+                    Text {
+                        text: model.keyword
+                        font.pixelSize: 13
+                        color: "#333333"
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+                    
+                    // 弹簧
+                    Item {
+                        width: Math.max(0, suggestionList.width - 150)
+                        height: 1
+                    }
+                    
+                    // 类型标签
+                    Rectangle {
+                        width: typeLabel.width + 12
+                        height: 20
+                        radius: 4
+                        color: model.type === "hot" ? "#fff5f5" : 
+                               model.type === "artist" ? "#f0f9ff" : 
+                               model.type === "song" ? "#f0fdf4" : "#fef3f2"
+                        anchors.verticalCenter: parent.verticalCenter
+                        visible: model.type !== "song"
+                        
+                        Text {
+                            id: typeLabel
+                            text: model.type === "hot" ? "热门" : 
+                                  model.type === "artist" ? "歌手" : 
+                                  model.type === "album" ? "专辑" : ""
+                            font.pixelSize: 10
+                            color: model.type === "hot" ? "#ef4444" : 
+                                   model.type === "artist" ? "#3b82f6" : "#f97316"
+                            anchors.centerIn: parent
+                        }
+                    }
+                }
+                
+                MouseArea {
+                    id: suggestionMouseArea
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: {
+                        rightTopRect.isSelectingFromPopup = true
+                        searchBar.text = model.keyword
+                        console.log("选择建议:", model.keyword, "类型:", model.type)
+                        searchPopup.close()
+                    }
+                }
+                
+                // 分割线
+                Rectangle {
+                    width: parent.width - 32
+                    height: 1
+                    color: "#f0f0f0"
+                    anchors.bottom: parent.bottom
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    visible: index < suggestionList.count - 1
+                }
+            }
+        }
+    }
+    
+    // 延迟关闭定时器
+    Timer {
+        id: closeTimer
+        interval: 200
+        onTriggered: {
+            searchPopup.close()
+            hotSearchPopup.close()
+        }
+    }
+    
+    // 模拟 API 请求延迟
+    Timer {
+        id: searchTimer
+        interval: 300
+        onTriggered: {
+            console.log("API 请求完成，更新建议列表")
+            // 这里可以更新 suggestionsModel
+            // 例如: suggestionsModel.clear()
+            //       suggestionsModel.append({...})
         }
     }
 }

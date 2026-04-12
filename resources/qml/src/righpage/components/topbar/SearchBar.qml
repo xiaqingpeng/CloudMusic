@@ -9,6 +9,12 @@ Rectangle {
     
     signal searchRequested(string text)
     signal voiceSearchRequested()
+    signal suggestionSelected(string text)
+    signal inputTextChanged(string text)
+    signal inputFocusChanged(bool hasFocus)
+    
+    property alias text: searchField.text
+    property bool hasFocus: searchField.activeFocus
     
     Row {
         anchors.fill: parent
@@ -27,7 +33,17 @@ Rectangle {
             verticalAlignment: TextInput.AlignVCenter
             placeholderTextColor: "#999999"
             
-            onAccepted: searchBar.searchRequested(text)
+            onAccepted: {
+                searchBar.searchRequested(text)
+            }
+            
+            onTextChanged: {
+                searchBar.inputTextChanged(text)
+            }
+            
+            onFocusChanged: {
+                searchBar.inputFocusChanged(focus)
+            }
         }
         
         Image {
