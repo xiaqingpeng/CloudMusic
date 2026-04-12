@@ -2,95 +2,19 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import "./components/topbar" as TopBar
+import "../viewmodels"
 
 Rectangle {
     id: rightTopRect
     height: 60
     color: "#2d2d37"
     
-    // 搜索建议数据模型
-    ListModel {
-        id: suggestionsModel
-        ListElement { type: "hot"; keyword: "热门歌曲"; icon: "🔥" }
-        ListElement { type: "artist"; keyword: "周杰伦"; icon: "👤" }
-        ListElement { type: "song"; keyword: "告白气球"; icon: "🎵" }
-        ListElement { type: "song"; keyword: "晴天"; icon: "🎵" }
-        ListElement { type: "song"; keyword: "稻香"; icon: "🎵" }
-        ListElement { type: "album"; keyword: "七里香"; icon: "💿" }
-    }
+    // ========== 使用全局单例 ViewModel ==========
+    // SearchViewModel 现在是全局单例，可以在任何地方访问
+    // 通过 SearchViewModel.xxx 直接使用
     
-    // 搜索历史数据模型
-    ListModel {
-        id: searchHistoryModel
-        ListElement { text: "傻女" }
-        ListElement { text: "深圳838" }
-        ListElement { text: "DJ阿智" }
-        ListElement { text: "刘德华" }
-        ListElement { text: "李荣浩" }
-        ListElement { text: "张杰" }
-        ListElement { text: "深圳" }
-    }
-    
-    // 猜你喜欢数据模型
-    ListModel {
-        id: guessLikeModel
-        ListElement { text: "海屿你" }
-        ListElement { text: "小半" }
-        ListElement { text: "DJ阿智" }
-        ListElement { text: "郑润泽" }
-        ListElement { text: "精卫" }
-        ListElement { text: "雨过后的风景" }
-        ListElement { text: "颜人中" }
-        ListElement { text: "陈奕迅" }
-        ListElement { text: "林俊杰" }
-        ListElement { text: "毛不易" }
-        ListElement { text: "知我" }
-        ListElement { text: "陶喆" }
-        ListElement { text: "孙燕姿" }
-        ListElement { text: "苦茶子" }
-        ListElement { text: "薛之谦" }
-        ListElement { text: "张杰" }
-        ListElement { text: "赵雷" }
-        ListElement { text: "红色高跟鞋" }
-    }
-    
-    property bool isSelectingFromPopup: false
-    
-    // 搜索相关函数
-    function fetchSuggestions(query) {
-        console.log("模拟 API 请求:", query)
-        searchTimer.restart()
-    }
-    
-    function addSearchHistory(text) {
-        if (text === "") return
-        
-        for (var i = 0; i < searchHistoryModel.count; i++) {
-            if (searchHistoryModel.get(i).text === text) {
-                searchHistoryModel.move(i, 0, 1)
-                return
-            }
-        }
-        
-        searchHistoryModel.insert(0, { text: text })
-        
-        if (searchHistoryModel.count > 10) {
-            searchHistoryModel.remove(10, searchHistoryModel.count - 10)
-        }
-    }
-    
-    function removeSearchHistory(index) {
-        searchHistoryModel.remove(index)
-    }
-    
-    function clearSearchHistory() {
-        searchHistoryModel.clear()
-    }
-    
-    function performSearch(text) {
-        if (text === "") return
-        console.log("执行搜索:", text)
-        addSearchHistory(text)
+    Component.onCompleted: {
+        console.log("MyRightTopRect: 使用全局 SearchViewModel")
     }
 
     Row {
@@ -115,8 +39,7 @@ Rectangle {
             anchors.verticalCenter: parent.verticalCenter
             
             onSearchRequested: (text) => {
-                console.log("搜索:", text)
-                rightTopRect.performSearch(text)
+                SearchViewModel.performSearch(text)
                 searchPopup.close()
                 hotSearchPopup.close()
             }
@@ -124,13 +47,13 @@ Rectangle {
             onVoiceSearchRequested: console.log("语音搜索")
             
             onInputTextChanged: (text) => {
-                if (rightTopRect.isSelectingFromPopup) {
-                    rightTopRect.isSelectingFromPopup = false
+                if (SearchViewModel.isSelectingFromPopup) {
+                    SearchViewModel.isSelectingFromPopup = false
                     return
                 }
                 
                 if (text.length > 0) {
-                    rightTopRect.fetchSuggestions(text)
+                    SearchViewModel.fetchSuggestions(text)
                     hotSearchPopup.close()
                     searchPopup.open()
                 } else {
@@ -160,10 +83,14 @@ Rectangle {
         // 未登录按钮
         TopBar.TextButton {
             anchors.verticalCenter: parent.verticalCenter
-            text: "未登录"
+            text: SearchViewModel.isLoggedIn ? SearchViewModel.userName : "未登录"
             onClicked: {
-                console.log("登录")
-                loginPopup.open()
+                if (!SearchViewModel.isLoggedIn) {
+                    console.log("登录")
+                    loginPopup.open()
+                } else {
+                    console.log("用户中心")
+                }
             }
         }
         
@@ -216,40 +143,40 @@ Rectangle {
         width: rightTopRect.width - topRow.spacing - 16
         height: rightBottomRect.height
         
-        searchHistoryModel: searchHistoryModel
-        guessLikeModel: guessLikeModel
+        searchHistoryModel: SearchViewModel.searchHistoryModel
+        guessLikeModel: SearchViewModel.guessLikeModel
         
         onHistoryClicked: (text) => {
             console.log("点击搜索历史：", text)
-            rightTopRect.isSelectingFromPopup = true
+            SearchViewModel.isSelectingFromPopup = true
             searchBar.text = text
-            rightTopRect.performSearch(text)
+            SearchViewModel.performSearch(text)
             hotSearchPopup.close()
         }
         
         onHistoryLongPressed: (index) => {
             console.log("长按删除搜索历史")
-            rightTopRect.removeSearchHistory(index)
+            SearchViewModel.removeSearchHistory(index)
         }
         
         onClearHistoryClicked: {
             console.log("清空搜索历史")
-            rightTopRect.clearSearchHistory()
+            SearchViewModel.clearSearchHistory()
         }
         
         onGuessLikeClicked: (text) => {
             console.log("点击猜你喜欢：", text)
-            rightTopRect.isSelectingFromPopup = true
+            SearchViewModel.isSelectingFromPopup = true
             searchBar.text = text
-            rightTopRect.performSearch(text)
+            SearchViewModel.performSearch(text)
             hotSearchPopup.close()
         }
         
         onRankingItemClicked: (text) => {
-            rightTopRect.isSelectingFromPopup = true
+            SearchViewModel.isSelectingFromPopup = true
             searchBar.text = text
             console.log("选择榜单歌曲:", text)
-            rightTopRect.performSearch(text)
+            SearchViewModel.performSearch(text)
             hotSearchPopup.close()
         }
     }
@@ -263,14 +190,14 @@ Rectangle {
         width: rightTopRect.width - topRow.spacing - 16
         height: rightBottomRect.height
         
-        model: suggestionsModel
+        model: SearchViewModel.suggestionsModel
         searchText: searchBar.text
         
         onSuggestionSelected: (keyword, type) => {
-            rightTopRect.isSelectingFromPopup = true
+            SearchViewModel.isSelectingFromPopup = true
             searchBar.text = keyword
             console.log("选择建议:", keyword, "类型:", type)
-            rightTopRect.performSearch(keyword)
+            SearchViewModel.performSearch(keyword)
             searchPopup.close()
         }
     }
@@ -278,6 +205,21 @@ Rectangle {
     // 登录弹窗
     TopBar.LoginPopup {
         id: loginPopup
+        
+        onPhoneLoginClicked: {
+            console.log("手机号登录")
+            // 模拟登录成功
+            SearchViewModel.login("用户123")
+            loginPopup.close()
+        }
+        
+        onEmailLoginClicked: {
+            console.log("邮箱登录")
+        }
+        
+        onWechatLoginClicked: {
+            console.log("微信登录")
+        }
     }
     
     // 延迟关闭定时器
@@ -287,15 +229,6 @@ Rectangle {
         onTriggered: {
             searchPopup.close()
             hotSearchPopup.close()
-        }
-    }
-    
-    // 模拟 API 请求延迟
-    Timer {
-        id: searchTimer
-        interval: 300
-        onTriggered: {
-            console.log("API 请求完成，更新建议列表")
         }
     }
 }

@@ -1,0 +1,2 @@
+module viewmodels
+singleton SearchViewModel 1.0 SearchViewModel.qml

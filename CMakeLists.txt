@@ -4,6 +4,7 @@ project(CloudMusic VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_STANDARD 17)
 
 find_package(Qt6 REQUIRED COMPONENTS Quick)
 
@@ -37,6 +38,7 @@ qt_add_qml_module(appCloudMusic
         resources/qml/src/righpage/components/topbar/SearchSuggestionPopup.qml
         resources/qml/src/righpage/components/topbar/HotSearchPopup.qml
         resources/qml/src/righpage/components/topbar/LoginPopup.qml
+        resources/qml/src/viewmodels/SearchViewModel.qml
         resources/qml/src/righpage/components/bannerswiper/BannerSwiper.qml
         resources/qml/src/righpage/components/songlist/SongListCard.qml
         resources/qml/src/righpage/components/audiobook/AudioBookCard.qml
@@ -71,7 +73,8 @@ set_target_properties(appCloudMusic PROPERTIES
 )
 
 target_link_libraries(appCloudMusic
-    PRIVATE Qt6::Quick
+    PRIVATE 
+    Qt6::Quick
 )
 
 include(GNUInstallDirs)

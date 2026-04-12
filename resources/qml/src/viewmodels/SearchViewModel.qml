@@ -1,5 +1,7 @@
 import QtQuick
 
+pragma Singleton
+
 QtObject {
     id: viewModel
     
