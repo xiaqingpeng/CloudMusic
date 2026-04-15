@@ -2,6 +2,14 @@ cmake_minimum_required(VERSION 3.16)
 
 project(CloudMusic VERSION 0.1 LANGUAGES CXX)
 
+# Set CMake policies for Qt6
+if(POLICY CMP0071)
+    cmake_policy(SET CMP0071 NEW)
+endif()
+if(POLICY CMP0100)
+    cmake_policy(SET CMP0100 NEW)
+endif()
+
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_STANDARD 17)
@@ -63,6 +71,34 @@ qt_add_qml_module(appCloudMusic
         resources/qrc/icon/music.svg
 )
 
+# Generate app icon from PNG
+set(APP_ICON_PNG "${CMAKE_SOURCE_DIR}/resources/image/appicon.png")
+set(APP_ICON_ICNS "${CMAKE_BINARY_DIR}/AppIcon.icns")
+
+if(APPLE AND EXISTS "${APP_ICON_PNG}")
+    # Always generate icon at configure time for development builds
+    execute_process(
+        COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_BINARY_DIR}/icon_temp"
+    )
+    
+    add_custom_command(
+        OUTPUT "${APP_ICON_ICNS}"
+        COMMAND ${CMAKE_SOURCE_DIR}/scripts/create-icns-from-png.sh "${APP_ICON_PNG}" "${APP_ICON_ICNS}"
+        DEPENDS "${APP_ICON_PNG}" "${CMAKE_SOURCE_DIR}/scripts/create-icns-from-png.sh"
+        COMMENT "Generating app icon from appicon.png..."
+        VERBATIM
+    )
+    add_custom_target(generate_icon ALL DEPENDS "${APP_ICON_ICNS}")
+    add_dependencies(appCloudMusic generate_icon)
+    
+    # Set app icon for macOS bundle
+    set_source_files_properties("${APP_ICON_ICNS}" PROPERTIES
+        MACOSX_PACKAGE_LOCATION Resources
+        GENERATED TRUE
+    )
+    target_sources(appCloudMusic PRIVATE "${APP_ICON_ICNS}")
+endif()
+
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an
 # explicit, fixed bundle identifier manually though.
@@ -72,8 +108,12 @@ set_target_properties(appCloudMusic PROPERTIES
     MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
     MACOSX_BUNDLE_BUNDLE_NAME "CloudMusic"
     MACOSX_BUNDLE_INFO_STRING "CloudMusic - A Qt-based Music Player"
+    MACOSX_BUNDLE_ICON_FILE AppIcon
     MACOSX_BUNDLE TRUE
     WIN32_EXECUTABLE TRUE
+    XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY "-"
+    XCODE_ATTRIBUTE_CODE_SIGN_ENTITLEMENTS ""
+    XCODE_ATTRIBUTE_ENABLE_HARDENED_RUNTIME YES
 )
 
 target_link_libraries(appCloudMusic
@@ -88,6 +128,16 @@ install(TARGETS appCloudMusic
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
+# macOS code signing
+if(APPLE)
+    # Ad-hoc code signing for development
+    add_custom_command(TARGET appCloudMusic POST_BUILD
+        COMMAND codesign --force --deep --sign - "$<TARGET_BUNDLE_DIR:appCloudMusic>"
+        COMMENT "Ad-hoc signing the application bundle..."
+        VERBATIM
+    )
+endif()
+
 # macOS DMG packaging
 if(APPLE)
     # Deploy Qt dependencies
@@ -95,7 +145,7 @@ if(APPLE)
     
     if(MACDEPLOYQT_EXECUTABLE)
         add_custom_target(deploy
-            COMMAND "${MACDEPLOYQT_EXECUTABLE}" "$<TARGET_BUNDLE_DIR:appCloudMusic>" -qmldir="${CMAKE_SOURCE_DIR}/resources/qml/src"
+            COMMAND "${MACDEPLOYQT_EXECUTABLE}" "$<TARGET_BUNDLE_DIR:appCloudMusic>" -qmldir="${CMAKE_SOURCE_DIR}/resources/qml/src" -codesign=-
             DEPENDS appCloudMusic
             COMMENT "Running macdeployqt to bundle Qt dependencies..."
         )

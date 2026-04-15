@@ -51,6 +51,14 @@ build/CloudMusic-0.1.dmg
 - Qt 6.x 已安装
 - CMake 3.16 或更高版本
 
+## 应用图标
+
+应用图标使用 `resources/image/appicon.png` 自动生成。构建时会自动转换为 macOS 所需的 .icns 格式。
+
+图标会在构建时使用 macOS 内置的 sips 工具自动生成多种尺寸（16x16 到 1024x1024），包括 Retina 显示屏的 @2x 版本。
+
+开发模式和发布模式都会自动生成和使用图标。
+
 ## 故障排除
 
 如果遇到 "macdeployqt not found" 错误：
