@@ -67,9 +67,11 @@ qt_add_qml_module(appCloudMusic
 # If you are developing for iOS or macOS you should consider setting an
 # explicit, fixed bundle identifier manually though.
 set_target_properties(appCloudMusic PROPERTIES
-#    MACOSX_BUNDLE_GUI_IDENTIFIER com.example.appCloudMusic
+    MACOSX_BUNDLE_GUI_IDENTIFIER com.cloudmusic.app
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
     MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
+    MACOSX_BUNDLE_BUNDLE_NAME "CloudMusic"
+    MACOSX_BUNDLE_INFO_STRING "CloudMusic - A Qt-based Music Player"
     MACOSX_BUNDLE TRUE
     WIN32_EXECUTABLE TRUE
 )
@@ -85,3 +87,30 @@ install(TARGETS appCloudMusic
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
+
+# macOS DMG packaging
+if(APPLE)
+    # Deploy Qt dependencies
+    find_program(MACDEPLOYQT_EXECUTABLE macdeployqt HINTS "${Qt6_DIR}/../../../bin")
+    
+    if(MACDEPLOYQT_EXECUTABLE)
+        add_custom_target(deploy
+            COMMAND "${MACDEPLOYQT_EXECUTABLE}" "$<TARGET_BUNDLE_DIR:appCloudMusic>" -qmldir="${CMAKE_SOURCE_DIR}/resources/qml/src"
+            DEPENDS appCloudMusic
+            COMMENT "Running macdeployqt to bundle Qt dependencies..."
+        )
+        
+        # Create DMG
+        add_custom_target(packageDmg
+            COMMAND ${CMAKE_COMMAND} -E echo "Creating DMG package..."
+            COMMAND ${CMAKE_SOURCE_DIR}/scripts/create-dmg.sh 
+                "$<TARGET_BUNDLE_DIR:appCloudMusic>"
+                "${CMAKE_BINARY_DIR}/CloudMusic-${PROJECT_VERSION}.dmg"
+                "CloudMusic"
+            DEPENDS deploy
+            COMMENT "Creating DMG installer..."
+        )
+    else()
+        message(WARNING "macdeployqt not found. DMG packaging will not be available.")
+    endif()
+endif()
