@@ -53,7 +53,7 @@ QtObject {
     signal nextSongRequested()
     signal previousSongRequested()
     signal seekRequested(real position)
-    signal volumeChanged(int volume)
+    signal volumeAdjusted(int volume)
     signal songChanged(int index)
     
     // ========== 播放控制方法 ==========
@@ -105,7 +105,7 @@ QtObject {
     // ========== 音量控制 ==========
     function setVolume(vol) {
         volume = Math.max(0, Math.min(100, vol))
-        volumeChanged(volume)
+        volumeAdjusted(volume)
         console.log("MusicPlayerViewModel: 音量设置为", volume)
     }
     

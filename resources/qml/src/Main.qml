@@ -1,11 +1,10 @@
 import QtQuick
 import QtQuick.Window
-
+import CloudMusic
 import "./leftpage"
 import "./righpage"
 import "./bottompage"
 import "./commonui"
-import "./viewmodels"
 
 MyWindowRect {
     id: window

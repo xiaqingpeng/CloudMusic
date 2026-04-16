@@ -1,8 +1,8 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import CloudMusic
 import "./components/topbar" as TopBar
-import "../viewmodels"
 
 Rectangle {
     id: rightTopRect
@@ -27,7 +27,7 @@ Rectangle {
         // 返回按钮
         TopBar.IconButton {
             anchors.verticalCenter: parent.verticalCenter
-            iconSource: "qrc:/CloudMusic/resources/qrc/icon/left.svg"
+            iconSource: "qrc:/qt/qml/CloudMusic/resources/qrc/icon/left.svg"
             color: "#3d3d47"
             onClicked: console.log("返回")
         }
@@ -110,19 +110,19 @@ Rectangle {
             anchors.verticalCenter: parent.verticalCenter
             
             TopBar.IconButton {
-                iconSource: "qrc:/CloudMusic/resources/qrc/icon/down.svg"
+                iconSource: "qrc:/qt/qml/CloudMusic/resources/qrc/icon/down.svg"
                 tooltip: "下载"
                 onClicked: console.log("下载")
             }
             
             TopBar.IconButton {
-                iconSource: "qrc:/CloudMusic/resources/qrc/icon/down_s.svg"
+                iconSource: "qrc:/qt/qml/CloudMusic/resources/qrc/icon/down_s.svg"
                 tooltip: "换肤"
                 onClicked: console.log("换肤")
             }
             
             TopBar.IconButton {
-                iconSource: "qrc:/CloudMusic/resources/qrc/icon/setting.svg"
+                iconSource: "qrc:/qt/qml/CloudMusic/resources/qrc/icon/setting.svg"
                 tooltip: "设置"
                 onClicked: console.log("设置")
             }

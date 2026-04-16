@@ -107,12 +107,12 @@ QtObject {
     
     // ========== 分类数据 ==========
     property ListModel categories: ListModel {
-        ListElement { name: "全部"; id: "all" }
-        ListElement { name: "悬疑"; id: "mystery" }
-        ListElement { name: "言情"; id: "romance" }
-        ListElement { name: "都市"; id: "urban" }
-        ListElement { name: "玄幻"; id: "fantasy" }
-        ListElement { name: "历史"; id: "history" }
+        ListElement { name: "全部"; categoryId: "all" }
+        ListElement { name: "悬疑"; categoryId: "mystery" }
+        ListElement { name: "言情"; categoryId: "romance" }
+        ListElement { name: "都市"; categoryId: "urban" }
+        ListElement { name: "玄幻"; categoryId: "fantasy" }
+        ListElement { name: "历史"; categoryId: "history" }
     }
     
     property string currentCategory: "all"

@@ -1,5 +1,6 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
+#include <QDebug>
 
 int main(int argc, char *argv[])
 {
@@ -8,7 +9,18 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
 
     QQmlApplicationEngine engine;
-    const QUrl url(QStringLiteral("qrc:/CloudMusic/resources/qml/src/Main.qml"));
+    
+    // Add import path for CloudMusic module
+    engine.addImportPath("qrc:/");
+    engine.addImportPath("qrc:/CloudMusic");
+    
+    // Debug: Print import paths
+    qDebug() << "QML Import Paths:";
+    for (const QString &path : engine.importPathList()) {
+      //  qDebug() << "  " << path;
+    }
+    
+    const QUrl url(QStringLiteral("qrc:/qt/qml/CloudMusic/resources/qml/src/Main.qml"));
     QObject::connect(
         &engine,
         &QQmlApplicationEngine::objectCreated,

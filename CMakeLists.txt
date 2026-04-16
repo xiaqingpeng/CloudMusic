@@ -2,7 +2,12 @@ cmake_minimum_required(VERSION 3.16)
 
 project(CloudMusic VERSION 0.1 LANGUAGES CXX)
 
-# Set CMake policies for Qt6
+# Set default build type
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "Build type" FORCE)
+endif()
+
+# Set Qt policies
 if(POLICY CMP0071)
     cmake_policy(SET CMP0071 NEW)
 endif()
@@ -16,9 +21,24 @@ set(CMAKE_CXX_STANDARD 17)
 
 find_package(Qt6 REQUIRED COMPONENTS Quick)
 
+# Set Qt QML policies (must be after find_package)
+if(COMMAND qt_policy)
+    qt_policy(SET QTP0001 NEW)
+    qt_policy(SET QTP0004 NEW)
+endif()
+
 
 qt_add_executable(appCloudMusic
     main.cpp
+)
+
+# Set singleton property before adding to module
+set_source_files_properties(
+    resources/qml/src/viewmodels/SearchViewModel.qml
+    resources/qml/src/viewmodels/MusicPlayerViewModel.qml  
+    resources/qml/src/viewmodels/ContentViewModel.qml
+    PROPERTIES
+        QT_QML_SINGLETON_TYPE TRUE
 )
 
 qt_add_qml_module(appCloudMusic
