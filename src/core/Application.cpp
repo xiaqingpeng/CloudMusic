@@ -12,7 +12,7 @@ Application& Application::instance() {
     return instance;
 }
 
-bool Application::initialize(int argc, char *argv[]) {
+bool Application::initialize(QGuiApplication& app) {
     if (m_initialized) {
         qWarning() << "Application already initialized";
         return false;
@@ -20,14 +20,14 @@ bool Application::initialize(int argc, char *argv[]) {
     
     qDebug() << "=== CloudMusic Initializing ===" << version();
     
-    // 创建 QGuiApplication
-    m_app = std::make_unique<QGuiApplication>(argc, argv);
+    // 保存 QGuiApplication 引用
+    m_app = &app;
     m_app->setApplicationName(PROJECT_NAME);
     m_app->setApplicationVersion(PROJECT_VERSION);
     m_app->setOrganizationName("CloudMusic");
     m_app->setOrganizationDomain("cloudmusic.com");
     
-    qDebug() << "QGuiApplication created";
+    qDebug() << "QGuiApplication configured";
     
     // 加载配置
     if (!loadConfig()) {
@@ -95,7 +95,7 @@ int Application::run() {
     
     QObject::connect(
         m_engine.get(), &QQmlApplicationEngine::objectCreated,
-        m_app.get(),
+        m_app,
         [url](QObject *obj, const QUrl &objUrl) {
             qDebug() << "Object created:" << obj << "URL:" << objUrl;
             if (!obj && url == objUrl) {
@@ -131,10 +131,7 @@ void Application::cleanup() {
         m_engine.reset();
     }
     
-    if (m_app) {
-        m_app.reset();
-    }
-    
+    m_app = nullptr;
     m_initialized = false;
     qDebug() << "Cleanup completed";
 }

@@ -3,14 +3,29 @@
 #include "core/Logger.h"
 #include "Version.h"
 
+#include <QGuiApplication>
 #include <QDebug>
 
 using namespace CloudMusic::Core;
 
 int main(int argc, char *argv[])
 {
+    // 设置平台插件（在创建 QGuiApplication 之前）
+    if (qEnvironmentVariableIsEmpty("QT_QPA_PLATFORM")) {
+        #ifdef Q_OS_LINUX
+            // Linux 上检测显示环境
+            if (qEnvironmentVariableIsEmpty("DISPLAY") && qEnvironmentVariableIsEmpty("WAYLAND_DISPLAY")) {
+                qputenv("QT_QPA_PLATFORM", "offscreen");
+            }
+        #endif
+    }
+    
+    // 创建 QGuiApplication（必须在栈上）
+    QGuiApplication guiApp(argc, argv);
+    
     qDebug() << "=== CloudMusic Starting ===";
     qDebug() << "Version:" << PROJECT_VERSION;
+    qDebug() << "Platform:" << QGuiApplication::platformName();
     
     // 初始化日志系统
     qDebug() << "Initializing logger...";
@@ -25,7 +40,7 @@ int main(int argc, char *argv[])
     // 初始化应用程序
     qDebug() << "Initializing application...";
     Application& app = Application::instance();
-    if (!app.initialize(argc, argv)) {
+    if (!app.initialize(guiApp)) {
         qCritical() << "Failed to initialize application";
         return -1;
     }

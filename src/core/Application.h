@@ -23,11 +23,10 @@ public:
     
     /**
      * @brief 初始化应用程序
-     * @param argc 命令行参数数量
-     * @param argv 命令行参数数组
+     * @param app QGuiApplication 引用
      * @return 初始化是否成功
      */
-    bool initialize(int argc, char *argv[]);
+    bool initialize(QGuiApplication& app);
     
     /**
      * @brief 运行应用程序
@@ -67,8 +66,8 @@ private:
     bool setupQmlEngine();
     void registerQmlTypes();
     
-    std::unique_ptr<QGuiApplication> m_app;
     std::unique_ptr<QQmlApplicationEngine> m_engine;
+    QGuiApplication* m_app = nullptr;
     bool m_initialized = false;
 };
 
