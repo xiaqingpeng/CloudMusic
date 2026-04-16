@@ -78,6 +78,7 @@ qt_add_qml_module(appCloudMusic
         resources/qml/src/bottompage/components/PlayButton.qml
         resources/qml/src/bottompage/components/ControlButton.qml
         resources/qml/src/bottompage/components/ProgressBar.qml
+        resources/qml/src/bottompage/components/PlaylistDrawer.qml
         resources/qml/src/theme/Theme.qml
     RESOURCES
         resources/qml/src/theme/qmldir

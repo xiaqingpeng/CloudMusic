@@ -4,6 +4,7 @@ import CloudMusic
 import "./leftpage"
 import "./righpage"
 import "./bottompage"
+import "./bottompage/components"
 import "./commonui"
 
 MyWindowRect {
@@ -45,5 +46,15 @@ MyWindowRect {
         anchors.bottom: parent.bottom
         anchors.left: parent.left
         anchors.right: parent.right
+        
+        // 连接播放列表打开信号
+        onPlaylistRequested: playlistDrawer.open()
+    }
+    
+    // 播放列表抽屉（放在最上层）
+    PlaylistDrawer {
+        id: playlistDrawer
+        anchors.fill: parent
+        z: 1000
     }
 }

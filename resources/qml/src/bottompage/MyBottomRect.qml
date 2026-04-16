@@ -7,6 +7,9 @@ Rectangle {
     height: 100
     color: "#2d2d37"
     
+    // 播放列表请求信号
+    signal playlistRequested()
+    
     // 模拟播放状态
     property bool isPlaying: false
     property real progress: 0.0
@@ -122,7 +125,7 @@ Rectangle {
             ActionButton {
                 anchors.verticalCenter: parent.verticalCenter
                 icon: "☰"
-                onClicked: console.log("播放列表")
+                onClicked: bottomRect.playlistRequested()
             }
         }
         
