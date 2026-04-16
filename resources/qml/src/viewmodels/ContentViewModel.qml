@@ -8,29 +8,104 @@ QtObject {
     // ========== 官方歌单数据 ==========
     property ListModel officialPlaylists: ListModel {
         ListElement {
-            playCount: "569.5万"
-            name: "全球流行趋势 | 单依纯,Mariah Carey,胡彦斌..."
-            coverUrl: ""
+            coverColor: "#8B5A3C"
+            coverImage: "/qt/qml/resources/image/cover1.jpg"
+            playCount: "526.5万"
+            mainTitle: "华语RNB趋势"
+            subTitle: "宋慕勋,王嘉尔等华语热歌合集"
+            tag1: "1 一点就好"
+            tag2: "2 谎话"
+            tag3: "3 嘿味道做"
         }
         ListElement {
-            playCount: "64.8万"
-            name: "Phonk新歌到 | 更新2026 全球最新冯克单曲"
-            coverUrl: ""
+            coverColor: "#8B3A8B"
+            coverImage: "/qt/qml/resources/image/cover2.jpg"
+            playCount: "70.2万"
+            mainTitle: "Phonk"
+            subTitle: "Phonk新歌到 | 更新2026 全球最新冯克单曲"
+            tag1: ""
+            tag2: ""
+            tag3: ""
         }
         ListElement {
-            playCount: "169.7万"
-            name: "R&B咖啡吧 | 用R&B和咖啡碰个杯"
-            coverUrl: ""
+            coverColor: "#6B7B6B"
+            coverImage: "/qt/qml/resources/image/cover3.jpg"
+            playCount: "18.6万"
+            mainTitle: "复古"
+            subTitle: "复古咖啡馆 | 休息一下 来首熟悉的欧美小调"
+            tag1: ""
+            tag2: ""
+            tag3: ""
         }
         ListElement {
-            playCount: "452.6万"
-            name: "华语流行Hi-Res | 经典华语歌曲随身听"
-            coverUrl: ""
+            coverColor: "#C14B7B"
+            coverImage: "/qt/qml/resources/image/cover4.jpg"
+            playCount: "25.6万"
+            mainTitle: "00s"
+            subTitle: "00s华语流行 | 那些年追过的华语经典·HiFi高音质"
+            tag1: ""
+            tag2: ""
+            tag3: ""
         }
         ListElement {
-            playCount: "328.3万"
-            name: "欧美经典 | 永不过时的旋律"
-            coverUrl: ""
+            coverColor: "#4A7C8B"
+            coverImage: "/qt/qml/resources/image/cover5.jpg"
+            playCount: "892.3万"
+            mainTitle: "电音"
+            subTitle: "电音狂潮 | 全球顶级DJ精选电音合集"
+            tag1: ""
+            tag2: ""
+            tag3: ""
+        }
+        ListElement {
+            coverColor: "#8B6A3C"
+            coverImage: "/qt/qml/resources/image/cover6.jpg"
+            playCount: "345.7万"
+            mainTitle: "爵士"
+            subTitle: "爵士之夜 | 经典爵士乐精选集"
+            tag1: ""
+            tag2: ""
+            tag3: ""
+        }
+        ListElement {
+            coverColor: "#6B4A8B"
+            coverImage: "/qt/qml/resources/image/cover7.jpg"
+            playCount: "567.9万"
+            mainTitle: "摇滚"
+            subTitle: "摇滚传奇 | 永不过时的摇滚经典"
+            tag1: ""
+            tag2: ""
+            tag3: ""
+        }
+        ListElement {
+            coverColor: "#8B4A5A"
+            coverImage: "/qt/qml/resources/image/cover8.jpg"
+            playCount: "234.1万"
+            mainTitle: "民谣"
+            subTitle: "民谣时光 | 温暖治愈的民谣歌曲"
+            tag1: ""
+            tag2: ""
+            tag3: ""
+        }
+        ListElement {
+            coverColor: "#5A8B4A"
+            coverImage: "/qt/qml/resources/image/cover9.jpg"
+            playCount: "678.4万"
+            mainTitle: "说唱"
+            subTitle: "说唱新势力 | 华语说唱精选榜单"
+            tag1: ""
+            tag2: ""
+            tag3: ""
+        }
+        ListElement {
+            coverColor: "#8B7A4A"
+            coverImage: "/qt/qml/resources/image/cover10.jpg"
+            playCount: "456.8万"
+            mainTitle: "古风"
+            subTitle: "古风雅韵 | 国风音乐精选集"
+            tag1: ""
+            tag2: ""
+            tag3: ""
         }
     }
     

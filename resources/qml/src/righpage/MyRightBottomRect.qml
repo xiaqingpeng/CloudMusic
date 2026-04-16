@@ -3,10 +3,9 @@ import QtQuick.Window
 import QtQuick.Layouts
 
 import "./components/audiobook"
-
 import "./components/bannerswiper"
-
 import "./components/songlist"
+import "../viewmodels"
 
 Rectangle {
     id: rightBottomRect
@@ -46,13 +45,14 @@ Rectangle {
             }
             
             Text {
-                text: "→"
+                text: "›"
                 font.pixelSize: 20
                 color: "#999999"
                 anchors.verticalCenter: parent.verticalCenter
                 
                 MouseArea {
                     anchors.fill: parent
+                    anchors.margins: -8
                     cursorShape: Qt.PointingHandCursor
                     onClicked: console.log("进入官方歌单全列表")
                 }
@@ -62,33 +62,37 @@ Rectangle {
         // 横向滚动歌单区域
         Item {
             width: parent.width - 32
-            height: 240
+            height: 360
             
             // 左箭头按钮
             Rectangle {
                 id: leftArrow
-                width: 36
-                height: 36
-                radius: 18
-                color: "#3d3d47"
+                width: 40
+                height: 40
+                radius: 20
+                color: "#ffffff"
+                opacity: 0.9
                 anchors.left: parent.left
                 anchors.verticalCenter: parent.verticalCenter
-                anchors.leftMargin: 5
+                anchors.leftMargin: -20
                 visible: playlistFlickable.contentX > 0
                 z: 10
                 
                 Text {
                     text: "‹"
-                    font.pixelSize: 24
-                    color: "#ffffff"
+                    font.pixelSize: 28
+                    color: "#000000"
                     anchors.centerIn: parent
                 }
                 
                 MouseArea {
                     anchors.fill: parent
                     cursorShape: Qt.PointingHandCursor
+                    hoverEnabled: true
+                    onEntered: parent.opacity = 1.0
+                    onExited: parent.opacity = 0.9
                     onClicked: {
-                        playlistFlickable.contentX = Math.max(0, playlistFlickable.contentX - 400)
+                        playlistFlickable.contentX = Math.max(0, playlistFlickable.contentX - 500)
                     }
                 }
             }
@@ -96,30 +100,34 @@ Rectangle {
             // 右箭头按钮
             Rectangle {
                 id: rightArrow
-                width: 36
-                height: 36
-                radius: 18
-                color: "#3d3d47"
+                width: 40
+                height: 40
+                radius: 20
+                color: "#ffffff"
+                opacity: 0.9
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
-                anchors.rightMargin: 5
+                anchors.rightMargin: -20
                 visible: playlistFlickable.contentX < playlistFlickable.contentWidth - playlistFlickable.width
                 z: 10
                 
                 Text {
                     text: "›"
-                    font.pixelSize: 24
-                    color: "#ffffff"
+                    font.pixelSize: 28
+                    color: "#000000"
                     anchors.centerIn: parent
                 }
                 
                 MouseArea {
                     anchors.fill: parent
                     cursorShape: Qt.PointingHandCursor
+                    hoverEnabled: true
+                    onEntered: parent.opacity = 1.0
+                    onExited: parent.opacity = 0.9
                     onClicked: {
                         playlistFlickable.contentX = Math.min(
                             playlistFlickable.contentWidth - playlistFlickable.width,
-                            playlistFlickable.contentX + 400
+                            playlistFlickable.contentX + 500
                         )
                     }
                 }
@@ -129,7 +137,7 @@ Rectangle {
             Flickable {
                 id: playlistFlickable
                 anchors.fill: parent
-                contentWidth: playlistRow.width
+                contentWidth: playlistRow.implicitWidth
                 contentHeight: height
                 clip: true
                 boundsBehavior: Flickable.StopAtBounds
@@ -140,36 +148,178 @@ Rectangle {
                 
                 Row {
                     id: playlistRow
-                    spacing: 16
+                    spacing: 12
                     height: parent.height
+                    rightPadding: 12
                     
                     Repeater {
-                        model: ListModel {
-                            ListElement {
-                                playCount: "569.5万"
-                                name: "全球流行趋势 | 单依纯,Mariah Carey,胡彦斌..."
-                            }
-                            ListElement {
-                                playCount: "64.8万"
-                                name: "Phonk新歌到 | 更新2026 全球最新冯克单曲"
-                            }
-                            ListElement {
-                                playCount: "169.7万"
-                                name: "R&B咖啡吧 | 用R&B和咖啡碰个杯"
-                            }
-                            ListElement {
-                                playCount: "452.6万"
-                                name: "华语流行Hi-Res | 经典华语歌曲随身听"
-                            }
-                            ListElement {
-                                playCount: "328.3万"
-                                name: "欧美经典 | 永不过时的旋律"
-                            }
-                        }
+                        model: ContentViewModel.officialPlaylists
                         
-                        delegate: SongListCard {
-                            playCountText: model.playCount
-                            nameText: model.name
+                        delegate: Rectangle {
+                            id: playlistCard
+                            width: 240
+                            height: 340
+                            radius: 12
+                            color: model.coverColor
+                            clip: true
+                            
+                            property bool isHovered: false
+                            
+                            // 背景图片（悬浮时显示）
+                            Rectangle {
+                                anchors.fill: parent
+                                color: model.coverColor
+                                radius: 12
+                                
+                                // 这里可以添加真实的图片，暂时用渐变模拟
+                                Rectangle {
+                                    anchors.fill: parent
+                                    radius: 12
+                                    gradient: Gradient {
+                                        GradientStop { position: 0.0; color: Qt.lighter(model.coverColor, 1.3) }
+                                        GradientStop { position: 1.0; color: Qt.darker(model.coverColor, 1.2) }
+                                    }
+                                    opacity: playlistCard.isHovered ? 1.0 : 0.0
+                                    
+                                    Behavior on opacity {
+                                        NumberAnimation { duration: 200 }
+                                    }
+                                }
+                            }
+                            
+                            // 内容区域
+                            Item {
+                                anchors.fill: parent
+                                anchors.margins: 16
+                                
+                                // 播放次数
+                                Row {
+                                    id: playCountRow
+                                    anchors.top: parent.top
+                                    anchors.right: parent.right
+                                    spacing: 4
+                                    
+                                    Text {
+                                        text: "🎧"
+                                        font.pixelSize: 16
+                                        color: "#ffffff"
+                                        anchors.verticalCenter: parent.verticalCenter
+                                    }
+                                    
+                                    Text {
+                                        text: model.playCount
+                                        font.pixelSize: 14
+                                        font.bold: true
+                                        color: "#ffffff"
+                                        anchors.verticalCenter: parent.verticalCenter
+                                    }
+                                }
+                                
+                                // 底部内容区
+                                Column {
+                                    anchors.left: parent.left
+                                    anchors.right: parent.right
+                                    anchors.bottom: parent.bottom
+                                    spacing: 0
+                                    
+                                    // 主标题
+                                    Text {
+                                        width: parent.width
+                                        text: model.mainTitle
+                                        font.pixelSize: 36
+                                        font.bold: true
+                                        color: "#ffffff"
+                                        wrapMode: Text.WordWrap
+                                    }
+                                    
+                                    // 副标题
+                                    Text {
+                                        width: parent.width
+                                        text: model.subTitle
+                                        font.pixelSize: 14
+                                        color: "#ffffff"
+                                        wrapMode: Text.WordWrap
+                                        lineHeight: 1.4
+                                        maximumLineCount: 2
+                                        elide: Text.ElideRight
+                                        topPadding: 12
+                                        bottomPadding: model.tag1 !== "" ? 16 : 60
+                                    }
+                                    
+                                    // 标签列表
+                                    Column {
+                                        width: parent.width
+                                        spacing: 8
+                                        visible: model.tag1 !== ""
+                                        bottomPadding: 16
+                                        
+                                        Text {
+                                            text: model.tag1
+                                            font.pixelSize: 14
+                                            color: "#ffffff"
+                                            opacity: 0.95
+                                            visible: model.tag1 !== ""
+                                        }
+                                        
+                                        Text {
+                                            text: model.tag2
+                                            font.pixelSize: 14
+                                            color: "#ffffff"
+                                            opacity: 0.95
+                                            visible: model.tag2 !== ""
+                                        }
+                                        
+                                        Text {
+                                            text: model.tag3
+                                            font.pixelSize: 14
+                                            color: "#ffffff"
+                                            opacity: 0.95
+                                            visible: model.tag3 !== ""
+                                        }
+                                    }
+                                    
+                                    // 播放按钮（仅悬浮时显示）
+                                    Rectangle {
+                                        width: 56
+                                        height: 56
+                                        radius: 28
+                                        color: "#ffffff"
+                                        anchors.right: parent.right
+                                        opacity: playlistCard.isHovered ? 1.0 : 0.0
+                                        visible: opacity > 0
+                                        
+                                        Behavior on opacity {
+                                            NumberAnimation { duration: 200 }
+                                        }
+                                        
+                                        Text {
+                                            text: "▶"
+                                            font.pixelSize: 20
+                                            color: "#000000"
+                                            anchors.centerIn: parent
+                                            anchors.horizontalCenterOffset: 2
+                                        }
+                                        
+                                        MouseArea {
+                                            anchors.fill: parent
+                                            cursorShape: Qt.PointingHandCursor
+                                            onClicked: {
+                                                console.log("播放歌单:", model.mainTitle)
+                                                mouse.accepted = true
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            
+                            MouseArea {
+                                anchors.fill: parent
+                                cursorShape: Qt.PointingHandCursor
+                                hoverEnabled: true
+                                onEntered: playlistCard.isHovered = true
+                                onExited: playlistCard.isHovered = false
+                                onClicked: console.log("打开歌单:", model.mainTitle)
+                            }
                         }
                     }
                 }
@@ -233,56 +383,7 @@ Rectangle {
             clip: true
             interactive: false  // 禁用 GridView 自己的滚动，使用外层 Flickable 滚动
             
-            model: ListModel {
-                ListElement {
-                    coverType: "special"
-                    title: "听过的有声书"
-                    desc: "听过的好书都在这"
-                    score: ""
-                    playCount: ""
-                    tags: ""
-                }
-                ListElement {
-                    coverType: "normal"
-                    title: "半夜别回头"
-                    desc: "招魂游戏，不要轻易尝试"
-                    score: "9.6分"
-                    playCount: "480.8万"
-                    tags: "高分必听"
-                }
-                ListElement {
-                    coverType: "normal"
-                    title: "广播剧《纸飞机》"
-                    desc: "一起走吧，一起寻找光"
-                    score: "9.8分"
-                    playCount: "1445.6万"
-                    tags: "高分必听"
-                }
-                ListElement {
-                    coverType: "normal"
-                    title: "月亮与六便士"
-                    desc: "满地都是六便士，他却抬头看见了月亮"
-                    score: "9.3分"
-                    playCount: "201.7万"
-                    tags: "高分必听"
-                }
-                ListElement {
-                    coverType: "normal"
-                    title: "我在荒岛被美女包围了"
-                    desc: "这座荒岛，我罩了！"
-                    score: "8.9分"
-                    playCount: "204.8万"
-                    tags: "新人免费听"
-                }
-                ListElement {
-                    coverType: "normal"
-                    title: "欲言难止 | 顺子X倒霉死勒"
-                    desc: "《囚于永夜》同作者人气作品"
-                    score: "9.8分"
-                    playCount: "2596.5万"
-                    tags: "高分必听"
-                }
-            }
+            model: ContentViewModel.audioBooks
             
             delegate: AudioBookCard {
                 width: audioBookGrid.cellWidth - 8
