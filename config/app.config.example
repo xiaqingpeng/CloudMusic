@@ -1,0 +1,35 @@
+# CloudMusic Application Configuration
+# Copy this file to app.config and modify as needed
+
+[Application]
+name=CloudMusic
+version=1.0.0
+language=zh_CN
+
+[Network]
+api_base_url=https://api.cloudmusic.com
+timeout=30000
+retry_count=3
+
+[Audio]
+default_volume=50
+buffer_size=4096
+sample_rate=44100
+
+[Cache]
+enabled=true
+max_size_mb=500
+cache_dir=~/.cloudmusic/cache
+
+[Logging]
+enabled=true
+level=INFO
+log_dir=~/.cloudmusic/logs
+max_file_size_mb=10
+max_files=5
+
+[UI]
+theme=dark
+window_width=1200
+window_height=800
+remember_position=true

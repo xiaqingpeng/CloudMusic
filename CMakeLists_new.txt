@@ -85,98 +85,98 @@ set(PROJECT_HEADERS
     "${CMAKE_BINARY_DIR}/generated/Version.h"
 )
 
-# Core module
+# Core module (future expansion)
 set(CORE_SOURCES
-    src/core/Application.cpp
-    src/core/Config.cpp
-    src/core/Logger.cpp
+    # src/core/Application.cpp
+    # src/core/Config.cpp
+    # src/core/Logger.cpp
 )
 
 set(CORE_HEADERS
-    src/core/Application.h
-    src/core/Config.h
-    src/core/Logger.h
+    # src/core/Application.h
+    # src/core/Config.h
+    # src/core/Logger.h
 )
 
 # ============================================================================
 # QML Files Organization
 # ============================================================================
 set(QML_PAGES
-    src/ui/Main.qml
-    src/ui/leftpage/MyLeftRect.qml
-    src/ui/leftpage/MyLeftTopRect.qml
-    src/ui/leftpage/MyLeftBottomRect.qml
-    src/ui/righpage/MyRightRect.qml
-    src/ui/righpage/MyRightTopRect.qml
-    src/ui/righpage/MyRightBottomRect.qml
-    src/ui/bottompage/MyBottomRect.qml
+    resources/qml/src/Main.qml
+    resources/qml/src/leftpage/MyLeftRect.qml
+    resources/qml/src/leftpage/MyLeftTopRect.qml
+    resources/qml/src/leftpage/MyLeftBottomRect.qml
+    resources/qml/src/righpage/MyRightRect.qml
+    resources/qml/src/righpage/MyRightTopRect.qml
+    resources/qml/src/righpage/MyRightBottomRect.qml
+    resources/qml/src/bottompage/MyBottomRect.qml
 )
 
 set(QML_COMPONENTS_COMMON
-    src/ui/commonui/MyWindowRect.qml
-    src/ui/commonui/MyImageRect.qml
+    resources/qml/src/commonui/MyWindowRect.qml
+    resources/qml/src/commonui/MyImageRect.qml
 )
 
 set(QML_COMPONENTS_LEFT
-    src/ui/leftpage/components/MenuItem.qml
-    src/ui/leftpage/components/SectionHeader.qml
-    src/ui/leftpage/components/Divider.qml
+    resources/qml/src/leftpage/components/MenuItem.qml
+    resources/qml/src/leftpage/components/SectionHeader.qml
+    resources/qml/src/leftpage/components/Divider.qml
 )
 
 set(QML_COMPONENTS_RIGHT_TOPBAR
-    src/ui/righpage/components/topbar/WindowControl.qml
-    src/ui/righpage/components/topbar/SearchBar.qml
-    src/ui/righpage/components/topbar/IconButton.qml
-    src/ui/righpage/components/topbar/TextButton.qml
-    src/ui/righpage/components/topbar/RankingCard.qml
-    src/ui/righpage/components/topbar/SearchSuggestionPopup.qml
-    src/ui/righpage/components/topbar/HotSearchPopup.qml
-    src/ui/righpage/components/topbar/LoginPopup.qml
+    resources/qml/src/righpage/components/topbar/WindowControl.qml
+    resources/qml/src/righpage/components/topbar/SearchBar.qml
+    resources/qml/src/righpage/components/topbar/IconButton.qml
+    resources/qml/src/righpage/components/topbar/TextButton.qml
+    resources/qml/src/righpage/components/topbar/RankingCard.qml
+    resources/qml/src/righpage/components/topbar/SearchSuggestionPopup.qml
+    resources/qml/src/righpage/components/topbar/HotSearchPopup.qml
+    resources/qml/src/righpage/components/topbar/LoginPopup.qml
 )
 
 set(QML_COMPONENTS_RIGHT_CONTENT
-    src/ui/righpage/components/bannerswiper/BannerSwiper.qml
-    src/ui/righpage/components/songlist/SongListCard.qml
-    src/ui/righpage/components/audiobook/AudioBookCard.qml
+    resources/qml/src/righpage/components/bannerswiper/BannerSwiper.qml
+    resources/qml/src/righpage/components/songlist/SongListCard.qml
+    resources/qml/src/righpage/components/audiobook/AudioBookCard.qml
 )
 
 set(QML_COMPONENTS_BOTTOM
-    src/ui/bottompage/components/AlbumCover.qml
-    src/ui/bottompage/components/SongInfo.qml
-    src/ui/bottompage/components/ActionButton.qml
-    src/ui/bottompage/components/PlayButton.qml
-    src/ui/bottompage/components/ControlButton.qml
-    src/ui/bottompage/components/ProgressBar.qml
-    src/ui/bottompage/components/PlaylistDrawer.qml
+    resources/qml/src/bottompage/components/AlbumCover.qml
+    resources/qml/src/bottompage/components/SongInfo.qml
+    resources/qml/src/bottompage/components/ActionButton.qml
+    resources/qml/src/bottompage/components/PlayButton.qml
+    resources/qml/src/bottompage/components/ControlButton.qml
+    resources/qml/src/bottompage/components/ProgressBar.qml
+    resources/qml/src/bottompage/components/PlaylistDrawer.qml
 )
 
 set(QML_VIEWMODELS
-    src/ui/viewmodels/SearchViewModel.qml
-    src/ui/viewmodels/MusicPlayerViewModel.qml
-    src/ui/viewmodels/ContentViewModel.qml
+    resources/qml/src/viewmodels/SearchViewModel.qml
+    resources/qml/src/viewmodels/MusicPlayerViewModel.qml
+    resources/qml/src/viewmodels/ContentViewModel.qml
 )
 
 set(QML_THEME
-    src/ui/theme/Theme.qml
+    resources/qml/src/theme/Theme.qml
 )
 
 # ============================================================================
 # Resource Files
 # ============================================================================
 set(QML_RESOURCES
-    src/ui/theme/qmldir
-    src/ui/righpage/components/topbar/qmldir
-    src/ui/viewmodels/qmldir
+    resources/qml/src/theme/qmldir
+    resources/qml/src/righpage/components/topbar/qmldir
+    resources/qml/src/viewmodels/qmldir
 )
 
 set(ICON_RESOURCES
-    src/resources/icons/left.svg
-    src/resources/icons/down.svg
-    src/resources/icons/down_s.svg
-    src/resources/icons/people.svg
-    src/resources/icons/mic.svg
-    src/resources/icons/setting.svg
-    src/resources/icons/music.svg
+    resources/qrc/icon/left.svg
+    resources/qrc/icon/down.svg
+    resources/qrc/icon/down_s.svg
+    resources/qrc/icon/people.svg
+    resources/qrc/icon/mic.svg
+    resources/qrc/icon/setting.svg
+    resources/qrc/icon/music.svg
 )
 
 # ============================================================================
@@ -257,7 +257,7 @@ endif()
 # ============================================================================
 # App Icon Generation (macOS)
 # ============================================================================
-set(APP_ICON_PNG "${CMAKE_SOURCE_DIR}/src/resources/images/appicon.png")
+set(APP_ICON_PNG "${CMAKE_SOURCE_DIR}/resources/image/appicon.png")
 set(APP_ICON_ICNS "${CMAKE_BINARY_DIR}/AppIcon.icns")
 
 if(APPLE AND EXISTS "${APP_ICON_PNG}")
@@ -343,7 +343,7 @@ if(APPLE)
         add_custom_target(deploy
             COMMAND "${MACDEPLOYQT_EXECUTABLE}" 
                 "$<TARGET_BUNDLE_DIR:appCloudMusic>" 
-                -qmldir="${CMAKE_SOURCE_DIR}/src/ui" 
+                -qmldir="${CMAKE_SOURCE_DIR}/resources/qml/src" 
                 -codesign=-
             DEPENDS appCloudMusic
             COMMENT "Running macdeployqt to bundle Qt dependencies..."
