@@ -200,19 +200,16 @@ QtObject {
     
     // ========== 方法 ==========
     function loadPlaylists() {
-        console.log("ContentViewModel: 加载歌单列表")
         // 这里可以调用 API 加载数据
     }
     
     function loadAudioBooks(category) {
         currentCategory = category || "all"
-        console.log("ContentViewModel: 加载有声书列表", currentCategory)
         categoryChanged(currentCategory)
         // 这里可以调用 API 加载数据
     }
     
     function loadBanners() {
-        console.log("ContentViewModel: 加载轮播图")
         // 这里可以调用 API 加载数据
     }
     
@@ -220,12 +217,10 @@ QtObject {
         loadPlaylists()
         loadAudioBooks()
         loadBanners()
-        console.log("ContentViewModel: 刷新内容")
     }
     
     // ========== 搜索和过滤 ==========
     function searchContent(keyword) {
-        console.log("ContentViewModel: 搜索内容", keyword)
         // 实现搜索逻辑
     }
     

@@ -257,7 +257,6 @@ Item {
                         width: 80
                         height: parent.height
                         cursorShape: Qt.PointingHandCursor
-                        onClicked: console.log("收藏全部")
                         
                         Row {
                             anchors.centerIn: parent
@@ -284,7 +283,6 @@ Item {
                         width: 60
                         height: parent.height
                         cursorShape: Qt.PointingHandCursor
-                        onClicked: console.log("清空列表")
                         
                         Row {
                             anchors.centerIn: parent
@@ -359,7 +357,6 @@ Item {
                         MouseArea {
                             anchors.fill: parent
                             cursorShape: Qt.PointingHandCursor
-                            onClicked: console.log("切换推荐")
                         }
                     }
                 }
@@ -410,7 +407,6 @@ Item {
                         onExited: parent.hovered = false
                         onClicked: {
                             drawer.currentIndex = index
-                            console.log("播放:", modelData.title)
                         }
                     }
                     
@@ -551,7 +547,6 @@ Item {
                                 MouseArea {
                                     anchors.fill: parent
                                     cursorShape: Qt.PointingHandCursor
-                                    onClicked: console.log("分享")
                                 }
                             }
                             
@@ -564,7 +559,6 @@ Item {
                                 MouseArea {
                                     anchors.fill: parent
                                     cursorShape: Qt.PointingHandCursor
-                                    onClicked: console.log("喜欢")
                                 }
                             }
                             
@@ -577,7 +571,6 @@ Item {
                                 MouseArea {
                                     anchors.fill: parent
                                     cursorShape: Qt.PointingHandCursor
-                                    onClicked: console.log("添加到歌单")
                                 }
                             }
                             
@@ -590,7 +583,6 @@ Item {
                                 MouseArea {
                                     anchors.fill: parent
                                     cursorShape: Qt.PointingHandCursor
-                                    onClicked: console.log("更多操作")
                                 }
                             }
                         }

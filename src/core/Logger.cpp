@@ -26,7 +26,6 @@ bool Logger::initialize(const QString& logDir, LogLevel logLevel) {
     m_logLevel = logLevel;
     m_initialized = true;
     
-    qDebug() << "Logger: Initialized (console only for now)";
     return true;
 }
 

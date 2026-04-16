@@ -87,7 +87,6 @@ Rectangle {
                 anchors.verticalCenter: parent.verticalCenter
                 icon: "💬"
                 count: "549"
-                onClicked: console.log("打开评论")
             }
             
             // 转发按钮
@@ -95,14 +94,12 @@ Rectangle {
                 anchors.verticalCenter: parent.verticalCenter
                 icon: "↻"
                 iconSize: 26
-                onClicked: console.log("转发")
             }
             
             // 收藏按钮
             ActionButton {
                 anchors.verticalCenter: parent.verticalCenter
                 icon: "←"
-                onClicked: console.log("收藏")
             }
             
             // 播放/暂停按钮
@@ -118,7 +115,6 @@ Rectangle {
             ActionButton {
                 anchors.verticalCenter: parent.verticalCenter
                 icon: "→"
-                onClicked: console.log("下一首")
             }
             
             // 播放列表按钮
@@ -142,7 +138,6 @@ Rectangle {
                 anchors.verticalCenter: parent.verticalCenter
                 text: "极高"
                 bold: true
-                onClicked: console.log("切换音质")
             }
             
             // 「+」加号按钮
@@ -151,7 +146,6 @@ Rectangle {
                 text: "+"
                 fontSize: 20
                 implicitWidth: 28
-                onClicked: console.log("添加到歌单")
             }
             
             // 「词」歌词按钮
@@ -173,10 +167,7 @@ Rectangle {
                 MouseArea {
                     anchors.fill: parent
                     cursorShape: Qt.PointingHandCursor
-                    onClicked: {
-                        parent.lyricActive = !parent.lyricActive
-                        console.log("切换歌词显示")
-                    }
+                    onClicked: parent.lyricActive = !parent.lyricActive
                 }
             }
             
@@ -196,7 +187,6 @@ Rectangle {
                 MouseArea {
                     anchors.fill: parent
                     cursorShape: Qt.PointingHandCursor
-                    onClicked: console.log("音量控制")
                 }
             }
             
@@ -224,7 +214,6 @@ Rectangle {
                 MouseArea {
                     anchors.fill: parent
                     cursorShape: Qt.PointingHandCursor
-                    onClicked: console.log("更多操作")
                 }
             }
         }

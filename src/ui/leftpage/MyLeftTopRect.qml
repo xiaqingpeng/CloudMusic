@@ -21,7 +21,9 @@ Rectangle {
 
             anchors.verticalCenter: parent.verticalCenter
 
-            source: "qrc:/qt/qml/CloudMusic/src/resources/icons/music.svg"
+            source: Qt.platform.os === "osx" 
+                ? "qrc:/qt/qml/CloudMusic/src/resources/icons/music.svg"
+                : "qrc:/CloudMusic/src/resources/icons/music.svg"
 
 
             onStatusChanged: {

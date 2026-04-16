@@ -19,15 +19,12 @@ bool Config::load(const QString& configPath) {
     
     m_configPath = configPath.isEmpty() ? getDefaultConfigPath() : configPath;
     
-    qDebug() << "Config: Using path:" << m_configPath;
-    
     // 简单创建 QSettings，不做任何文件操作
     m_settings = std::make_unique<QSettings>(
         m_configPath, 
         QSettings::IniFormat
     );
     
-    qDebug() << "Config: Loaded";
     return true;
 }
 
@@ -37,7 +34,6 @@ bool Config::save() {
         return false;
     }
     
-    qDebug() << "Config: Syncing to disk...";
     m_settings->sync();
     
     QSettings::Status status = m_settings->status();
@@ -46,7 +42,6 @@ bool Config::save() {
         return false;
     }
     
-    qDebug() << "Config: Saved successfully to:" << m_configPath;
     return true;
 }
 

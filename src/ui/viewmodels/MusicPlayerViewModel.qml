@@ -60,13 +60,11 @@ QtObject {
     function play() {
         isPlaying = true
         playRequested()
-        console.log("MusicPlayerViewModel: 播放")
     }
     
     function pause() {
         isPlaying = false
         pauseRequested()
-        console.log("MusicPlayerViewModel: 暂停")
     }
     
     function togglePlayPause() {
@@ -85,33 +83,28 @@ QtObject {
         }
         loadSong(currentSongIndex)
         nextSongRequested()
-        console.log("MusicPlayerViewModel: 下一首")
     }
     
     function previousSong() {
         currentSongIndex = (currentSongIndex - 1 + playlist.count) % playlist.count
         loadSong(currentSongIndex)
         previousSongRequested()
-        console.log("MusicPlayerViewModel: 上一首")
     }
     
     function seek(position) {
         progress = position
         currentPosition = Math.floor(position * currentDuration)
         seekRequested(position)
-        console.log("MusicPlayerViewModel: 跳转到", position)
     }
     
     // ========== 音量控制 ==========
     function setVolume(vol) {
         volume = Math.max(0, Math.min(100, vol))
         volumeAdjusted(volume)
-        console.log("MusicPlayerViewModel: 音量设置为", volume)
     }
     
     function toggleMute() {
         isMuted = !isMuted
-        console.log("MusicPlayerViewModel: 静音", isMuted)
     }
     
     // ========== 交互方法 ==========
@@ -122,12 +115,10 @@ QtObject {
         } else {
             likeCount--
         }
-        console.log("MusicPlayerViewModel: 点赞", isLiked)
     }
     
     function toggleShuffle() {
         isShuffleMode = !isShuffleMode
-        console.log("MusicPlayerViewModel: 随机播放", isShuffleMode)
     }
     
     function cycleRepeatMode() {
@@ -138,7 +129,6 @@ QtObject {
         } else {
             repeatMode = "off"
         }
-        console.log("MusicPlayerViewModel: 循环模式", repeatMode)
     }
     
     // ========== 播放列表管理 ==========
@@ -152,7 +142,6 @@ QtObject {
             currentPosition = 0
             progress = 0
             songChanged(index)
-            console.log("MusicPlayerViewModel: 加载歌曲", currentSongName)
         }
     }
     
@@ -162,19 +151,16 @@ QtObject {
             artistName: artistName,
             duration: duration || 180
         })
-        console.log("MusicPlayerViewModel: 添加到播放列表", songName)
     }
     
     function removeFromPlaylist(index) {
         if (index >= 0 && index < playlist.count) {
             playlist.remove(index)
-            console.log("MusicPlayerViewModel: 从播放列表移除", index)
         }
     }
     
     function clearPlaylist() {
         playlist.clear()
-        console.log("MusicPlayerViewModel: 清空播放列表")
     }
     
     // ========== 进度更新定时器 ==========

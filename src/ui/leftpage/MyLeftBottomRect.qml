@@ -27,10 +27,7 @@ Rectangle {
                 icon: "🎵"
                 text: "精选"
                 selected: leftBottomRect.selectedIndex === 0
-                onClicked: {
-                    leftBottomRect.selectedIndex = 0
-                    console.log("点击了精选")
-                }
+                onClicked: leftBottomRect.selectedIndex = 0
             }
             
             // 播客
@@ -39,10 +36,7 @@ Rectangle {
                 icon: "📻"
                 text: "播客"
                 selected: leftBottomRect.selectedIndex === 1
-                onClicked: {
-                    leftBottomRect.selectedIndex = 1
-                    console.log("点击了播客")
-                }
+                onClicked: leftBottomRect.selectedIndex = 1
             }
             
             // 关注
@@ -51,10 +45,7 @@ Rectangle {
                 icon: "💬"
                 text: "关注"
                 selected: leftBottomRect.selectedIndex === 2
-                onClicked: {
-                    leftBottomRect.selectedIndex = 2
-                    console.log("点击了关注")
-                }
+                onClicked: leftBottomRect.selectedIndex = 2
             }
             
             // 我喜欢的音乐
@@ -64,10 +55,7 @@ Rectangle {
                 text: "我喜欢的音乐"
                 selected: leftBottomRect.selectedIndex === 3
                 hasWaveIcon: true
-                onClicked: {
-                    leftBottomRect.selectedIndex = 3
-                    console.log("点击了我喜欢的音乐")
-                }
+                onClicked: leftBottomRect.selectedIndex = 3
             }
             
             // 最近播放
@@ -77,10 +65,7 @@ Rectangle {
                 text: "最近播放"
                 selected: leftBottomRect.selectedIndex === 4
                 isCircleIcon: true
-                onClicked: {
-                    leftBottomRect.selectedIndex = 4
-                    console.log("点击了最近播放")
-                }
+                onClicked: leftBottomRect.selectedIndex = 4
             }
             
             // 下载管理
@@ -89,10 +74,7 @@ Rectangle {
                 icon: "↓"
                 text: "下载管理"
                 selected: leftBottomRect.selectedIndex === 5
-                onClicked: {
-                    leftBottomRect.selectedIndex = 5
-                    console.log("点击了下载管理")
-                }
+                onClicked: leftBottomRect.selectedIndex = 5
             }
             
             // 间距
@@ -107,10 +89,7 @@ Rectangle {
                 icon: "📁"
                 text: "创建的歌单 0"
                 selected: leftBottomRect.selectedIndex === 6
-                onClicked: {
-                    leftBottomRect.selectedIndex = 6
-                    console.log("点击了创建的歌单")
-                }
+                onClicked: leftBottomRect.selectedIndex = 6
             }
         }
     }

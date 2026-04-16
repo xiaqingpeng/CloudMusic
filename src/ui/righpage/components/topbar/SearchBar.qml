@@ -50,7 +50,9 @@ Rectangle {
             width: 20
             height: 20
             anchors.verticalCenter: parent.verticalCenter
-            source: "qrc:/qt/qml/CloudMusic/src/resources/icons/mic.svg"
+            source: Qt.platform.os === "osx"
+                ? "qrc:/qt/qml/CloudMusic/src/resources/icons/mic.svg"
+                : "qrc:/CloudMusic/src/resources/icons/mic.svg"
             fillMode: Image.PreserveAspectFit
             
             MouseArea {

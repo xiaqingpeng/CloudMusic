@@ -59,14 +59,12 @@ QtObject {
     
     // ========== 搜索相关方法 ==========
     function fetchSuggestions(query) {
-        console.log("ViewModel: 模拟 API 请求:", query)
         currentSearchText = query
         searchTimer.restart()
     }
     
     function performSearch(text) {
         if (text === "") return
-        console.log("ViewModel: 执行搜索:", text)
         addSearchHistory(text)
         searchRequested(text)
     }
@@ -111,20 +109,17 @@ QtObject {
     function login(username) {
         isLoggedIn = true
         userName = username
-        console.log("ViewModel: 用户登录:", username)
     }
     
     function logout() {
         isLoggedIn = false
         userName = ""
-        console.log("ViewModel: 用户登出")
     }
     
     // ========== 内部定时器 ==========
     property Timer searchTimer: Timer {
         interval: 300
         onTriggered: {
-            console.log("ViewModel: API 请求完成，更新建议列表")
             viewModel.suggestionsFetched()
         }
     }

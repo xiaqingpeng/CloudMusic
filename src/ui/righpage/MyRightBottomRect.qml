@@ -54,7 +54,6 @@ Rectangle {
                     anchors.fill: parent
                     anchors.margins: -8
                     cursorShape: Qt.PointingHandCursor
-                    onClicked: console.log("进入官方歌单全列表")
                 }
             }
         }
@@ -304,7 +303,6 @@ Rectangle {
                                             anchors.fill: parent
                                             cursorShape: Qt.PointingHandCursor
                                             onClicked: {
-                                                console.log("播放歌单:", model.mainTitle)
                                                 mouse.accepted = true
                                             }
                                         }
@@ -318,7 +316,6 @@ Rectangle {
                                 hoverEnabled: true
                                 onEntered: playlistCard.isHovered = true
                                 onExited: playlistCard.isHovered = false
-                                onClicked: console.log("打开歌单:", model.mainTitle)
                             }
                         }
                     }
@@ -368,7 +365,6 @@ Rectangle {
                 MouseArea {
                     anchors.fill: parent
                     cursorShape: Qt.PointingHandCursor
-                    onClicked: console.log("打开分类菜单")
                 }
             }
         }

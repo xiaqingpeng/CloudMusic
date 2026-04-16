@@ -12,10 +12,6 @@ Rectangle {
     // ========== 使用全局单例 ViewModel ==========
     // SearchViewModel 现在是全局单例，可以在任何地方访问
     // 通过 SearchViewModel.xxx 直接使用
-    
-    Component.onCompleted: {
-        console.log("MyRightTopRect: 使用全局 SearchViewModel")
-    }
 
     Row {
         id: topRow
@@ -27,9 +23,10 @@ Rectangle {
         // 返回按钮
         TopBar.IconButton {
             anchors.verticalCenter: parent.verticalCenter
-            iconSource: "qrc:/qt/qml/CloudMusic/src/resources/icons/left.svg"
+            iconSource: Qt.platform.os === "osx"
+                ? "qrc:/qt/qml/CloudMusic/src/resources/icons/left.svg"
+                : "qrc:/CloudMusic/src/resources/icons/left.svg"
             color: "#3d3d47"
-            onClicked: console.log("返回")
         }
 
         // 搜索框
@@ -44,7 +41,7 @@ Rectangle {
                 hotSearchPopup.close()
             }
             
-            onVoiceSearchRequested: console.log("语音搜索")
+            onVoiceSearchRequested: {}
             
             onInputTextChanged: (text) => {
                 if (SearchViewModel.isSelectingFromPopup) {
@@ -86,10 +83,7 @@ Rectangle {
             text: SearchViewModel.isLoggedIn ? SearchViewModel.userName : "未登录"
             onClicked: {
                 if (!SearchViewModel.isLoggedIn) {
-                    console.log("登录")
                     loginPopup.open()
-                } else {
-                    console.log("用户中心")
                 }
             }
         }
@@ -101,7 +95,6 @@ Rectangle {
             backgroundColor: "#ec4141"
             hoverColor: "#dc3030"
             bold: true
-            onClicked: console.log("开通VIP")
         }
 
         // 图标按钮组
@@ -110,21 +103,24 @@ Rectangle {
             anchors.verticalCenter: parent.verticalCenter
             
             TopBar.IconButton {
-                iconSource: "qrc:/qt/qml/CloudMusic/src/resources/icons/down.svg"
+                iconSource: Qt.platform.os === "osx"
+                    ? "qrc:/qt/qml/CloudMusic/src/resources/icons/down.svg"
+                    : "qrc:/CloudMusic/src/resources/icons/down.svg"
                 tooltip: "下载"
-                onClicked: console.log("下载")
             }
             
             TopBar.IconButton {
-                iconSource: "qrc:/qt/qml/CloudMusic/src/resources/icons/down_s.svg"
+                iconSource: Qt.platform.os === "osx"
+                    ? "qrc:/qt/qml/CloudMusic/src/resources/icons/down_s.svg"
+                    : "qrc:/CloudMusic/src/resources/icons/down_s.svg"
                 tooltip: "换肤"
-                onClicked: console.log("换肤")
             }
             
             TopBar.IconButton {
-                iconSource: "qrc:/qt/qml/CloudMusic/src/resources/icons/setting.svg"
+                iconSource: Qt.platform.os === "osx"
+                    ? "qrc:/qt/qml/CloudMusic/src/resources/icons/setting.svg"
+                    : "qrc:/CloudMusic/src/resources/icons/setting.svg"
                 tooltip: "设置"
-                onClicked: console.log("设置")
             }
         }
         
@@ -147,7 +143,6 @@ Rectangle {
         guessLikeModel: SearchViewModel.guessLikeModel
         
         onHistoryClicked: (text) => {
-            console.log("点击搜索历史：", text)
             SearchViewModel.isSelectingFromPopup = true
             searchBar.text = text
             SearchViewModel.performSearch(text)
@@ -155,17 +150,14 @@ Rectangle {
         }
         
         onHistoryLongPressed: (index) => {
-            console.log("长按删除搜索历史")
             SearchViewModel.removeSearchHistory(index)
         }
         
         onClearHistoryClicked: {
-            console.log("清空搜索历史")
             SearchViewModel.clearSearchHistory()
         }
         
         onGuessLikeClicked: (text) => {
-            console.log("点击猜你喜欢：", text)
             SearchViewModel.isSelectingFromPopup = true
             searchBar.text = text
             SearchViewModel.performSearch(text)
@@ -175,7 +167,6 @@ Rectangle {
         onRankingItemClicked: (text) => {
             SearchViewModel.isSelectingFromPopup = true
             searchBar.text = text
-            console.log("选择榜单歌曲:", text)
             SearchViewModel.performSearch(text)
             hotSearchPopup.close()
         }
@@ -196,7 +187,6 @@ Rectangle {
         onSuggestionSelected: (keyword, type) => {
             SearchViewModel.isSelectingFromPopup = true
             searchBar.text = keyword
-            console.log("选择建议:", keyword, "类型:", type)
             SearchViewModel.performSearch(keyword)
             searchPopup.close()
         }
@@ -207,19 +197,14 @@ Rectangle {
         id: loginPopup
         
         onPhoneLoginClicked: {
-            console.log("手机号登录")
             // 模拟登录成功
             SearchViewModel.login("用户123")
             loginPopup.close()
         }
         
-        onEmailLoginClicked: {
-            console.log("邮箱登录")
-        }
+        onEmailLoginClicked: {}
         
-        onWechatLoginClicked: {
-            console.log("微信登录")
-        }
+        onWechatLoginClicked: {}
     }
     
     // 延迟关闭定时器

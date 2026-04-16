@@ -91,6 +91,24 @@ cmake -B build -DBUILD_DOCS=ON
 cmake -B build -DENABLE_LOGGING=OFF
 ```
 
+### 调试
+
+项目提供了统一的调试脚本，支持本地和远程调试。
+
+```bash
+# 本地调试 (macOS)
+./scripts/debug.sh local
+
+# 远程调试 (Ubuntu VM)
+./scripts/debug.sh remote
+
+# 构建后调试
+./scripts/debug.sh local -b
+./scripts/debug.sh remote -s -b
+```
+
+详见 [调试指南](docs/DEBUGGING_GUIDE.md) 和 [调试速查表](docs/DEBUG_CHEATSHEET.md)
+
 ### 代码规范
 
 - 使用 C++17 标准
