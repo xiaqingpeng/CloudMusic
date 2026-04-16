@@ -1,6 +1,7 @@
 #include "Application.h"
 #include "Version.h"
 #include <QQmlContext>
+#include <QFile>
 #include <QDebug>
 
 namespace CloudMusic {
@@ -61,10 +62,36 @@ int Application::run() {
     
     qDebug() << "=== Loading QML ===";
     
-    // 加载主 QML 文件
-    const QUrl url(QStringLiteral("qrc:/qt/qml/CloudMusic/src/ui/Main.qml"));
+    // 尝试多个可能的 QML 路径（跨平台兼容）
+    QStringList possiblePaths = {
+        "qrc:/qt/qml/CloudMusic/src/ui/Main.qml",  // macOS Qt 6.10
+        "qrc:/CloudMusic/src/ui/Main.qml",         // Linux Qt 6.4
+        "qrc:///CloudMusic/src/ui/Main.qml"        // 备用路径
+    };
     
-    qDebug() << "QML URL:" << url;
+    QUrl url;
+    for (const QString& path : possiblePaths) {
+        QUrl testUrl(path);
+        qDebug() << "Testing QML path:" << testUrl;
+        
+        // 检查资源是否存在
+        if (QFile::exists(testUrl.toString().replace("qrc:", ":"))) {
+            url = testUrl;
+            qDebug() << "Found QML at:" << url;
+            break;
+        }
+    }
+    
+    if (url.isEmpty()) {
+        qCritical() << "Could not find Main.qml in any known location";
+        qDebug() << "Available import paths:";
+        for (const QString& path : m_engine->importPathList()) {
+            qDebug() << "  " << path;
+        }
+        return -1;
+    }
+    
+    qDebug() << "Loading QML from:" << url;
     
     QObject::connect(
         m_engine.get(), &QQmlApplicationEngine::objectCreated,
