@@ -6,7 +6,7 @@ Rectangle {
     id: leftBottomRect
     color: "#1a1a21"
     
-    property int selectedIndex: 0
+    property int selectedIndex: 0  // 默认选中精选
     
     // 使用 Flickable 实现滚动
     Flickable {
@@ -21,7 +21,7 @@ Rectangle {
             spacing: 0
             padding: 12
             
-            // 主菜单项
+            // 精选
             MenuItem {
                 width: parent.width - 24
                 icon: "🎵"
@@ -33,9 +33,10 @@ Rectangle {
                 }
             }
             
+            // 播客
             MenuItem {
                 width: parent.width - 24
-                icon: "🎙"
+                icon: "📻"
                 text: "播客"
                 selected: leftBottomRect.selectedIndex === 1
                 onClicked: {
@@ -44,22 +45,16 @@ Rectangle {
                 }
             }
             
+            // 关注
             MenuItem {
                 width: parent.width - 24
-                icon: "👥"
+                icon: "💬"
                 text: "关注"
                 selected: leftBottomRect.selectedIndex === 2
-                specialBg: true
                 onClicked: {
                     leftBottomRect.selectedIndex = 2
                     console.log("点击了关注")
                 }
-            }
-            
-            // 分割线
-            Divider {
-                width: parent.width - 24
-                anchors.horizontalCenter: parent.horizontalCenter
             }
             
             // 我喜欢的音乐
@@ -100,33 +95,22 @@ Rectangle {
                 }
             }
             
-            // 分割线
-            Divider {
-                width: parent.width - 24
-                anchors.horizontalCenter: parent.horizontalCenter
+            // 间距
+            Item {
+                width: parent.width
+                height: 12
             }
             
             // 创建的歌单
-            SectionHeader {
+            MenuItem {
                 width: parent.width - 24
-                anchors.horizontalCenter: parent.horizontalCenter
-                title: "创建的歌单 0"
-                showAddButton: true
-                onAddClicked: console.log("创建歌单")
-            }
-            
-            // 分割线
-            Divider {
-                width: parent.width - 24
-                anchors.horizontalCenter: parent.horizontalCenter
-            }
-            
-            // 收藏的歌单
-            SectionHeader {
-                width: parent.width - 24
-                anchors.horizontalCenter: parent.horizontalCenter
-                title: "收藏的歌单 0"
-                showAddButton: false
+                icon: "📁"
+                text: "创建的歌单 0"
+                selected: leftBottomRect.selectedIndex === 6
+                onClicked: {
+                    leftBottomRect.selectedIndex = 6
+                    console.log("点击了创建的歌单")
+                }
             }
         }
     }

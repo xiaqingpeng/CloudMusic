@@ -14,11 +14,30 @@ Rectangle {
     property bool isCircleIcon: false
     property color selectedColor: "#ec4141"
     property color normalColor: "transparent"
-    property color specialColor: "#2d2d37"
+    property color hoverColor: "#2a2a35"
+    property color specialColor: "#ec4141"
     
     signal clicked()
     
-    color: selected ? selectedColor : (specialBg ? specialColor : normalColor)
+    // 鼠标悬浮状态
+    property bool hovered: false
+    
+    // 颜色逻辑：
+    // - specialBg: 始终红色（关注项）
+    // - selected: 选中时红色
+    // - hovered: 悬浮时灰色
+    // - 默认: 透明
+    color: {
+        if (specialBg) {
+            return specialColor  // 关注始终红色，但不影响选中状态
+        } else if (selected) {
+            return selectedColor  // 选中时红色
+        } else if (hovered) {
+            return hoverColor  // 悬浮时灰色
+        } else {
+            return normalColor  // 默认透明
+        }
+    }
     
     Row {
         anchors.fill: parent
@@ -77,6 +96,9 @@ Rectangle {
     MouseArea {
         anchors.fill: parent
         cursorShape: Qt.PointingHandCursor
+        hoverEnabled: true
+        onEntered: menuItem.hovered = true
+        onExited: menuItem.hovered = false
         onClicked: menuItem.clicked()
     }
     
