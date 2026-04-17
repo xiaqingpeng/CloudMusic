@@ -97,6 +97,39 @@ disassemble --pc
 
 ## 远程调试 (Ubuntu VM)
 
+### 在虚拟机内运行应用
+
+#### 方法 1：直接运行
+
+```bash
+cd ~/qt6/CloudMusic
+./scripts/run-linux.sh
+```
+
+#### 方法 2：使用性能分析
+
+```bash
+cd ~/qt6/CloudMusic
+./scripts/profile.sh
+# 选择 1-4 任意选项
+```
+
+**性能分析选项：**
+1. 基础性能监控（直接运行）
+2. 渲染性能分析 - 过度绘制（直接运行）
+3. 渲染性能分析 - 批次（直接运行）
+4. 内存分配跟踪（直接运行）
+5. 等待 Qt Creator 连接（用于 QML Profiler）
+
+#### 方法 3：在 Qt Creator 中运行
+
+点击绿色的运行按钮 ▶️
+
+**注意事项：**
+- 虚拟机使用软件渲染器（software backend），性能会比 macOS 低
+- 这是正常的，因为 UTM 虚拟机没有硬件加速
+- 可以对比 macOS 和 Linux 的性能差异
+
 ### 使用 GDB
 
 ```bash

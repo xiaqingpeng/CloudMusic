@@ -3,13 +3,26 @@
 # QML 性能分析脚本
 
 # 自动查找构建目录
-if [ -d "build/unknown-Debug/appCloudMusic.app" ]; then
+if [ -f "build/Desktop-Debug/appCloudMusic" ]; then
+    # Linux 构建路径
+    APP_PATH="build/Desktop-Debug/appCloudMusic"
+elif [ -f "build/appCloudMusic" ]; then
+    # Linux 简单路径
+    APP_PATH="build/appCloudMusic"
+elif [ -d "build/unknown-Debug/appCloudMusic.app" ]; then
+    # macOS 构建路径
     APP_PATH="build/unknown-Debug/appCloudMusic.app/Contents/MacOS/appCloudMusic"
 elif [ -d "build/appCloudMusic.app" ]; then
+    # macOS 简单路径
     APP_PATH="build/appCloudMusic.app/Contents/MacOS/appCloudMusic"
 else
     echo "❌ 找不到应用程序，请先构建项目"
-    echo "提示：运行 cmake --build build"
+    echo ""
+    echo "提示："
+    echo "  Linux:  cmake --build build"
+    echo "  macOS:  cmake --build build"
+    echo ""
+    echo "或在 Qt Creator 中点击构建按钮"
     exit 1
 fi
 

@@ -19,6 +19,7 @@ Logger::~Logger() {
 }
 
 bool Logger::initialize(const QString& logDir, LogLevel logLevel) {
+    Q_UNUSED(logDir);  // Reserved for future file logging
     if (m_initialized) {
         return true;
     }
