@@ -214,6 +214,7 @@ qt_add_qml_module(appCloudMusic
     RESOURCES
         ${QML_RESOURCES}
         ${ICON_RESOURCES}
+        RESOURCES src/img.qrc
 )
 
 # ============================================================================

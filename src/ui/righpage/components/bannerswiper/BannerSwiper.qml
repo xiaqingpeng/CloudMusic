@@ -15,10 +15,25 @@ Rectangle {
             model: 3
             delegate: Rectangle {
                 color: "#eee"
-                Text {
-                    text: "Banner " + (index+1)
+
+                Column {
                     anchors.centerIn: parent
-                    font.bold:true; font.pixelSize:20
+                    spacing: 8
+
+                    Image {
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        width: 80
+                        height: 80
+                        source: "qrc:/images/resources/report.png"
+                        fillMode: Image.PreserveAspectFit
+                    }
+
+                    Text {
+                        text: "Banner " + (index+1)
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        font.bold: true
+                        font.pixelSize: 14
+                    }
                 }
             }
         }
