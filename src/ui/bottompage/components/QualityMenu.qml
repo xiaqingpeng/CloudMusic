@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Effects
+import "../../viewmodels"
 
 Popup {
     id: qualityMenu
@@ -28,9 +29,6 @@ Popup {
             shadowColor: "#30000000"
         }
     }
-    
-    // 当前选中的音质
-    property string currentQuality: "极高"
     
     signal qualitySelected(string quality)
     
@@ -80,71 +78,21 @@ Popup {
         }
         
         // 音质选项列表
-        Column {
-            width: qualityMenu.width
-            spacing: 0
+        Repeater {
+            model: MusicPlayerViewModel.qualityOptions
             
-            // Hi-Res 高解析度无损
             QualityItem {
                 width: qualityMenu.width
-                icon: "H"
-                iconBgColor: "#fff0f0"
-                iconColor: "#ec4141"
-                title: "高解析度无损 (Hi-Res)"
-                description: "更饱满清晰的高解析度音质，最高192kHz/24bit"
-                isSelected: qualityMenu.currentQuality === "Hi-Res"
+                icon: model.icon
+                iconBgColor: model.iconBgColor
+                iconColor: model.iconColor
+                title: model.title
+                description: model.description
+                isSelected: MusicPlayerViewModel.currentQuality === model.displayName
+                showDivider: index < MusicPlayerViewModel.qualityOptions.count - 1
                 onClicked: {
-                    qualityMenu.currentQuality = "Hi-Res"
-                    qualityMenu.qualitySelected("Hi-Res")
-                    qualityMenu.close()
-                }
-            }
-            
-            // SQ 无损
-            QualityItem {
-                width: qualityMenu.width
-                icon: "SQ"
-                iconBgColor: "#fff5e6"
-                iconColor: "#ff9800"
-                title: "无损 (SQ)"
-                description: "高保真无损音质，最高48kHz/16bit"
-                isSelected: qualityMenu.currentQuality === "无损"
-                onClicked: {
-                    qualityMenu.currentQuality = "无损"
-                    qualityMenu.qualitySelected("无损")
-                    qualityMenu.close()
-                }
-            }
-            
-            // HQ 极高
-            QualityItem {
-                width: qualityMenu.width
-                icon: "HQ"
-                iconBgColor: "#f3f0ff"
-                iconColor: "#7c4dff"
-                title: "极高 (HQ)"
-                description: "近 CD 音质的细节体验，最高320kbps"
-                isSelected: qualityMenu.currentQuality === "极高"
-                onClicked: {
-                    qualityMenu.currentQuality = "极高"
-                    qualityMenu.qualitySelected("极高")
-                    qualityMenu.close()
-                }
-            }
-            
-            // 标准
-            QualityItem {
-                width: qualityMenu.width
-                icon: "标"
-                iconBgColor: "#f5f5f5"
-                iconColor: "#9e9e9e"
-                title: "标准"
-                description: "128kbps"
-                isSelected: qualityMenu.currentQuality === "标准"
-                showDivider: false
-                onClicked: {
-                    qualityMenu.currentQuality = "标准"
-                    qualityMenu.qualitySelected("标准")
+                    MusicPlayerViewModel.setQuality(model.displayName)
+                    qualityMenu.qualitySelected(model.displayName)
                     qualityMenu.close()
                 }
             }

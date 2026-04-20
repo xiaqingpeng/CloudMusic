@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Effects
 import "./components"
+import "../viewmodels"
 
 Rectangle {
     id: bottomRect
@@ -15,7 +16,6 @@ Rectangle {
     property bool isPlaying: false
     property real progress: 0.0
     property bool isLiked: false
-    property string currentQuality: "极高"  // 当前音质
     
     // 进度条动画
     Timer {
@@ -139,7 +139,7 @@ Rectangle {
             ControlButton {
                 id: qualityButton
                 anchors.verticalCenter: parent.verticalCenter
-                text: bottomRect.currentQuality
+                text: MusicPlayerViewModel.currentQuality
                 bold: true
                 
                 onClicked: {
@@ -247,11 +247,5 @@ Rectangle {
     // 音质选择菜单
     QualityMenu {
         id: qualityMenu
-        currentQuality: bottomRect.currentQuality
-        
-        onQualitySelected: (quality) => {
-            bottomRect.currentQuality = quality
-            console.log("选择音质:", quality)
-        }
     }
 }
