@@ -1,6 +1,5 @@
 import QtQuick
 import QtQuick.Controls
-import QtQuick.Effects
 import "../../viewmodels"
 
 Popup {
@@ -18,16 +17,8 @@ Popup {
     background: Rectangle {
         color: "#ffffff"
         radius: 16
-        
-        // 阴影效果
-        layer.enabled: true
-        layer.effect: MultiEffect {
-            shadowEnabled: true
-            shadowHorizontalOffset: 0
-            shadowVerticalOffset: 8
-            shadowBlur: 0.5
-            shadowColor: "#30000000"
-        }
+        border.width: 1
+        border.color: "#e0e0e0"
     }
     
     signal qualitySelected(string quality)
