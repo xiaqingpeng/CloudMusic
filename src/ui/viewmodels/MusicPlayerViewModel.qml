@@ -211,6 +211,85 @@ QtObject {
         qualityChanged(quality)
     }
     
+    // ========== 更多菜单选项 ==========
+    property ListModel moreMenuOptions: ListModel {
+        ListElement {
+            menuId: "download"
+            icon: "⬇"
+            text: "下载"
+            showDivider: true
+        }
+        ListElement {
+            menuId: "share"
+            icon: "↻"
+            text: "分享"
+            showDivider: true
+        }
+        ListElement {
+            menuId: "listen_together"
+            icon: "👥"
+            text: "一起听"
+            showDivider: true
+        }
+        ListElement {
+            menuId: "artist"
+            icon: "👤"
+            text: "歌手"
+            dynamicText: true  // 表示文字需要动态生成
+            showDivider: true
+        }
+        ListElement {
+            menuId: "album"
+            icon: "💿"
+            text: "专辑"
+            dynamicText: true  // 表示文字需要动态生成
+            showDivider: true
+        }
+        ListElement {
+            menuId: "sound_effect"
+            icon: "🎵"
+            text: "音效"
+            showDivider: true
+        }
+        ListElement {
+            menuId: "buy_song"
+            icon: "🛒"
+            text: "购买单曲"
+            showDivider: true
+            isLastInGroup: true  // 标记为组的最后一项
+        }
+        ListElement {
+            menuId: "reduce_recommend"
+            icon: "🚫"
+            text: "减少推荐"
+            showDivider: false
+        }
+    }
+    
+    // 获取动态菜单文字
+    function getMenuText(menuId) {
+        if (menuId === "artist") {
+            // 只显示第一个歌手名，去掉 " / " 后面的部分
+            var artistName = currentArtistName
+            var slashIndex = artistName.indexOf(" / ")
+            if (slashIndex > 0) {
+                artistName = artistName.substring(0, slashIndex)
+            }
+            return "歌手: " + artistName
+        } else if (menuId === "album") {
+            return "专辑: " + currentSongName
+        }
+        return ""
+    }
+    
+    // 处理更多菜单点击
+    function handleMoreMenuAction(menuId) {
+        console.log("更多菜单操作:", menuId)
+        moreMenuActionTriggered(menuId)
+    }
+    
+    signal moreMenuActionTriggered(string menuId)
+    
     // ========== 进度更新定时器 ==========
     property Timer progressTimer: Timer {
         interval: 100

@@ -150,6 +150,8 @@ set(QML_COMPONENTS_BOTTOM
     src/ui/bottompage/components/PlaylistDrawer.qml
     src/ui/bottompage/components/QualityMenu.qml
     src/ui/bottompage/components/QualityItem.qml
+    src/ui/bottompage/components/MoreMenu.qml
+    src/ui/bottompage/components/MoreMenuItem.qml
 )
 
 set(QML_VIEWMODELS

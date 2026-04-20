@@ -217,6 +217,7 @@ Rectangle {
             
             // 更多按钮（三个点）
             Item {
+                id: moreButton
                 width: 40
                 height: 40
                 anchors.verticalCenter: parent.verticalCenter
@@ -239,6 +240,27 @@ Rectangle {
                 MouseArea {
                     anchors.fill: parent
                     cursorShape: Qt.PointingHandCursor
+                    onClicked: {
+                        // 计算弹窗位置：在按钮正上方，但要确保不超出窗口边界
+                        var buttonPos = moreButton.mapToItem(null, 0, 0)
+                        var windowWidth = bottomRect.Window.window ? bottomRect.Window.window.width : 1200
+                        
+                        // 计算居中位置
+                        var centerX = buttonPos.x + (moreButton.width - moreMenu.width) / 2
+                        
+                        // 确保不超出右边界（留 20px 边距）
+                        if (centerX + moreMenu.width > windowWidth - 20) {
+                            moreMenu.x = windowWidth - moreMenu.width - 20
+                        } else if (centerX < 20) {
+                            // 确保不超出左边界
+                            moreMenu.x = 20
+                        } else {
+                            moreMenu.x = centerX
+                        }
+                        
+                        moreMenu.y = buttonPos.y - moreMenu.height - 10
+                        moreMenu.open()
+                    }
                 }
             }
         }
@@ -247,5 +269,10 @@ Rectangle {
     // 音质选择菜单
     QualityMenu {
         id: qualityMenu
+    }
+    
+    // 更多操作菜单
+    MoreMenu {
+        id: moreMenu
     }
 }
