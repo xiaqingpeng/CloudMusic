@@ -148,6 +148,8 @@ set(QML_COMPONENTS_BOTTOM
     src/ui/bottompage/components/ControlButton.qml
     src/ui/bottompage/components/ProgressBar.qml
     src/ui/bottompage/components/PlaylistDrawer.qml
+    src/ui/bottompage/components/QualityMenu.qml
+    src/ui/bottompage/components/QualityItem.qml
 )
 
 set(QML_VIEWMODELS

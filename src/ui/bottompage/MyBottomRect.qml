@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Effects
 import "./components"
 
 Rectangle {
@@ -14,6 +15,7 @@ Rectangle {
     property bool isPlaying: false
     property real progress: 0.0
     property bool isLiked: false
+    property string currentQuality: "极高"  // 当前音质
     
     // 进度条动画
     Timer {
@@ -135,9 +137,32 @@ Rectangle {
             
             // 「极高」音质按钮
             ControlButton {
+                id: qualityButton
                 anchors.verticalCenter: parent.verticalCenter
-                text: "极高"
+                text: bottomRect.currentQuality
                 bold: true
+                
+                onClicked: {
+                    // 计算弹窗位置：在按钮正上方，但要确保不超出窗口边界
+                    var buttonPos = qualityButton.mapToItem(null, 0, 0)
+                    var windowWidth = bottomRect.Window.window ? bottomRect.Window.window.width : 1200
+                    
+                    // 计算居中位置
+                    var centerX = buttonPos.x + (qualityButton.width - qualityMenu.width) / 2
+                    
+                    // 确保不超出右边界（留 20px 边距）
+                    if (centerX + qualityMenu.width > windowWidth - 20) {
+                        qualityMenu.x = windowWidth - qualityMenu.width - 20
+                    } else if (centerX < 20) {
+                        // 确保不超出左边界
+                        qualityMenu.x = 20
+                    } else {
+                        qualityMenu.x = centerX
+                    }
+                    
+                    qualityMenu.y = buttonPos.y - qualityMenu.height - 10
+                    qualityMenu.open()
+                }
             }
             
             // 「+」加号按钮
@@ -216,6 +241,17 @@ Rectangle {
                     cursorShape: Qt.PointingHandCursor
                 }
             }
+        }
+    }
+    
+    // 音质选择菜单
+    QualityMenu {
+        id: qualityMenu
+        currentQuality: bottomRect.currentQuality
+        
+        onQualitySelected: (quality) => {
+            bottomRect.currentQuality = quality
+            console.log("选择音质:", quality)
         }
     }
 }
