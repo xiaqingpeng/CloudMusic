@@ -3,4 +3,7 @@
         <file>resources/report.png</file>
         <file>resources/images/appicon.png</file>
     </qresource>
+    <qresource prefix="/">
+        <file>resources/report.png</file>
+    </qresource>
 </RCC>

@@ -183,6 +183,11 @@ set(ICON_RESOURCES
     src/resources/icons/music.svg
 )
 
+set(IMAGE_RESOURCES
+    src/resources/report.png
+    src/resources/images/appicon.png
+)
+
 # ============================================================================
 # Executable Target
 # ============================================================================
@@ -218,7 +223,7 @@ qt_add_qml_module(appCloudMusic
     RESOURCES
         ${QML_RESOURCES}
         ${ICON_RESOURCES}
-        RESOURCES src/img.qrc
+        ${IMAGE_RESOURCES}
 )
 
 # ============================================================================
