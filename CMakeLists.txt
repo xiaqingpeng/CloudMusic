@@ -223,7 +223,14 @@ qt_add_qml_module(appCloudMusic
     RESOURCES
         ${QML_RESOURCES}
         ${ICON_RESOURCES}
-        ${IMAGE_RESOURCES}
+)
+
+# Add image resources separately
+qt_add_resources(appCloudMusic "images"
+    PREFIX "/"
+    FILES
+        src/resources/report.png
+        src/resources/images/appicon.png
 )
 
 # ============================================================================

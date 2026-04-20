@@ -24,7 +24,7 @@ Rectangle {
                         anchors.horizontalCenter: parent.horizontalCenter
                         width: 80
                         height: 80
-                        source: "qrc:/CloudMusic/src/resources/report.png"
+                        source: "qrc:/src/resources/report.png"
                         fillMode: Image.PreserveAspectFit
                     }
 
