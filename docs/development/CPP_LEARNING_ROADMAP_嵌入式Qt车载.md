@@ -429,31 +429,102 @@
 
 ### 我要开发 Qt 界面
 → 18-29, 54, 57, 60, 86-88
+→ 工具：Qt Creator
+
+### 我要调试复杂的 C++ 逻辑
+→ 11, 72, 16-17, 44-46
+→ 工具：CLion（GDB 深度集成、STL 可视化）
+
+### 我要远程调试嵌入式设备
+→ 11, 72, 63
+→ 工具：CLion（远程调试配置）
 
 ### 我要处理 CAN 总线数据
 → 16-17, 30, 47-48, 97-98
+→ 工具：CLion（查看数据缓冲区）
 
 ### 我要优化车载性能
 → 44-46, 48, 55, 75, 81-84, 86-88
+→ 工具：CLion（性能分析、内存分析）
 
 ### 我要实现多任务处理
 → 63, 80, 86-88
+→ 工具：CLion（多线程调试）
 
 ### 我要集成第三方库
 → 6-7, 10, 50-52
+→ 工具：CLion（CMake 原生支持）
 
 ### 我的程序内存泄漏
 → 44-46, 55, 84, 113-114
+→ 工具：CLion + Valgrind（内存检测）
 
 ### 我要实现车联网功能
 → 63, 107-108
 
 ### 我要配置交叉编译
 → 4, 6-7, 50-52, 104
+→ 工具：CLion（工具链配置）
 
 ---
 
 ## 📝 配套资源（嵌入式 Qt + Linux + 车载）
+
+### 开发工具
+
+#### IDE 选择
+1. **Qt Creator**（推荐用于 Qt 开发）
+   - Qt 官方 IDE
+   - QML 可视化编辑
+   - Qt 设计器集成
+   - 信号槽可视化
+   - 适合：Qt 界面开发、快速原型
+
+2. **CLion**（推荐用于 C++ 深度开发）⭐
+   - JetBrains 出品，智能代码补全
+   - **GDB/LLDB 深度集成** - 调试体验极佳
+   - **嵌入式远程调试** - 支持交叉编译和远程目标调试
+   - **STL 容器可视化** - vector、map 等容器内容一目了然
+   - CMake 原生支持
+   - 代码重构功能强大
+   - 静态分析和代码检查
+   - 适合：复杂 C++ 逻辑、性能优化、嵌入式调试
+
+3. **VS Code**（轻量级选择）
+   - 轻量快速
+   - 丰富的插件生态
+   - 远程开发支持
+   - 适合：轻量级开发、远程 SSH 开发
+
+#### CLion 嵌入式开发优势
+
+**1. 远程调试配置**
+```
+工具链配置：
+- 本地：macOS/Windows 开发
+- 远程：Linux 开发板/虚拟机
+- 自动同步代码
+- 远程 GDB 调试
+```
+
+**2. STL 可视化示例**
+```cpp
+std::vector<int> data = {1, 2, 3, 4, 5};
+std::map<string, int> cache = {{"key1", 100}, {"key2", 200}};
+// 调试时可以直接看到容器内所有元素，无需手动打印
+```
+
+**3. 嵌入式调试场景**
+- 断点调试硬件寄存器
+- 查看 CAN 总线数据缓冲区
+- 监控内存使用情况
+- 多线程调试（查看所有线程状态）
+- 条件断点（只在特定条件触发）
+
+**4. 性能分析**
+- CPU Profiler 集成
+- 内存分析工具
+- Valgrind 集成
 
 ### Qt 相关
 - Qt 官方文档：https://doc.qt.io/
@@ -481,6 +552,381 @@
 - 《Qt 5 开发及实例》
 - 《Linux 系统编程》
 - 《嵌入式 Linux 应用开发完全手册》
+
+---
+
+## 🛠️ CLion 嵌入式开发实战技巧
+
+### 1. 远程调试配置步骤
+
+#### 配置远程工具链
+```
+Settings → Build, Execution, Deployment → Toolchains
+1. 添加 Remote Host
+2. 配置 SSH 连接（开发板/虚拟机）
+3. 设置远程 GCC/G++ 路径
+4. 设置远程 GDB 路径
+```
+
+#### 配置 CMake
+```
+Settings → Build, Execution, Deployment → CMake
+1. 选择远程工具链
+2. 设置 CMake 选项（交叉编译参数）
+3. 配置构建目录
+```
+
+#### 配置部署（详细步骤）
+
+**步骤 1：打开部署设置**
+```
+macOS: CLion → Settings → Build, Execution, Deployment → Deployment
+Windows/Linux: File → Settings → Build, Execution, Deployment → Deployment
+```
+
+**步骤 2：添加服务器**
+```
+1. 点击左上角 "+" 按钮
+2. 选择 "SFTP"
+3. 填写服务器信息：
+   - Name: 开发板名称（如 "IMX6-Board"）
+   - Type: SFTP
+   - Host: 192.168.1.100（开发板 IP）
+   - Port: 22
+   - Username: root
+   - Authentication: Password 或 Key pair
+   - Password: 输入密码
+4. 点击 "Test Connection" 测试连接
+5. 点击 "OK" 保存
+```
+
+**步骤 3：配置自动上传**
+```
+在 Deployment 设置页面：
+1. 点击顶部 "Options" 标签页
+2. 找到 "Upload changed files automatically to the default server"
+3. 选择 "Always"（推荐）或 "On explicit save action"
+   - Always: 任何修改都自动上传
+   - On explicit save action: 只在按 Cmd+S/Ctrl+S 保存时上传
+4. 勾选 "✓ Create empty directories"
+5. 勾选 "✓ Delete remote files when local are deleted"
+```
+
+**步骤 4：配置排除文件**
+```
+在服务器配置页面：
+1. 选择刚创建的服务器
+2. 点击 "Excluded Paths" 标签页
+3. 点击 "+" 添加排除路径：
+   
+   添加文件夹：
+   - 点击 "Add Deployment Path"
+   - 输入：/build
+   - 点击 "OK"
+   - 重复添加：/.git, /.idea, /cmake-build-debug, /cmake-build-release
+   
+   添加文件模式（使用通配符）：
+   - 在 "Excluded Paths" 输入框中直接输入模式
+   - 输入：**/*.o（排除所有 .o 文件）
+   - 点击 "+" 添加
+   - 重复添加：**/*.so, **/*.a, **/*.pyc, **/.DS_Store
+   
+   注意：
+   - ** 表示匹配任意层级目录
+   - * 表示匹配任意字符
+   - 模式不是绝对路径，会匹配项目中所有符合的文件
+```
+
+**步骤 5：配置路径映射**
+```
+在服务器配置页面：
+1. 点击 "Mappings" 标签页
+2. 配置路径映射：
+   
+   Local path（本地路径）：
+   - 自动填充为项目根目录
+   - 例如：/Users/xiaqingpeng/project/CloudMusic
+   
+   Deployment path（远程路径）：
+   - 输入远程目录，例如：/home/root/CloudMusic
+   - 或者点击文件夹图标浏览远程目录
+   
+   Web path（网页路径）：
+   - 留空（不需要）
+   
+3. 点击 "OK" 保存
+```
+
+**步骤 6：测试部署**
+```
+1. 在项目文件上右键
+2. 选择 "Deployment" → "Upload to [服务器名]"
+3. 查看 "Event Log" 窗口，确认上传成功
+4. 修改一个文件并保存（Cmd+S / Ctrl+S）
+5. 观察是否自动上传（底部状态栏会显示上传进度）
+```
+
+**步骤 7：验证远程文件**
+```
+1. Tools → Deployment → Browse Remote Host
+2. 在右侧 "Remote Host" 窗口查看远程文件
+3. 可以直接在这里浏览、下载、删除远程文件
+```
+
+**常用操作快捷方式：**
+```
+- 上传当前文件：Cmd+Shift+U / Ctrl+Shift+U
+- 下载远程文件：Cmd+Shift+D / Ctrl+Shift+D
+- 同步整个项目：Tools → Deployment → Sync with Deployed to [服务器]
+- 比较本地和远程：Tools → Deployment → Compare with Deployed Version
+```
+
+**故障排查：**
+```
+问题 1：连接失败
+- 检查 IP 地址和端口
+- 检查防火墙设置
+- 确认 SSH 服务已启动：systemctl status sshd
+
+问题 2：权限错误 "Permission denied"
+解决方案 A - 修改远程目录权限（推荐）：
+  1. SSH 登录到远程机器：ssh root@192.168.1.100
+  2. 创建项目目录：mkdir -p /home/root/CloudMusic
+  3. 修改权限：chmod 755 /home/root/CloudMusic
+  4. 修改所有者：chown root:root /home/root/CloudMusic
+  5. 验证权限：ls -la /home/root/
+
+解决方案 B - 使用有权限的目录：
+  1. 在 CLion 中修改 Deployment path
+  2. 改为：/tmp/CloudMusic 或 /home/[你的用户名]/CloudMusic
+  3. 确保该目录存在且有写权限
+
+解决方案 C - 使用 sudo 权限（不推荐）：
+  1. 修改 SSH 配置允许 root 登录
+  2. 或者使用普通用户 + sudo
+
+常见权限问题：
+- /root 目录：需要 root 用户权限
+- /home/root：通常是 root 用户的主目录，需要 root 权限
+- /home/[用户名]：使用对应用户登录
+- /tmp：所有用户都有权限（临时测试可用）
+
+问题 3：文件未自动上传
+- 检查 Options → Upload changed files automatically
+- 确认服务器已设为默认：右键服务器 → "Use as Default"
+- 查看 Event Log 是否有错误信息
+
+问题 4：上传速度慢
+- 减少监控的文件：增加排除规则
+- 使用 "On explicit save action" 而不是 "Always"
+- 考虑使用 rsync 手动同步大文件
+
+问题 5：路径映射错误
+- 确保 Deployment path 是绝对路径（以 / 开头）
+- 确保远程目录已存在
+- 检查路径中没有特殊字符或空格
+```
+
+### 2. STL 容器调试技巧
+
+#### 查看 vector 内容
+```cpp
+std::vector<int> canData = {0x01, 0x02, 0x03, 0x04};
+// 断点后，在 Variables 窗口展开 canData
+// 可以看到：size=4, capacity=4, [0]=1, [1]=2, [2]=3, [3]=4
+```
+
+#### 查看 map 内容
+```cpp
+std::map<std::string, int> sensorData = {
+    {"temperature", 25},
+    {"speed", 60},
+    {"rpm", 3000}
+};
+// 断点后，展开 sensorData
+// 可以看到所有键值对，无需遍历打印
+```
+
+#### 查看智能指针
+```cpp
+std::shared_ptr<CanMessage> msg = std::make_shared<CanMessage>();
+// 可以直接看到：use_count、指向的对象内容
+```
+
+### 3. 多线程调试
+
+#### 查看所有线程
+```
+调试时：
+1. Threads 窗口显示所有线程
+2. 点击线程切换查看不同线程的调用栈
+3. 设置线程断点（只在特定线程触发）
+```
+
+#### 线程同步问题排查
+```cpp
+std::mutex mtx;
+std::lock_guard<std::mutex> lock(mtx);
+// 可以看到锁的状态、等待的线程
+```
+
+### 4. 条件断点
+
+#### 只在特定条件触发
+```cpp
+for (int i = 0; i < 1000; i++) {
+    processCanMessage(i);
+}
+// 右键断点 → Condition: i == 500
+// 只在 i=500 时暂停
+```
+
+#### CAN 数据过滤
+```cpp
+void onCanMessage(uint32_t id, uint8_t* data) {
+    // 断点条件：id == 0x123
+    // 只在特定 CAN ID 时暂停
+}
+```
+
+### 5. 内存分析
+
+#### Valgrind 集成
+```
+Run → Run with Valgrind Memcheck
+- 自动检测内存泄漏
+- 显示泄漏位置和调用栈
+- 可视化内存使用情况
+```
+
+#### 内存视图
+```
+调试时：
+Memory View → 查看内存地址内容
+- 查看硬件寄存器
+- 查看 DMA 缓冲区
+- 十六进制/ASCII 显示
+```
+
+### 6. 性能分析
+
+#### CPU Profiler
+```
+Run → Profile with Perf
+- 查看函数调用时间
+- 找出性能瓶颈
+- 火焰图可视化
+```
+
+#### 优化建议
+```
+Code → Inspect Code
+- 静态分析
+- 性能建议
+- 内存优化提示
+```
+
+### 7. 嵌入式特定功能
+
+#### 查看硬件寄存器
+```cpp
+volatile uint32_t* reg = (uint32_t*)0x40000000;
+// 断点后，在 Watches 窗口添加：
+// *reg → 查看寄存器值
+// 可以修改值进行测试
+```
+
+#### CAN 数据缓冲区
+```cpp
+uint8_t canBuffer[8] = {0};
+// 在 Memory View 中查看：
+// 地址：&canBuffer
+// 长度：8
+// 格式：Hex
+```
+
+### 8. 快捷键（提高效率）
+
+| 功能 | macOS | Windows/Linux |
+|------|-------|---------------|
+| 调试运行 | ⌃D | Shift+F9 |
+| 单步进入 | F7 | F7 |
+| 单步跳过 | F8 | F8 |
+| 继续执行 | ⌘⌥R | F9 |
+| 查看定义 | ⌘B | Ctrl+B |
+| 查找用法 | ⌥F7 | Alt+F7 |
+| 重构重命名 | ⇧F6 | Shift+F6 |
+| 格式化代码 | ⌘⌥L | Ctrl+Alt+L |
+
+### 9. 实战场景示例
+
+#### 场景 1：调试 CAN 总线接收
+```cpp
+void CanDriver::onReceive(uint32_t id, uint8_t* data, uint8_t len) {
+    // 1. 设置条件断点：id == 0x123
+    // 2. 查看 data 数组内容（Memory View）
+    // 3. 查看调用栈，追踪数据来源
+    std::vector<uint8_t> buffer(data, data + len);
+    // 4. 展开 buffer，查看所有字节
+}
+```
+
+#### 场景 2：排查内存泄漏
+```cpp
+void processData() {
+    auto data = new uint8_t[1024];
+    // 忘记 delete
+    // Valgrind 会提示：1024 bytes leaked
+    // 点击跳转到泄漏位置
+}
+```
+
+#### 场景 3：多线程死锁
+```cpp
+// 线程 1
+std::lock_guard<std::mutex> lock1(mutex1);
+std::lock_guard<std::mutex> lock2(mutex2);
+
+// 线程 2
+std::lock_guard<std::mutex> lock2(mutex2);
+std::lock_guard<std::mutex> lock1(mutex1);
+
+// CLion Threads 窗口会显示：
+// Thread 1: Waiting for mutex2
+// Thread 2: Waiting for mutex1
+```
+
+### 10. 推荐插件
+
+- **CMake Plus**: 增强 CMake 支持
+- **Makefile Support**: Makefile 语法高亮
+- **Serial Port Monitor**: 串口调试
+- **Embedded Development**: 嵌入式开发增强
+
+---
+
+## 💡 工具选择建议
+
+### Qt Creator vs CLion
+
+| 场景 | 推荐工具 | 原因 |
+|------|---------|------|
+| Qt UI 开发 | Qt Creator | QML 可视化、信号槽编辑器 |
+| 复杂 C++ 逻辑 | CLion | 智能补全、重构、调试 |
+| 嵌入式调试 | CLion | 远程调试、STL 可视化 |
+| 性能优化 | CLion | Profiler、内存分析 |
+| 快速原型 | Qt Creator | 快速搭建界面 |
+| 团队协作 | 两者都可 | 统一代码风格 |
+
+### 最佳实践
+1. **UI 开发**：Qt Creator（QML 编辑）
+2. **逻辑开发**：CLion（C++ 编写）
+3. **调试优化**：CLion（深度调试）
+4. **最终集成**：Qt Creator（打包发布）
+
+---
+
+**提示**：CLion 是付费软件，但提供 30 天免费试用。学生和开源项目可申请免费许可。
 
 ---
 
