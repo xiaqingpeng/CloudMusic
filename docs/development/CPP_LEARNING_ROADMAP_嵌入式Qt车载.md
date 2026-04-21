@@ -587,17 +587,23 @@ Windows/Linux: File → Settings → Build, Execution, Deployment → Deployment
 **步骤 2：添加服务器**
 ```
 1. 点击左上角 "+" 按钮
-2. 选择 "SFTP"
+2. 选择 "SFTP"（不要选择 rsync！）
 3. 填写服务器信息：
-   - Name: 开发板名称（如 "IMX6-Board"）
+   - Name: Ubuntu-VM（服务器名称，不要有空格）
    - Type: SFTP
-   - Host: 192.168.1.100（开发板 IP）
+   - Host: 192.168.64.2（虚拟机 IP）
    - Port: 22
-   - Username: root
+   - Root path: /home/xiaqingpeng（用户主目录，以 / 开头）
+   - Username: xiaqingpeng（不要用 root）
    - Authentication: Password 或 Key pair
    - Password: 输入密码
 4. 点击 "Test Connection" 测试连接
 5. 点击 "OK" 保存
+
+⚠️ 重要配置说明：
+- Name 不要有空格（会导致路径问题）
+- Root path 必须是绝对路径（以 / 开头）
+- 使用 SFTP，不要使用 rsync（rsync 路径处理有 bug）
 ```
 
 **步骤 3：配置自动上传**
@@ -605,11 +611,14 @@ Windows/Linux: File → Settings → Build, Execution, Deployment → Deployment
 在 Deployment 设置页面：
 1. 点击顶部 "Options" 标签页
 2. 找到 "Upload changed files automatically to the default server"
-3. 选择 "Always"（推荐）或 "On explicit save action"
-   - Always: 任何修改都自动上传
+3. 选择 "On explicit save action"（推荐，避免频繁上传）
    - On explicit save action: 只在按 Cmd+S/Ctrl+S 保存时上传
+   - Always: 任何修改都自动上传（可能很慢）
 4. 勾选 "✓ Create empty directories"
-5. 勾选 "✓ Delete remote files when local are deleted"
+5. 取消勾选 "Delete remote files when local are deleted"（避免误删）
+6. ⚠️ 禁用 rsync：
+   - 找到 "Use rsync for download/upload/sync"
+   - 取消勾选（rsync 路径处理有 bug）
 ```
 
 **步骤 4：配置排除文件**
@@ -645,16 +654,25 @@ Windows/Linux: File → Settings → Build, Execution, Deployment → Deployment
    
    Local path（本地路径）：
    - 自动填充为项目根目录
-   - 例如：/Users/xiaqingpeng/project/CloudMusic
+   - 例如：/Applications/qingpengxia/qt/qt6/qml/CloudMusic
    
    Deployment path（远程路径）：
-   - 输入远程目录，例如：/home/root/CloudMusic
-   - 或者点击文件夹图标浏览远程目录
+   - ⚠️ 重要：输入相对路径，不要以 / 开头！
+   - 正确示例：CloudMusic（相对于用户主目录）
+   - 错误示例：/home/xiaqingpeng/CloudMusic（会变成 ///home/...）
+   - 错误示例：/CloudMusic（会变成 //CloudMusic）
+   - 最终路径会是：/home/xiaqingpeng/CloudMusic
    
    Web path（网页路径）：
    - 留空（不需要）
    
 3. 点击 "OK" 保存
+
+⚠️ 路径配置陷阱：
+- Root path 设置为 /home/xiaqingpeng
+- Deployment path 设置为 CloudMusic（无斜杠）
+- 最终路径 = Root path + Deployment path = /home/xiaqingpeng/CloudMusic
+- 如果 Deployment path 以 / 开头，会导致三个斜杠问题
 ```
 
 **步骤 6：测试部署**
@@ -683,12 +701,38 @@ Windows/Linux: File → Settings → Build, Execution, Deployment → Deployment
 
 **故障排查：**
 ```
-问题 1：连接失败
+问题 1：路径中有三个斜杠（///home/...）
+原因：Deployment path 以 / 开头
+解决：
+1. 打开 Deployment 设置
+2. 选择服务器 → Mappings 标签页
+3. 修改 Deployment path：
+   - 错误：/home/xiaqingpeng/CloudMusic
+   - 错误：/CloudMusic
+   - 正确：CloudMusic（无斜杠）
+4. 保存并重试
+
+问题 2：路径中有空格（/CloudMusic /src/...）
+原因：服务器名称或路径中有空格
+解决：
+1. 检查服务器 Name：不要有空格
+2. 检查 Root path：不要有空格
+3. 检查 Deployment path：不要有空格
+4. 重新创建服务器配置
+
+问题 3：使用 rsync 导致路径错误
+原因：rsync 路径处理有 bug
+解决：
+1. Options 标签页
+2. 取消勾选 "Use rsync for download/upload/sync"
+3. 使用 SFTP 上传（更可靠）
+
+问题 4：连接失败
 - 检查 IP 地址和端口
 - 检查防火墙设置
 - 确认 SSH 服务已启动：systemctl status sshd
 
-问题 2：权限错误 "Permission denied"
+问题 5：权限错误 "Permission denied"
 解决方案 A - 修改远程目录权限（推荐）：
   1. SSH 登录到远程机器：ssh root@192.168.1.100
   2. 创建项目目录：mkdir -p /home/root/CloudMusic
