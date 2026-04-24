@@ -40,15 +40,15 @@ git fetch origin
 echo "✓ 远程分支获取完成"
 echo ""
 
-# 重置到 main 分支
-echo "4. 重置到 origin/main..."
-git reset --hard origin/main
-echo "✓ 重置完成"
+# 检出 main 分支并设置跟踪
+echo "4. 检出 main 分支..."
+git checkout -b main origin/main
+echo "✓ main 分支检出完成"
 echo ""
 
-# 设置跟踪分支
-echo "5. 设置分支跟踪..."
-git branch --set-upstream-to=origin/main main
+# 验证分支跟踪
+echo "5. 验证分支跟踪..."
+git branch -vv
 echo "✓ 分支跟踪设置完成"
 echo ""
 
