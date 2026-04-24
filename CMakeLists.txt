@@ -229,6 +229,14 @@ qt_add_qml_module(appCloudMusic
         ${ICON_RESOURCES}
 )
 
+# Add icon resources
+qt_add_resources(appCloudMusic "icons"
+    PREFIX "/CloudMusic"
+    BASE "${CMAKE_SOURCE_DIR}"
+    FILES
+        ${ICON_RESOURCES}
+)
+
 # Add image resources separately
 qt_add_resources(appCloudMusic "images"
     PREFIX "/"

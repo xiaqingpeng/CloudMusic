@@ -9,4 +9,13 @@
     <qresource prefix="/audio">
         <file>resources/5156edu-2054-6162.mp3</file>
     </qresource>
+    <qresource prefix="/CloudMusic/src/resources">
+        <file>resources/icons/left.svg</file>
+        <file>resources/icons/down.svg</file>
+        <file>resources/icons/down_s.svg</file>
+        <file>resources/icons/people.svg</file>
+        <file>resources/icons/mic.svg</file>
+        <file>resources/icons/setting.svg</file>
+        <file>resources/icons/music.svg</file>
+    </qresource>
 </RCC>
