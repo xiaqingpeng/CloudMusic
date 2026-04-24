@@ -6,4 +6,7 @@
     <qresource prefix="/">
         <file>resources/report.png</file>
     </qresource>
+    <qresource prefix="/audio">
+        <file>resources/5156edu-2054-6162.mp3</file>
+    </qresource>
 </RCC>

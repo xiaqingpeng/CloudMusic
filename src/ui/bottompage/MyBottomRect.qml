@@ -11,32 +11,17 @@ Rectangle {
     // 播放列表请求信号
     signal playlistRequested()
     
-    // 模拟播放状态
-    property bool isPlaying: false
-    property real progress: 0.0
-    property bool isLiked: false
-    
-    // 进度条动画
-    Timer {
-        id: progressTimer
-        interval: 100
-        running: bottomRect.isPlaying
-        repeat: true
-        onTriggered: {
-            if (bottomRect.progress < 1.0) {
-                bottomRect.progress += 0.001
-            } else {
-                bottomRect.progress = 0
-            }
-        }
-    }
+    // 使用 ViewModel 的播放状态
+    property bool isPlaying: MusicPlayerViewModel.isPlaying
+    property real progress: MusicPlayerViewModel.progress
+    property bool isLiked: MusicPlayerViewModel.isLiked
     
     // 顶部进度条
     ProgressBar {
         anchors.top: parent.top
         progress: bottomRect.progress
         onSeekRequested: (position) => {
-            bottomRect.progress = position
+            MusicPlayerViewModel.seek(position)
         }
     }
     
@@ -60,8 +45,8 @@ Rectangle {
             
             SongInfo {
                 anchors.verticalCenter: parent.verticalCenter
-                songName: "栖息地"
-                artistName: "Mikey-18 / 暴躁的兔子"
+                songName: MusicPlayerViewModel.currentSongName
+                artistName: MusicPlayerViewModel.currentArtistName
             }
         }
         
@@ -76,10 +61,10 @@ Rectangle {
             ActionButton {
                 anchors.verticalCenter: parent.verticalCenter
                 icon: bottomRect.isLiked ? "❤" : "♡"
-                count: bottomRect.isLiked ? "1000+" : "999+"
+                count: bottomRect.isLiked ? (MusicPlayerViewModel.likeCount + 1) + "+" : MusicPlayerViewModel.likeCount + "+"
                 iconColor: bottomRect.isLiked ? "#ec4141" : "#999999"
                 onClicked: {
-                    bottomRect.isLiked = !bottomRect.isLiked
+                    MusicPlayerViewModel.toggleLike()
                 }
             }
             
@@ -87,7 +72,7 @@ Rectangle {
             ActionButton {
                 anchors.verticalCenter: parent.verticalCenter
                 icon: "💬"
-                count: "549"
+                count: MusicPlayerViewModel.commentCount.toString()
             }
             
             // 转发按钮
@@ -108,7 +93,7 @@ Rectangle {
                 anchors.verticalCenter: parent.verticalCenter
                 isPlaying: bottomRect.isPlaying
                 onClicked: {
-                    bottomRect.isPlaying = !bottomRect.isPlaying
+                    MusicPlayerViewModel.togglePlayPause()
                 }
             }
             
@@ -116,6 +101,9 @@ Rectangle {
             ActionButton {
                 anchors.verticalCenter: parent.verticalCenter
                 icon: "→"
+                onClicked: {
+                    MusicPlayerViewModel.nextSong()
+                }
             }
             
             // 播放列表按钮
@@ -202,7 +190,7 @@ Rectangle {
                 anchors.verticalCenter: parent.verticalCenter
                 
                 Text {
-                    text: "🔊"
+                    text: MusicPlayerViewModel.isMuted ? "🔇" : "🔊"
                     font.pixelSize: 20
                     color: "#999999"
                     anchors.centerIn: parent
@@ -211,6 +199,9 @@ Rectangle {
                 MouseArea {
                     anchors.fill: parent
                     cursorShape: Qt.PointingHandCursor
+                    onClicked: {
+                        MusicPlayerViewModel.toggleMute()
+                    }
                 }
             }
             

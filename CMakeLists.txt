@@ -188,6 +188,10 @@ set(IMAGE_RESOURCES
     src/resources/images/appicon.png
 )
 
+set(AUDIO_RESOURCES
+    src/resources/5156edu-2054-6162.mp3
+)
+
 # ============================================================================
 # Executable Target
 # ============================================================================
@@ -231,6 +235,14 @@ qt_add_resources(appCloudMusic "images"
     FILES
         src/resources/report.png
         src/resources/images/appicon.png
+)
+
+# Add audio resources
+qt_add_resources(appCloudMusic "audio"
+    PREFIX "/audio"
+    BASE "${CMAKE_SOURCE_DIR}/src/resources"
+    FILES
+        src/resources/5156edu-2054-6162.mp3
 )
 
 # ============================================================================

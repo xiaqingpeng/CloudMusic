@@ -1,9 +1,95 @@
 import QtQuick
+import QtMultimedia
 
 pragma Singleton
 
 QtObject {
     id: viewModel
+    
+    // ========== 音频设备管理 ==========
+    property MediaDevices mediaDevices: MediaDevices {
+        id: devices
+    }
+    
+    // ========== 音频播放器 ==========
+    property MediaPlayer audioPlayer: MediaPlayer {
+        id: player
+        audioOutput: AudioOutput {
+            id: audioOutput
+            device: viewModel.mediaDevices.defaultAudioOutput
+            volume: 1.0
+            muted: false
+        }
+        
+        source: "qrc:/audio/5156edu-2054-6162.mp3"
+        
+        onPlaybackStateChanged: {
+            if (playbackState === MediaPlayer.PlayingState) {
+                viewModel.isPlaying = true
+            } else if (playbackState === MediaPlayer.PausedState) {
+                viewModel.isPlaying = false
+            } else if (playbackState === MediaPlayer.StoppedState) {
+                // Linux GStreamer 修复：播放后立即停止，延迟重试
+                if (viewModel.isPlaying) {
+                    // 保持 isPlaying = true，使用 Timer 延迟重试
+                    var retryTimer = Qt.createQmlObject('import QtQuick; Timer {}', player)
+                    retryTimer.interval = 100
+                    retryTimer.repeat = false
+                    retryTimer.triggered.connect(function() {
+                        if (player.playbackState === MediaPlayer.StoppedState) {
+                            player.play()
+                        }
+                        retryTimer.destroy()
+                    })
+                    retryTimer.start()
+                } else {
+                    viewModel.isPlaying = false
+                }
+            }
+        }
+        
+        onPositionChanged: function(position) {
+            if (duration > 0) {
+                viewModel.progress = position / duration
+                viewModel.currentPosition = Math.floor(position / 1000)
+            }
+        }
+        
+        onDurationChanged: function(duration) {
+            if (duration > 0) {
+                viewModel.currentDuration = Math.floor(duration / 1000)
+            }
+        }
+        
+        onMediaStatusChanged: {
+            if (mediaStatus === MediaPlayer.EndOfMedia) {
+                // 歌曲播放完毕
+                if (viewModel.repeatMode === "one") {
+                    player.position = 0
+                    player.play()
+                } else if (viewModel.repeatMode === "all") {
+                    viewModel.nextSong()
+                } else {
+                    viewModel.isPlaying = false
+                }
+            } else if (mediaStatus === MediaPlayer.InvalidMedia) {
+                console.error("❌ 无效的媒体文件")
+            } else if (mediaStatus === MediaPlayer.StalledMedia) {
+                // Linux GStreamer 修复：媒体停滞时尝试恢复播放
+                if (viewModel.isPlaying || player.playbackState === MediaPlayer.PlayingState) {
+                    Qt.callLater(function() {
+                        if (player.mediaStatus === MediaPlayer.StalledMedia) {
+                            player.play()
+                        }
+                    })
+                }
+            }
+        }
+        
+        onErrorOccurred: function(error, errorString) {
+            console.error("❌ 播放器错误:", error, "-", errorString)
+        }
+    }
     
     // ========== 播放状态 ==========
     property bool isPlaying: false
@@ -100,12 +186,20 @@ QtObject {
     
     // ========== 播放控制方法 ==========
     function play() {
-        isPlaying = true
+        // 强制刷新音频输出设备
+        if (audioPlayer.audioOutput && mediaDevices.defaultAudioOutput) {
+            var output = audioPlayer.audioOutput
+            output.device = mediaDevices.defaultAudioOutput
+            output.volume = 1.0
+            output.muted = false
+        }
+        
+        audioPlayer.play()
         playRequested()
     }
     
     function pause() {
-        isPlaying = false
+        audioPlayer.pause()
         pauseRequested()
     }
     
@@ -124,18 +218,23 @@ QtObject {
             currentSongIndex = (currentSongIndex + 1) % playlist.count
         }
         loadSong(currentSongIndex)
+        audioPlayer.play()
         nextSongRequested()
     }
     
     function previousSong() {
         currentSongIndex = (currentSongIndex - 1 + playlist.count) % playlist.count
         loadSong(currentSongIndex)
+        audioPlayer.play()
         previousSongRequested()
     }
     
     function seek(position) {
         progress = position
         currentPosition = Math.floor(position * currentDuration)
+        if (audioPlayer.duration > 0) {
+            audioPlayer.position = position * audioPlayer.duration
+        }
         seekRequested(position)
     }
     
@@ -183,6 +282,9 @@ QtObject {
             currentDuration = song.duration
             currentPosition = 0
             progress = 0
+            // 重新加载音频（目前只有一个音频文件）
+            audioPlayer.stop()
+            audioPlayer.source = "qrc:/audio/5156edu-2054-6162.mp3"
             songChanged(index)
         }
     }
@@ -290,26 +392,13 @@ QtObject {
     
     signal moreMenuActionTriggered(string menuId)
     
-    // ========== 进度更新定时器 ==========
+    // ========== 进度更新定时器（已由 MediaPlayer 自动处理，保留用于兼容） ==========
     property Timer progressTimer: Timer {
         interval: 100
-        running: viewModel.isPlaying
+        running: false  // 不再需要，由 MediaPlayer 的 onPositionChanged 处理
         repeat: true
         onTriggered: {
-            if (viewModel.progress < 1.0) {
-                viewModel.progress += 0.001
-                viewModel.currentPosition = Math.floor(viewModel.progress * viewModel.currentDuration)
-            } else {
-                // 歌曲播放完毕
-                if (viewModel.repeatMode === "one") {
-                    viewModel.progress = 0
-                    viewModel.currentPosition = 0
-                } else if (viewModel.repeatMode === "all") {
-                    viewModel.nextSong()
-                } else {
-                    viewModel.pause()
-                }
-            }
+            // 已由 MediaPlayer 处理
         }
     }
 }
