@@ -6,72 +6,71 @@
 #include <QString>
 #include <memory>
 
-namespace CloudMusic {
-namespace Core {
+namespace CloudMusic::Core {
 
-/**
+    /**
  * @brief 应用程序主类
- * 
+ *
  * 管理应用程序的生命周期、初始化和清理
  */
-class Application {
-public:
-    /**
+    class Application {
+    public:
+        /**
      * @brief 获取单例实例
      */
-    static Application& instance();
-    
-    /**
+        static Application& instance();
+
+        /**
      * @brief 初始化应用程序
      * @param app QGuiApplication 引用
      * @return 初始化是否成功
      */
-    bool initialize(QGuiApplication& app);
-    
-    /**
+        bool initialize(QGuiApplication& app);
+
+        /**
      * @brief 运行应用程序
      * @return 应用程序退出码
      */
-    int run();
-    
-    /**
+        int run();
+
+        /**
      * @brief 清理资源
      */
-    void cleanup();
-    
-    /**
+        void cleanup();
+
+        /**
      * @brief 获取 QML 引擎
      */
-    QQmlApplicationEngine* engine() const { return m_engine.get(); }
-    
-    /**
+        QQmlApplicationEngine* engine() const { return m_engine.get(); }
+
+        /**
      * @brief 获取应用程序版本
      */
-    QString version() const;
-    
-    /**
+        QString version() const;
+
+        /**
      * @brief 获取应用程序名称
      */
-    QString name() const;
+        QString name() const;
 
-private:
-    Application() = default;
-    ~Application() = default;
-    
-    // 禁止拷贝和赋值
-    Application(const Application&) = delete;
-    Application& operator=(const Application&) = delete;
-    
-    bool loadConfig();
-    bool setupQmlEngine();
-    void registerQmlTypes();
-    
-    std::unique_ptr<QQmlApplicationEngine> m_engine;
-    QGuiApplication* m_app = nullptr;
-    bool m_initialized = false;
-};
+    private:
+        Application() = default;
+        ~Application() = default;
 
-} // namespace Core
-} // namespace CloudMusic
+        // 禁止拷贝和赋值
+        Application(const Application&) = delete;
+        Application& operator=(const Application&) = delete;
+
+        bool loadConfig();
+        bool setupQmlEngine();
+
+        static void registerQmlTypes();
+
+        std::unique_ptr<QQmlApplicationEngine> m_engine;
+        QGuiApplication* m_app = nullptr;
+        bool m_initialized = false;
+    };
+
+}
 
 #endif // APPLICATION_H

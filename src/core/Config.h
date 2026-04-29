@@ -2,7 +2,6 @@
 #define CONFIG_H
 
 #include <QString>
-#include <QVariant>
 #include <QSettings>
 #include <memory>
 
@@ -32,7 +31,7 @@ public:
      * @brief 保存配置
      * @return 是否保存成功
      */
-    bool save();
+    bool save() const;
     
     /**
      * @brief 获取配置值
@@ -47,7 +46,7 @@ public:
      * @param key 配置键
      * @param value 配置值
      */
-    void set(const QString& key, const QVariant& value);
+    void set(const QString& key, const QVariant& value) const;
     
     /**
      * @brief 获取字符串配置
@@ -75,8 +74,8 @@ private:
     
     Config(const Config&) = delete;
     Config& operator=(const Config&) = delete;
-    
-    QString getDefaultConfigPath() const;
+
+    static QString getDefaultConfigPath();
     
     std::unique_ptr<QSettings> m_settings;
     QString m_configPath;
