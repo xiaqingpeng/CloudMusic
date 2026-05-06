@@ -206,8 +206,29 @@ QtObject {
     function stop() {
         // 停止播放并清理资源
         console.log("停止音频播放...")
-        audioPlayer.stop()
         isPlaying = false
+        
+        // 先停止播放
+        audioPlayer.stop()
+        
+        // 清空音频源，释放资源
+        audioPlayer.source = ""
+        
+        // 重置进度
+        progress = 0.0
+        currentPosition = 0
+    }
+    
+    function cleanup() {
+        // 应用退出时的完整清理
+        console.log("清理音频资源...")
+        stop()
+        
+        // 销毁音频输出
+        if (audioPlayer.audioOutput) {
+            audioPlayer.audioOutput.volume = 0
+            audioPlayer.audioOutput.muted = true
+        }
     }
     
     function togglePlayPause() {

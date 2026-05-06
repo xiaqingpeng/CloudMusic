@@ -11,20 +11,29 @@ Window {
            | Qt.WindowMaximizeButtonHint | Qt.WindowMinimizeButtonHint // 必须开启无边框
 
     // ========== 优雅关闭处理 ==========
+    property bool isClosing: false
+    
     onClosing: function(close) {
-        // 在这里可以添加清理逻辑
-        console.log("窗口正在关闭，执行清理...")
+        if (isClosing) {
+            // 已经在关闭流程中，直接接受
+            close.accepted = true
+            return
+        }
         
-        // 停止音频播放（如果有）
-        if (typeof MusicPlayerViewModel !== 'undefined' && MusicPlayerViewModel.stop) {
-            MusicPlayerViewModel.stop()
+        console.log("窗口正在关闭，执行清理...")
+        isClosing = true
+        
+        // 执行清理
+        if (typeof MusicPlayerViewModel !== 'undefined') {
+            if (MusicPlayerViewModel.cleanup) {
+                MusicPlayerViewModel.cleanup()
+            } else if (MusicPlayerViewModel.stop) {
+                MusicPlayerViewModel.stop()
+            }
         }
         
         // 接受关闭事件
         close.accepted = true
-        
-        // 延迟退出，确保清理完成
-        Qt.callLater(Qt.quit)
     }
 
     MouseArea {
