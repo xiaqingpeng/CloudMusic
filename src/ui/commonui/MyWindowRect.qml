@@ -10,6 +10,23 @@ Window {
     flags: Qt.Window | Qt.FramelessWindowHint | Qt.WindowSystemMenuHint
            | Qt.WindowMaximizeButtonHint | Qt.WindowMinimizeButtonHint // 必须开启无边框
 
+    // ========== 优雅关闭处理 ==========
+    onClosing: function(close) {
+        // 在这里可以添加清理逻辑
+        console.log("窗口正在关闭，执行清理...")
+        
+        // 停止音频播放（如果有）
+        if (typeof MusicPlayerViewModel !== 'undefined' && MusicPlayerViewModel.stop) {
+            MusicPlayerViewModel.stop()
+        }
+        
+        // 接受关闭事件
+        close.accepted = true
+        
+        // 延迟退出，确保清理完成
+        Qt.callLater(Qt.quit)
+    }
+
     MouseArea {
         // 只覆盖右侧区域，避开左侧边栏的按钮
         anchors.top: parent.top

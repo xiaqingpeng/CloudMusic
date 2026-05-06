@@ -29,7 +29,10 @@ Row {
             anchors.fill: parent
             hoverEnabled: true
             cursorShape: Qt.PointingHandCursor
-            onClicked: Qt.quit()
+            onClicked: {
+                // 优雅关闭：先关闭窗口，让Qt事件循环处理清理
+                window.close()
+            }
         }
     }
     

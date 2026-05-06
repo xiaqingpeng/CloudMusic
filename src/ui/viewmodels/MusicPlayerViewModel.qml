@@ -203,6 +203,13 @@ QtObject {
         pauseRequested()
     }
     
+    function stop() {
+        // 停止播放并清理资源
+        console.log("停止音频播放...")
+        audioPlayer.stop()
+        isPlaying = false
+    }
+    
     function togglePlayPause() {
         if (isPlaying) {
             pause()
